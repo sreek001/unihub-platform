@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bookingRoutes = require('./src/modules/booking/bookingRoutes');
-
+const canteenRoutes = require('./src/modules/canteen/canteenRoutes');
+console.log("Canteen Router:", canteenRoutes);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -17,6 +18,9 @@ app.get('/', (req, res) => {
 
 // 🏛️ Mount your Venue Booking Module Router
 app.use('/api/booking', bookingRoutes);
+
+// 🍽️ Mount your Canteen Module Router
+app.use('/api/canteen', canteenRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
