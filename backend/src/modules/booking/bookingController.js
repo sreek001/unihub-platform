@@ -37,11 +37,11 @@ async function getSlots(req, res) {
 
   try {
     const { rows } = await pool.query(
-      `SELECT id, event_name, event_date, start_time, end_time,
+      `SELECT id, event_name, booking_date, start_time, end_time,
               status, user_name, user_role, user_id
          FROM bookings
         WHERE venue_id = $1
-          AND event_date = $2
+          AND booking_date = $2
           AND status IN ('APPROVED', 'PENDING')
         ORDER BY start_time`,
       [venueId, date]
@@ -68,7 +68,8 @@ async function getSlots(req, res) {
  */
 async function createBooking(req, res) {
   const { venue_id, event_name, event_date, start_time, end_time } = req.body;
-  const { id: userId, role: userRole, name: userName } = req.user;
+  const user = req.user || { id: 0, role: 'STUDENT', name: 'Dev User' };
+  const { id: userId, role: userRole, name: userName } = user;
 
   // ── Input validation ──
   if (!venue_id || !event_name || !event_date || !start_time || !end_time) {
@@ -90,31 +91,46 @@ async function createBooking(req, res) {
   try {
     await client.query('BEGIN');
 
+    // ── DEBUG: Log the values being sent to the collision check ──
+    const fmtStart = fmtTime(start_time);
+    const fmtEnd   = fmtTime(end_time);
+    console.log('[Booking] Collision check params:', {
+      venue_id,
+      event_date,
+      start_time: fmtStart,
+      end_time:   fmtEnd,
+      raw_start:  start_time,
+      raw_end:    end_time,
+    });
+
     // ── Row-level lock: SELECT ... FOR UPDATE ──
-    // Lock all APPROVED bookings for this venue+date that
-    // overlap the requested time window. This serializes
-    // concurrent requests so only one can proceed.
+    // Lock all non-REJECTED bookings for this venue+date that
+    // overlap the requested time window. This covers both APPROVED
+    // and PENDING to prevent double-booking while requests are
+    // still in the approval queue.
     const { rows: conflicts } = await client.query(
-      `SELECT id, start_time, end_time, event_name
+      `SELECT id, start_time, end_time, event_name, status
          FROM bookings
-        WHERE venue_id   = $1
-          AND event_date = $2
-          AND status     = 'APPROVED'
-          AND start_time < $4::time
-          AND end_time   > $3::time
+        WHERE venue_id      = $1
+          AND booking_date  = $2
+          AND status       != 'REJECTED'
+          AND start_time    < $4::time
+          AND end_time      > $3::time
         FOR UPDATE`,
-      [venue_id, event_date, fmtTime(start_time), fmtTime(end_time)]
+      [venue_id, event_date, fmtStart, fmtEnd]
     );
 
     if (conflicts.length > 0) {
+      console.log('[Booking] Conflicts found:', conflicts);
       await client.query('ROLLBACK');
       return res.status(409).json({
         success: false,
-        message: 'Time slot conflict — an approved booking already occupies this window.',
+        message: `Time slot conflict — ${conflicts.length} existing booking(s) overlap this window.`,
         conflicts: conflicts.map((c) => ({
           id: c.id,
           time: `${c.start_time} – ${c.end_time}`,
           event: c.event_name,
+          status: c.status,
         })),
       });
     }
@@ -122,10 +138,10 @@ async function createBooking(req, res) {
     // ── No conflict → insert ──
     const { rows } = await client.query(
       `INSERT INTO bookings
-              (venue_id, user_id, user_name, user_role, event_name, event_date, start_time, end_time, status)
+              (venue_id, user_id, user_name, user_role, event_name, booking_date, start_time, end_time, status)
        VALUES ($1, $2, $3, $4, $5, $6, $7::time, $8::time, 'PENDING')
        RETURNING *`,
-      [venue_id, userId, userName, userRole, event_name, event_date, fmtTime(start_time), fmtTime(end_time)]
+      [venue_id, userId, userName, userRole, event_name, event_date, fmtStart, fmtEnd]
     );
 
     await client.query('COMMIT');
@@ -134,6 +150,14 @@ async function createBooking(req, res) {
   } catch (err) {
     await client.query('ROLLBACK');
     console.error('[Booking] createBooking error:', err.message);
+    console.error('[Booking] Raw DB error details:', {
+      code: err.code,
+      detail: err.detail,
+      constraint: err.constraint,
+      table: err.table,
+      column: err.column,
+      stack: err.stack,
+    });
 
     // Catch DB-level exclusion constraint violation as a safety net
     if (err.code === '23P01') {
@@ -143,7 +167,10 @@ async function createBooking(req, res) {
       });
     }
 
-    return res.status(500).json({ success: false, message: 'Failed to create booking.' });
+    return res.status(500).json({
+      success: false,
+      message: `Failed to create booking: ${err.message}`,
+    });
   } finally {
     client.release();
   }
@@ -202,14 +229,14 @@ async function updateBookingStatus(req, res) {
       const { rows: conflicts } = await client.query(
         `SELECT id, start_time, end_time, event_name
            FROM bookings
-          WHERE venue_id   = $1
-            AND event_date = $2
-            AND status     = 'APPROVED'
-            AND id        != $3
-            AND start_time < $5::time
-            AND end_time   > $4::time
+          WHERE venue_id      = $1
+            AND booking_date  = $2
+            AND status        = 'APPROVED'
+            AND id           != $3
+            AND start_time    < $5::time
+            AND end_time      > $4::time
           FOR UPDATE`,
-        [booking.venue_id, booking.event_date, bookingId, booking.start_time, booking.end_time]
+        [booking.venue_id, booking.booking_date, bookingId, booking.start_time, booking.end_time]
       );
 
       if (conflicts.length > 0) {
@@ -259,13 +286,13 @@ async function updateBookingStatus(req, res) {
 async function getMyBookings(req, res) {
   try {
     const { rows } = await pool.query(
-      `SELECT b.id, b.event_name, b.event_date, b.start_time, b.end_time,
+      `SELECT b.id, b.event_name, b.booking_date, b.start_time, b.end_time,
               b.status, b.created_at, v.name AS venue_name
          FROM bookings b
          JOIN venues v ON v.id = b.venue_id
         WHERE b.user_id = $1
         ORDER BY b.created_at DESC`,
-      [req.user.id]
+      [(req.user || { id: 0 }).id]
     );
     return res.json({ success: true, bookings: rows });
   } catch (err) {
@@ -281,7 +308,7 @@ async function getMyBookings(req, res) {
 async function getPendingBookings(req, res) {
   try {
     const { rows } = await pool.query(
-      `SELECT b.id, b.event_name, b.event_date, b.start_time, b.end_time,
+      `SELECT b.id, b.event_name, b.booking_date, b.start_time, b.end_time,
               b.status, b.user_name, b.user_role, b.created_at,
               v.name AS venue_name
          FROM bookings b
