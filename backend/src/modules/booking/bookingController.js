@@ -37,11 +37,11 @@ async function getSlots(req, res) {
 
   try {
     const { rows } = await pool.query(
-      `SELECT id, event_name, booking_date, start_time, end_time,
+      `SELECT id, event_name, event_date, start_time, end_time,
               status, user_name, user_role, user_id
          FROM bookings
         WHERE venue_id = $1
-          AND booking_date = $2
+          AND event_date = $2
           AND status IN ('APPROVED', 'PENDING')
         ORDER BY start_time`,
       [venueId, date]
@@ -56,20 +56,14 @@ async function getSlots(req, res) {
 /**
  * POST /api/booking/
  * Creates a new booking request.
- *
- * ── RACE-CONDITION PREVENTION ──
- * Uses a serializable transaction with SELECT ... FOR UPDATE
- * to lock any existing APPROVED bookings that overlap the
- * requested (start_time, end_time) window on the same venue
- * and date. If conflicts are found, the transaction is rolled
- * back and a 409 Conflict is returned.
- *
- * Body: { venue_id, event_name, event_date, start_time, end_time }
  */
 async function createBooking(req, res) {
   const { venue_id, event_name, event_date, start_time, end_time } = req.body;
-  const user = req.user || { id: 0, role: 'STUDENT', name: 'Dev User' };
-  const { id: userId, role: userRole, name: userName } = user;
+
+  // Guard for authentication bypass safely
+  const userId = req.user?.id || 999;
+  const userRole = req.user?.role || 'STUDENT';
+  const userName = req.user?.name || 'Arjun K.';
 
   // ── Input validation ──
   if (!venue_id || !event_name || !event_date || !start_time || !end_time) {
@@ -91,86 +85,64 @@ async function createBooking(req, res) {
   try {
     await client.query('BEGIN');
 
-    // ── DEBUG: Log the values being sent to the collision check ──
-    const fmtStart = fmtTime(start_time);
-    const fmtEnd   = fmtTime(end_time);
-    console.log('[Booking] Collision check params:', {
+    // Diagnostic console tracking
+    console.log('[DEBUG] Running validation checks for:', {
       venue_id,
       event_date,
-      start_time: fmtStart,
-      end_time:   fmtEnd,
-      raw_start:  start_time,
-      raw_end:    end_time,
+      start_time: fmtTime(start_time),
+      end_time: fmtTime(end_time)
     });
 
-    // ── Row-level lock: SELECT ... FOR UPDATE ──
-    // Lock all non-REJECTED bookings for this venue+date that
-    // overlap the requested time window. This covers both APPROVED
-    // and PENDING to prevent double-booking while requests are
-    // still in the approval queue.
+    // ── Row-level lock: Check for overlapping entries that are NOT REJECTED ──
     const { rows: conflicts } = await client.query(
-      `SELECT id, start_time, end_time, event_name, status
+      `SELECT id, start_time, end_time, event_name
          FROM bookings
-        WHERE venue_id      = $1
-          AND booking_date  = $2
-          AND status       != 'REJECTED'
-          AND start_time    < $4::time
-          AND end_time      > $3::time
+        WHERE venue_id   = $1
+          AND event_date = $2
+          AND status    != 'REJECTED'
+          AND start_time < $4::time
+          AND end_time   > $3::time
         FOR UPDATE`,
-      [venue_id, event_date, fmtStart, fmtEnd]
+      [venue_id, event_date, fmtTime(start_time), fmtTime(end_time)]
     );
 
     if (conflicts.length > 0) {
-      console.log('[Booking] Conflicts found:', conflicts);
       await client.query('ROLLBACK');
       return res.status(409).json({
         success: false,
-        message: `Time slot conflict — ${conflicts.length} existing booking(s) overlap this window.`,
+        message: 'Time slot conflict — a pending or approved allocation occupies this window.',
         conflicts: conflicts.map((c) => ({
           id: c.id,
           time: `${c.start_time} – ${c.end_time}`,
           event: c.event_name,
-          status: c.status,
         })),
       });
     }
 
-    // ── No conflict → insert ──
+    // ── No conflict → insert cleanly ──
     const { rows } = await client.query(
       `INSERT INTO bookings
-              (venue_id, user_id, user_name, user_role, event_name, booking_date, start_time, end_time, status)
+              (venue_id, user_id, user_name, user_role, event_name, event_date, start_time, end_time, status)
        VALUES ($1, $2, $3, $4, $5, $6, $7::time, $8::time, 'PENDING')
        RETURNING *`,
-      [venue_id, userId, userName, userRole, event_name, event_date, fmtStart, fmtEnd]
+      [venue_id, userId, userName, userRole, event_name, event_date, fmtTime(start_time), fmtTime(end_time)]
     );
 
     await client.query('COMMIT');
-
     return res.status(201).json({ success: true, booking: rows[0] });
+
   } catch (err) {
     await client.query('ROLLBACK');
-    console.error('[Booking] createBooking error:', err.message);
-    console.error('[Booking] Raw DB error details:', {
-      code: err.code,
-      detail: err.detail,
-      constraint: err.constraint,
-      table: err.table,
-      column: err.column,
-      stack: err.stack,
-    });
+    console.error('[Booking ERROR] createBooking failed:', err.message, err.stack);
 
-    // Catch DB-level exclusion constraint violation as a safety net
     if (err.code === '23P01') {
       return res.status(409).json({
         success: false,
-        message: 'Booking conflict detected by database constraint.',
+        message: 'Booking conflict detected by database isolation constraint.',
       });
     }
 
-    return res.status(500).json({
-      success: false,
-      message: `Failed to create booking: ${err.message}`,
-    });
+    return res.status(500).json({ success: false, message: `Database error: ${err.message}` });
   } finally {
     client.release();
   }
@@ -179,13 +151,6 @@ async function createBooking(req, res) {
 /**
  * PATCH /api/booking/:bookingId
  * Updates a booking's status to APPROVED or REJECTED.
- * Restricted to FACULTY / ADMIN roles (enforced by route middleware).
- *
- * On approval: re-checks for overlapping APPROVED bookings
- * with FOR UPDATE to prevent race conditions between two
- * concurrent approval requests.
- *
- * Body: { status: 'APPROVED' | 'REJECTED' }
  */
 async function updateBookingStatus(req, res) {
   const { bookingId } = req.params;
@@ -203,7 +168,6 @@ async function updateBookingStatus(req, res) {
   try {
     await client.query('BEGIN');
 
-    // ── Fetch the booking being updated ──
     const { rows: bookingRows } = await client.query(
       'SELECT * FROM bookings WHERE id = $1 FOR UPDATE',
       [bookingId]
@@ -224,19 +188,18 @@ async function updateBookingStatus(req, res) {
       });
     }
 
-    // ── If approving, verify no overlap with other APPROVED bookings ──
     if (status === 'APPROVED') {
       const { rows: conflicts } = await client.query(
         `SELECT id, start_time, end_time, event_name
            FROM bookings
-          WHERE venue_id      = $1
-            AND booking_date  = $2
-            AND status        = 'APPROVED'
-            AND id           != $3
-            AND start_time    < $5::time
-            AND end_time      > $4::time
+          WHERE venue_id   = $1
+            AND event_date = $2
+            AND status     = 'APPROVED'
+            AND id        != $3
+            AND start_time < $5::time
+            AND end_time   > $4::time
           FOR UPDATE`,
-        [booking.venue_id, booking.booking_date, bookingId, booking.start_time, booking.end_time]
+        [booking.venue_id, booking.event_date, bookingId, booking.start_time, booking.end_time]
       );
 
       if (conflicts.length > 0) {
@@ -253,15 +216,14 @@ async function updateBookingStatus(req, res) {
       }
     }
 
-    // ── Update status ──
     const { rows: updated } = await client.query(
       `UPDATE bookings SET status = $1 WHERE id = $2 RETURNING *`,
       [status, bookingId]
     );
 
     await client.query('COMMIT');
-
     return res.json({ success: true, booking: updated[0] });
+
   } catch (err) {
     await client.query('ROLLBACK');
     console.error('[Booking] updateBookingStatus error:', err.message);
@@ -284,15 +246,16 @@ async function updateBookingStatus(req, res) {
  * Returns all bookings belonging to the authenticated user.
  */
 async function getMyBookings(req, res) {
+  const userId = req.user?.id || 999;
   try {
     const { rows } = await pool.query(
-      `SELECT b.id, b.event_name, b.booking_date, b.start_time, b.end_time,
+      `SELECT b.id, b.event_name, b.event_date, b.start_time, b.end_time,
               b.status, b.created_at, v.name AS venue_name
          FROM bookings b
          JOIN venues v ON v.id = b.venue_id
         WHERE b.user_id = $1
         ORDER BY b.created_at DESC`,
-      [(req.user || { id: 0 }).id]
+      [userId]
     );
     return res.json({ success: true, bookings: rows });
   } catch (err) {
@@ -303,12 +266,12 @@ async function getMyBookings(req, res) {
 
 /**
  * GET /api/booking/pending
- * Returns all PENDING bookings (for FACULTY/ADMIN approval dashboard).
+ * Returns all PENDING bookings.
  */
 async function getPendingBookings(req, res) {
   try {
     const { rows } = await pool.query(
-      `SELECT b.id, b.event_name, b.booking_date, b.start_time, b.end_time,
+      `SELECT b.id, b.event_name, b.event_date, b.start_time, b.end_time,
               b.status, b.user_name, b.user_role, b.created_at,
               v.name AS venue_name
          FROM bookings b

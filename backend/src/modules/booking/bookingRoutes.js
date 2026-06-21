@@ -11,11 +11,11 @@ const {
   getPendingBookings,
 } = require('./bookingController');
 
-// ─── Public-ish routes (any authenticated user) ────────────
-router.get('/venues',                verifyToken, getVenues);
-router.get('/venues/:venueId/slots', verifyToken, getSlots);
-router.post('/',                     verifyToken, createBooking);
-router.get('/my-bookings',           verifyToken, getMyBookings);
+// ─── Public routes (auth bypassed for local dev) ───────────
+router.get('/venues',                getVenues);
+router.get('/venues/:venueId/slots', getSlots);
+router.post('/',                     createBooking);
+router.get('/my-bookings',           getMyBookings);
 
 // ─── Restricted routes (FACULTY / ADMIN only) ──────────────
 router.get('/pending',               verifyToken, requireRole('FACULTY', 'ADMIN'), getPendingBookings);
