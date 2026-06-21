@@ -1,19 +1,21 @@
 const { Pool } = require('pg');
 
-// In production, we read the connection string securely from the hosting environment
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: parseInt(process.env.DB_PORT) || 443,
   ssl: {
     rejectUnauthorized: false
   }
 });
 
-// Simple validation logging on boot
 pool.connect((err, client, release) => {
   if (err) {
     console.error('❌ Cloud Database connection failed:', err.message);
   } else {
-    console.log('🚀 Connected to live production Supabase instance successfully.');
+    console.log('🚀 Connected to live production Supabase instance successfully over secure discrete parameters.');
     release();
   }
 });
