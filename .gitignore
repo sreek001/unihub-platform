@@ -1,16 +1,8 @@
-# Dependencies
 node_modules/
-.pnp
-.pnp.js
-
-# Environment Variables (Keep your Supabase password safe!)
 .env
-.env.local
-.env.development.local
-
-# Production builds
-frontend/dist/
-backend/dist/
-
-# IDE files
-.vscode/
+dist/
+build/
+.DS_Store
+.agents/
+.gemini/
+*.log
