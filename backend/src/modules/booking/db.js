@@ -8,6 +8,7 @@ const { Pool } = require('pg');
  *   DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD
  */
 const pool = new Pool({
+<<<<<<< HEAD
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT, 10) || 5432,
   database: process.env.DB_NAME || 'unihub',
@@ -20,6 +21,18 @@ const pool = new Pool({
 
 pool.on('error', (err) => {
   console.error('[Booking DB] Unexpected pool error:', err.message);
+=======
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  },
+  connectionTimeoutMillis: 5000 // ⏱️ Hard boundary: terminates hung connections after 5 seconds
+});
+
+// Safe event-driven error tracking that NEVER freezes the Node server
+pool.on('error', (err) => {
+  console.error('❌ Unexpected database pool error:', err.message);
+>>>>>>> e85e018 (fix: restore connection string model with strict timeout guardrails)
 });
 
 module.exports = pool;
