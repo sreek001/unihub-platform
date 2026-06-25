@@ -3,7 +3,11 @@ const express = require('express');
 const cors = require('cors');
 
 const bookingRoutes = require('./src/modules/booking/bookingRoutes');
+
+
 const canteenRoutes = require('./src/modules/canteen/canteenRoutes');
+
+
 const academicsRoutes = require('./src/modules/academics/academicsRoutes');
 const lostFoundRoutes = require('./src/modules/lostFound/lostFoundRoutes');
 
@@ -31,7 +35,7 @@ app.use('/api/booking', bookingRoutes);
 app.use('/api/canteen', canteenRoutes);
 app.use('/api/academics', academicsRoutes);
 app.use('/api/lostfound', lostFoundRoutes);
-
+app.use('/api/canteen', canteenRoutes);
 // Error Handling Middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);

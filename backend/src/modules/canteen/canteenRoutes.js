@@ -1,17 +1,30 @@
 const express = require('express');
 const router = express.Router();
 
-const {
+const canteenController = require('./canteenController');
+const { verifyToken, requireRole } = require('./authMiddleware');
+
+
+
+router.get('/menu', canteenController.getMenu);
+
+
+router.post('/order', canteenController.createOrder);
+
+
+router.get(
+  '/orders',
   verifyToken,
-} = require('../booking/authMiddleware');
+  requireRole('ADMIN', 'STAFF'),
+  canteenController.getAllOrders
+);
 
-const {
-  fetchMenu,
-} = require('./canteenController');
 
-console.log("verifyToken =", typeof verifyToken);
-console.log("fetchMenu =", typeof fetchMenu);
-
-router.get('/menu', fetchMenu);
+router.patch(
+  '/order/:id/status',
+  verifyToken,
+  requireRole('ADMIN', 'STAFF'),
+  canteenController.updateOrderStatus
+);
 
 module.exports = router;
