@@ -105,10 +105,25 @@ const placeOrder = async () => {
 
     console.log(data);
 
-    if (!data.success) {
-      alert("Failed to place order.");
-      return;
-    }
+   if (!data.success) {
+
+  const stockMessage =
+    data.availableStock === 0
+      ? `${data.itemName} is completely out of stock.`
+      : `${data.itemName} has only ${data.availableStock} item(s) left.`;
+
+  alert(
+` Order Failed
+
+${stockMessage}
+
+Please reduce the quantity and try again.`
+  );
+
+  fetchMenu();
+
+  return;
+}
 
     const maxPrep = Math.max(...cart.map(i => i.prepTime));
 
@@ -126,7 +141,7 @@ const placeOrder = async () => {
     setActiveTab("tracker");
 
     alert(
-      `✅ Order Placed!\n\nToken Number: ${data.order.token_number}`
+      ` Order Placed!\n\nToken Number: ${data.order.token_number}`
     );
 
     fetchMenu();

@@ -65,11 +65,18 @@ exports.createOrder = async (req, res) => {
         throw new Error(`${menuItem.name} is currently unavailable.`);
       }
 
-      if (menuItem.stock < item.quantity) {
-        throw new Error(
-          `${menuItem.name} has only ${menuItem.stock} item(s) left in stock.`
-        );
-      }
+     if (menuItem.stock < item.quantity) {
+
+  await client.query("ROLLBACK");
+
+  return res.status(400).json({
+    success: false,
+    message: "Insufficient stock.",
+    itemName: menuItem.name,
+    availableStock: menuItem.stock
+  });
+
+}
 
       totalAmount += Number(menuItem.price) * item.quantity;
 
