@@ -46,3 +46,26 @@ model HandoverRequest {
   requester   User     @relation("UserRequests", fields: [requesterId], references: [id], onDelete: Cascade)
   status      String   @default("Pending") // Pending, Accepted, Completed
 }
+
+model CampusLocation {
+  id    String          @id @default(uuid())
+  name  String          @unique
+  posts LostFoundPost[]
+}
+
+model LostFoundPost {
+  id           String         @id @default(uuid())
+  category     String         // 'Lost' or 'Found'
+  itemName     String
+  description  String
+  locationId   String
+  location     CampusLocation @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  contactEmail String
+  contactPhone String?
+  contactInfo  String?
+  image        String?        // Base64 data string or external URL
+  status       String         @default("Available") // 'Available', 'Claim pending', 'Claimed', 'Ready for pickup'
+  postedAt     DateTime       @default(now())
+  expiresAt    DateTime
+  createdAt    DateTime       @default(now())
+}

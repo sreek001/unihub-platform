@@ -78,15 +78,18 @@ export default function PortalHomePage() {
           </div>
 
           {/* Lost & Found Card */}
-          <div className="p-4 bg-slate-900/60 border border-slate-800/80 rounded-2xl flex items-center gap-4 opacity-75 hover:opacity-90 transition-opacity">
-            <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center border border-rose-500/20">
+          <Link
+            href="/academics/lostfound"
+            className="p-4 bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 rounded-2xl flex items-center gap-4 transition-all duration-300 hover:shadow-lg hover:shadow-rose-500/5 group cursor-pointer"
+          >
+            <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center border border-rose-500/20 group-hover:bg-rose-600 group-hover:text-white transition-all duration-300">
               <Search className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-300">Lost & Found</h3>
+              <h3 className="text-sm font-bold text-slate-300 group-hover:text-white transition-colors duration-300">Lost & Found</h3>
               <p className="text-slate-500 text-[11px] mt-0.5">Post recovered items or locate missing belongings.</p>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
     </div>

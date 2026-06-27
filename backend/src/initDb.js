@@ -8,12 +8,7 @@ const { query } = require('./db');
  */
 async function initDatabase() {
   try {
-    console.log('Restructuring Academics database using academics.sql...');
-    const academicsSql = fs.readFileSync(
-      path.join(__dirname, 'modules/academics/academics.sql'),
-      'utf8'
-    );
-    await query(academicsSql);
+
 
     console.log('Restructuring Lost & Found database using lostFound.sql...');
     const lostFoundSql = fs.readFileSync(

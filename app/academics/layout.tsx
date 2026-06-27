@@ -10,7 +10,8 @@ import {
   FolderHeart, 
   Bell, 
   ChevronDown,
-  Settings
+  Settings,
+  Archive
 } from 'lucide-react';
 import { UserProvider, useActiveUser } from './UserContext';
 
@@ -22,6 +23,7 @@ function AcademicsDashboardLayout({ children }: { children: React.ReactNode }) {
     { name: 'Marketplace', href: '/academics/marketplace', icon: ShoppingBag },
     { name: 'Digital Vault', href: '/academics/vault', icon: Database },
     { name: 'My Inventory', href: '/academics/inventory', icon: FolderHeart },
+    { name: 'Lost & Found', href: '/academics/lostfound', icon: Archive },
     { name: 'Settings', href: '/academics/settings', icon: Settings },
   ];
 

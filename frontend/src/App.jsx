@@ -1,10 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
-import { GraduationCap, Inbox, BookOpen, ArrowRight, Utensils } from 'lucide-react';
+import { GraduationCap, Inbox, ArrowRight, Utensils } from 'lucide-react';
 import './App.css';
 
-// ─── EXISTING IMPORTS ───
-import AcademicsResources from './pages/Academics/AcademicsResources.jsx';
 import LostFound from './pages/LostFound/LostFound.jsx';
 
 // ─── NEW CANTEEN IMPORTS ───
@@ -25,9 +23,10 @@ function AppLayout() {
           </Link>
           
           <div className="flex items-center gap-2 sm:gap-6">
-            <Link to="/academics" className="text-sm font-semibold text-zinc-400 hover:text-white transition-colors flex items-center gap-2 py-2 px-3 rounded-xl hover:bg-white/5">
-              <BookOpen className="h-4 w-4 text-indigo-400" /> Academics
-            </Link>
+            {/* Link to new Next.js Academics app */}
+            <a href="http://localhost:3000/academics/marketplace" className="text-sm font-semibold text-zinc-400 hover:text-white transition-colors flex items-center gap-2 py-2 px-3 rounded-xl hover:bg-white/5">
+              <span className="h-4 w-4 text-indigo-400">📚</span> Academics
+            </a>
             <Link to="/lost-found" className="text-sm font-semibold text-zinc-400 hover:text-white transition-colors flex items-center gap-2 py-2 px-3 rounded-xl hover:bg-white/5">
               <Inbox className="h-4 w-4 text-emerald-400" /> Lost & Found
             </Link>
@@ -66,14 +65,14 @@ function Home() {
 
       <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto pt-4">
         
-        {/* Academics Hub Card */}
-        <Link 
-          to="/academics" 
+        {/* Academics Hub Card (Link to Next.js app) */}
+        <a 
+          href="http://localhost:3000/academics/marketplace" 
           className="group bg-white/5 backdrop-blur-sm rounded-[2rem] p-8 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 transition-all duration-500 shadow-2xl hover:shadow-[0_0_30px_rgba(99,102,241,0.15)] hover:-translate-y-2 text-left flex flex-col justify-between h-72 cursor-pointer decoration-none"
         >
           <div className="space-y-5">
             <div className="h-14 w-14 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition duration-500 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
-              <BookOpen className="h-7 w-7" />
+              <span className="text-2xl">📚</span>
             </div>
             <h2 className="text-2xl font-bold text-white tracking-tight">Academics Hub</h2>
             <p className="text-zinc-400 text-sm leading-relaxed">
@@ -83,7 +82,7 @@ function Home() {
           <div className="inline-flex items-center gap-2 text-sm font-bold text-indigo-400 group-hover:text-indigo-300 transition-colors">
             Open Academics Hub <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1.5" />
           </div>
-        </Link>
+        </a>
 
         {/* Canteen Hub Card */}
         <Link 
@@ -138,7 +137,6 @@ export default function App() {
         {/* CONSUMER MODE (WITH NAVBAR) */}
         <Route element={<AppLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/academics" element={<AcademicsResources />} />
           <Route path="/lost-found" element={<LostFound />} />
           <Route path="/canteen" element={<CanteenDashboard />} />
         </Route>
