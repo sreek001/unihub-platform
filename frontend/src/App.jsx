@@ -1,13 +1,18 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
-import { GraduationCap, Inbox, BookOpen, ArrowRight, Utensils } from 'lucide-react';
+import { GraduationCap, Inbox, ArrowRight, Utensils, BookOpen } from 'lucide-react';
 import './App.css';
 
-// ─── EXISTING IMPORTS ───
-import AcademicsResources from './pages/Academics/AcademicsResources.jsx';
-import LostFound from './pages/LostFound/LostFound.jsx';
+// --- Imports for Academics Module ---
+import { UserProvider } from './pages/Academics/UserContext.jsx';
+import AcademicsLayout from './pages/Academics/AcademicsLayout.jsx';
+import Marketplace from './pages/Academics/Marketplace.jsx';
+import Vault from './pages/Academics/Vault.jsx';
+import Inventory from './pages/Academics/Inventory.jsx';
+import Settings from './pages/Academics/Settings.jsx';
 
-// ─── NEW CANTEEN IMPORTS ───
+// --- Imports for Other Modules ---
+import LostFound from './pages/LostFound/LostFound.jsx';
 import CanteenDashboard from './pages/Canteen/dashboard.jsx';
 import AdminDashboard from './pages/Canteen/AdminDashboard.jsx';
 
@@ -25,7 +30,7 @@ function AppLayout() {
           </Link>
           
           <div className="flex items-center gap-2 sm:gap-6">
-            <Link to="/academics" className="text-sm font-semibold text-zinc-400 hover:text-white transition-colors flex items-center gap-2 py-2 px-3 rounded-xl hover:bg-white/5">
+            <Link to="/academics/marketplace" className="text-sm font-semibold text-zinc-400 hover:text-white transition-colors flex items-center gap-2 py-2 px-3 rounded-xl hover:bg-white/5">
               <BookOpen className="h-4 w-4 text-indigo-400" /> Academics
             </Link>
             <Link to="/lost-found" className="text-sm font-semibold text-zinc-400 hover:text-white transition-colors flex items-center gap-2 py-2 px-3 rounded-xl hover:bg-white/5">
@@ -56,11 +61,11 @@ function Home() {
   return (
     <div className="max-w-6xl mx-auto py-16 px-8 sm:px-12 space-y-16 text-center">
       <div className="space-y-6">
-        <h1 className="text-5xl font-black text-white tracking-tight sm:text-6xl drop-shadow-lg">
+        <h1 className="text-5xl font-black text-white tracking-tight sm:text-6xl drop-shadow-lg font-sans">
           Welcome to UniHub
         </h1>
         <p className="text-zinc-400 text-lg max-w-xl mx-auto leading-relaxed font-medium">
-          Select a category below to access resources, order food, or report lost items on campus.
+          Select a category below to access study resources, order food, or report lost items on campus.
         </p>
       </div>
 
@@ -68,8 +73,9 @@ function Home() {
         
         {/* Academics Hub Card */}
         <Link 
-          to="/academics" 
-          className="group bg-white/5 backdrop-blur-sm rounded-[2rem] p-8 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 transition-all duration-500 shadow-2xl hover:shadow-[0_0_30px_rgba(99,102,241,0.15)] hover:-translate-y-2 text-left flex flex-col justify-between h-72 cursor-pointer decoration-none"
+          to="/academics/marketplace" 
+          className="group bg-white/5 backdrop-blur-sm rounded-[2rem] p-8 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 transition-all duration-500 shadow-2xl hover:shadow-[0_0_30px_rgba(99,102,241,0.15)] hover:-translate-y-2 text-left flex flex-col justify-between h-72 cursor-pointer decoration-none font-sans"
+          style={{ textDecoration: 'none' }}
         >
           <div className="space-y-5">
             <div className="h-14 w-14 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition duration-500 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
@@ -88,7 +94,8 @@ function Home() {
         {/* Canteen Hub Card */}
         <Link 
           to="/canteen" 
-          className="group bg-white/5 backdrop-blur-sm rounded-[2rem] p-8 border border-white/10 hover:border-amber-500/50 hover:bg-white/10 transition-all duration-500 shadow-2xl hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] hover:-translate-y-2 text-left flex flex-col justify-between h-72 cursor-pointer decoration-none"
+          className="group bg-white/5 backdrop-blur-sm rounded-[2rem] p-8 border border-white/10 hover:border-amber-500/50 hover:bg-white/10 transition-all duration-500 shadow-2xl hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] hover:-translate-y-2 text-left flex flex-col justify-between h-72 cursor-pointer decoration-none font-sans"
+          style={{ textDecoration: 'none' }}
         >
           <div className="space-y-5">
             <div className="h-14 w-14 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-110 transition duration-500 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
@@ -107,7 +114,8 @@ function Home() {
         {/* Lost & Found Card */}
         <Link 
           to="/lost-found" 
-          className="group bg-white/5 backdrop-blur-sm rounded-[2rem] p-8 border border-white/10 hover:border-emerald-500/50 hover:bg-white/10 transition-all duration-500 shadow-2xl hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] hover:-translate-y-2 text-left flex flex-col justify-between h-72 cursor-pointer decoration-none"
+          className="group bg-white/5 backdrop-blur-sm rounded-[2rem] p-8 border border-white/10 hover:border-emerald-500/50 hover:bg-white/10 transition-all duration-500 shadow-2xl hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] hover:-translate-y-2 text-left flex flex-col justify-between h-72 cursor-pointer decoration-none font-sans"
+          style={{ textDecoration: 'none' }}
         >
           <div className="space-y-5">
             <div className="h-14 w-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition duration-500 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
@@ -130,19 +138,28 @@ function Home() {
 // ─── MAIN APP ROUTER ───
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* KIOSK MODE (FULL SCREEN) */}
-        <Route path="/canteen/admin" element={<AdminDashboard />} />
+    <UserProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* KIOSK MODE (FULL SCREEN) */}
+          <Route path="/canteen/admin" element={<AdminDashboard />} />
 
-        {/* CONSUMER MODE (WITH NAVBAR) */}
-        <Route element={<AppLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/academics" element={<AcademicsResources />} />
-          <Route path="/lost-found" element={<LostFound />} />
-          <Route path="/canteen" element={<CanteenDashboard />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          {/* CONSUMER MODE (WITH NAVBAR) */}
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/lost-found" element={<LostFound />} />
+            <Route path="/canteen" element={<CanteenDashboard />} />
+            
+            {/* NESTED ACADEMICS ROUTES */}
+            <Route path="/academics" element={<AcademicsLayout />}>
+              <Route path="marketplace" element={<Marketplace />} />
+              <Route path="vault" element={<Vault />} />
+              <Route path="inventory" element={<Inventory />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </UserProvider>
   );
 }
