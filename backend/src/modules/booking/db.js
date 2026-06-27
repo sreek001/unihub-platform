@@ -1,20 +1,13 @@
 const { Pool } = require('pg');
 
-/**
- * Self-contained PostgreSQL connection pool for the Booking module.
- * Reads configuration from environment variables.
- */
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: "postgresql://postgres.uiauztyhabdmvcqxbfby:UdUPb8yUOAFzvebtM5gZJQ_yBNZRFJ7@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true",
   ssl: {
     rejectUnauthorized: false
   },
-  connectionTimeoutMillis: 5000
+  connectionTimeoutMillis: 10000
 });
 
-// Safe event-driven error tracking that NEVER freezes the Node server
-pool.on('error', (err) => {
-  console.error('❌ Unexpected database pool error:', err.message);
-});
+pool.Promise = global.Promise;
 
 module.exports = pool;

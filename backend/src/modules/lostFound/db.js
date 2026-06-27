@@ -1,22 +1,13 @@
 const { Pool } = require('pg');
 
-/**
- * Self-contained PostgreSQL connection pool for the LostFound module.
- * Reads configuration from environment variables.
- */
 const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT, 10) || 5432,
-  database: process.env.DB_NAME || 'unihub',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres',
-  max: 10,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
+  connectionString: "postgresql://postgres.uiauztyhabdmvcqxbfby:UdUPb8yUOAFzvebtM5gZJQ_yBNZRFJ7@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true",
+  ssl: {
+    rejectUnauthorized: false
+  },
+  connectionTimeoutMillis: 10000
 });
 
-pool.on('error', (err) => {
-  console.error('[LostFound DB] Unexpected pool error:', err.message);
-});
+pool.Promise = global.Promise;
 
 module.exports = pool;
