@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Utensils, Clock, Flame, Sparkles, ChefHat } from 'lucide-react';
 import './CanteenDashboard.css'; 
@@ -8,19 +8,56 @@ import MenuGrid from './components/MenuGrid';
 import LiveTracker from './components/LiveTracker';
 import CartSidebar from './components/CartSidebar';
 
-// ─── MOCK DATA ───
-const MENU_ITEMS = [
-  { id: 'm1', name: 'Chicken Biryani', price: 120, prepTime: 15, stock: true, icon: Flame, color: '#ef4444' },
-  { id: 'm2', name: 'Veg Meals', price: 70, prepTime: 10, stock: false, icon: Utensils, color: '#22c55e' },
-  { id: 's1', name: 'Hot Samosa', price: 15, prepTime: 2, stock: true, icon: Flame, color: '#f59e0b' },
-  { id: 'd1', name: 'Cold Coffee', price: 40, prepTime: 5, stock: true, icon: Sparkles, color: '#3b82f6' },
-];
+
+
 
 export default function CanteenDashboard() {
   const [activeTab, setActiveTab] = useState('menu'); 
   const [cart, setCart] = useState([]);
   const [activeOrder, setActiveOrder] = useState(null);
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
 
+const fetchMenu = async () => {
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:4000/api/canteen/menu"
+    );
+
+    const data = await response.json();
+
+    const formattedMenu = data.menu.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: Number(item.price),
+      prepTime: item.prep_time,
+      stock: item.stock > 0,
+      stockCount: item.stock,
+      icon: Utensils,
+      color: "#6366f1"
+    }));
+
+    setMenuItems(formattedMenu);
+
+  } catch (error) {
+
+    console.error("Error fetching menu:", error);
+
+  } finally {
+
+    setLoading(false);
+
+  }
+
+};
+useEffect(() => {
+
+  fetchMenu();
+
+}, []);
   // ─── STATE LOGIC ───
   const updateCart = (item, delta) => {
     if (!item.stock) return;
@@ -38,21 +75,71 @@ export default function CanteenDashboard() {
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  const placeOrder = () => {
-    if (cart.length === 0) return;
+const placeOrder = async () => {
+
+  if (cart.length === 0) return;
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:4000/api/canteen/order",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+
+          userId: 1,
+
+          items: cart.map(item => ({
+            menuItemId: item.id,
+            quantity: item.quantity
+          }))
+
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    console.log(data);
+
+    if (!data.success) {
+      alert("Failed to place order.");
+      return;
+    }
+
     const maxPrep = Math.max(...cart.map(i => i.prepTime));
-    
+
     setActiveOrder({
-      id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+      id: data.order.token_number,
       items: [...cart],
       total: cartTotal,
-      status: 'preparing', 
+      status: data.order.status,
       eta: maxPrep + 5,
       queue: 3
     });
+
     setCart([]);
-    setActiveTab('tracker');
-  };
+
+    setActiveTab("tracker");
+
+    alert(
+      `✅ Order Placed!\n\nToken Number: ${data.order.token_number}`
+    );
+
+    fetchMenu();
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert("Unable to connect to backend.");
+
+  }
+
+};
 
   const tabs = [
     { id: 'menu', label: 'Live Menu', icon: Utensils },
@@ -112,7 +199,12 @@ export default function CanteenDashboard() {
           {/* DYNAMIC CONTENT SWITCHING */}
           <AnimatePresence mode="wait">
             {activeTab === 'menu' ? (
-              <MenuGrid key="menu" menuItems={MENU_ITEMS} cart={cart} updateCart={updateCart} />
+              <MenuGrid
+  key="menu"
+  menuItems={menuItems}
+  cart={cart}
+  updateCart={updateCart}
+/>
             ) : (
               <LiveTracker key="tracker" activeOrder={activeOrder} />
             )}
