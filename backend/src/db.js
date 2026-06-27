@@ -1,12 +1,13 @@
-const { Pool } = require('pg')
-
-const connectionString = process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/appdb'
+const { Pool } = require('pg');
 
 const pool = new Pool({
-  connectionString,
-})
+  connectionString: "postgresql://postgres.uiauztyhabdmvcqxbfby:UdUPb8yUOAFzvebtM5gZJQ_yBNZRFJ7@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true",
+  ssl: {
+    rejectUnauthorized: false
+  },
+  connectionTimeoutMillis: 10000
+});
 
-module.exports = {
-  query: (text, params) => pool.query(text, params),
-  pool,
-}
+pool.Promise = global.Promise;
+
+module.exports = pool;
