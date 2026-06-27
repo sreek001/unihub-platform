@@ -9,6 +9,12 @@ const { query } = require('./db');
 async function initDatabase() {
   try {
 
+    console.log('Restructuring Booking database using booking.sql...');
+    const bookingSql = fs.readFileSync(
+      path.join(__dirname, 'modules/booking/booking.sql'),
+      'utf8'
+    );
+    await query(bookingSql);
 
     console.log('Restructuring Lost & Found database using lostFound.sql...');
     const lostFoundSql = fs.readFileSync(
