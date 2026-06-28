@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 
 const bookingRoutes = require('./src/modules/booking/bookingRoutes');
+const printRoutes = require('./src/modules/print/print.routes');
 const canteenRoutes = require('./src/modules/canteen/canteenRoutes');
 const lostFoundRoutes = require('./src/modules/lostFound/lostFoundRoutes');
 const academicsRoutes = require('./src/modules/academics/academicsRoutes');
@@ -27,8 +28,11 @@ app.get('/api', (req, res) => {
   res.json({ status: 'ok', message: 'Backend ready for Booking, Canteen & Lost Found' });
 });
 
+
+
 // Mount Modules
 app.use('/api/booking', bookingRoutes);
+app.use('/api/print', printRoutes);
 app.use('/api/canteen', canteenRoutes);
 app.use('/api/lostfound', lostFoundRoutes);
 app.use('/api/academics', academicsRoutes);

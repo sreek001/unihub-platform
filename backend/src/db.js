@@ -8,6 +8,10 @@ const pool = new Pool({
   connectionTimeoutMillis: 10000
 });
 
-pool.Promise = global.Promise;
+// Create a query function that uses the pool
+const query = (text, params) => pool.query(text, params);
 
-module.exports = pool;
+module.exports = {
+  query, // Now you are exporting the function 'query'
+  pool
+};
