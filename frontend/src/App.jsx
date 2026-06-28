@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
-import { GraduationCap, Inbox, ArrowRight, Utensils, CalendarDays } from 'lucide-react';
+import { GraduationCap, Inbox, ArrowRight, Utensils, CalendarDays, Printer } from 'lucide-react';
 import './App.css';
 
 import LostFound from './pages/LostFound/LostFound.jsx';
@@ -11,7 +11,7 @@ import AdminDashboard from './pages/Canteen/AdminDashboard.jsx';
 
 // ─── BOOKING IMPORT ───
 import BookingDashboard from './pages/Booking/BookingDashboard.jsx';
-
+import PrintDashboard from './pages/Print/PrintDashboard.jsx';
 import { UserProvider } from './pages/academics/UserContext.jsx';
 import AcademicsLayout from './pages/academics/AcademicsLayout.jsx';
 import Marketplace from './pages/academics/Marketplace.jsx';
@@ -115,6 +115,30 @@ function Home() {
             Open Venue Booking <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1.5" />
           </div>
         </Link>
+        {/* Print Hub Card */}
+<Link
+  to="/print"
+  className="group bg-white/5 backdrop-blur-sm rounded-[2rem] p-8 border border-white/10 hover:border-cyan-500/50 hover:bg-white/10 transition-all duration-500 shadow-2xl hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] hover:-translate-y-2 text-left flex flex-col justify-between h-72 cursor-pointer decoration-none"
+>
+  <div className="space-y-5">
+    <div className="h-14 w-14 rounded-2xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition duration-500 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+      <Printer className="h-7 w-7" />
+    </div>
+
+    <h2 className="text-2xl font-bold text-white tracking-tight">
+      Print Hub
+    </h2>
+
+    <p className="text-zinc-400 text-sm leading-relaxed">
+      Upload documents, choose print settings, pay online, and collect your prints without long queues
+    </p>
+  </div>
+
+  <div className="inline-flex items-center gap-2 text-sm font-bold text-cyan-400 group-hover:text-cyan-300 transition-colors">
+    Open Print Hub
+    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1.5" />
+  </div>
+</Link>
 
         {/* Canteen Hub Card */}
         <Link 
@@ -171,6 +195,7 @@ export default function App() {
           <Route element={<AppLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/bookings" element={<BookingDashboard />} />
+            <Route path="/print" element={<PrintDashboard />} />
             <Route path="/lost-found" element={<LostFound />} />
             <Route path="/canteen" element={<CanteenDashboard />} />
 
