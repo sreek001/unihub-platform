@@ -1,31 +1,36 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-
-const bookingRoutes = require('./src/modules/booking/bookingRoutes');
-const printRoutes = require('./src/modules/print/print.routes');
-const canteenRoutes = require('./src/modules/canteen/canteenRoutes');
-const lostFoundRoutes = require('./src/modules/lostFound/lostFoundRoutes');
-const academicsRoutes = require('./src/modules/academics/academicsRoutes');
-const { initDatabase } = require('./src/initDb');
-const { scheduleLostFoundCleanup, cleanupLostFoundPosts } = require('./src/cron/cleanupLostFound');
-const app = express();
-const PORT = process.env.PORT || 4000;
-
 const path = require('path');
 
-// Middleware
+// 1. Initialize app FIRST
+const app = express();
+
+// 2. Define Middleware
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// 3. Import Routes
+const printRoutes = require('./src/modules/print/print.routes');
+const bookingRoutes = require('./src/modules/booking/booking.routes'); // Make sure this path is correct
+const canteenRoutes = require('./src/modules/canteen/canteenRoutes');
+const lostFoundRoutes = require('./src/modules/lostFound/lostFoundRoutes');
+const academicsRoutes = require('./src/modules/academics/academicsRoutes');
+
+const { initDatabase } = require('./src/initDb');
+const { scheduleLostFoundCleanup, cleanupLostFoundPosts } = require('./src/cron/cleanupLostFound');
+const PORT = process.env.PORT || 4000;
+
 
 // Base Health Check Route
 app.get('/', (req, res) => {
   res.json({ message: "UniHub Backend API is running smoothly!" });
 });
 
+// In index.js
 app.get('/api', (req, res) => {
-  res.json({ status: 'ok', message: 'Backend ready for Booking, Canteen & Lost Found' });
+  res.json({ status: 'ok', message: 'Backend ready for Booking, Canteen, Lost Found & Print' });
 });
 
 
