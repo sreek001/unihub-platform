@@ -58,7 +58,7 @@ app.use((err, req, res, next) => {
     await cleanupLostFoundPosts();
     scheduleLostFoundCleanup();
   } catch (error) {
-    console.warn('\n⚠️ Postgres database initialization failed!');
+    console.warn('\n Postgres database initialization failed!');
     console.warn('Backend will run in in-memory simulation mode.');
     console.warn('Error details:', error.message || error);
   }
