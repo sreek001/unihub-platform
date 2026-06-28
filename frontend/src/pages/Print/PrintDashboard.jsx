@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import "./PrintDashboard.css";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
 const API = `${API_BASE}/api/print`;
 
 // Client-side PDF page counter (scans PDF structures for page objects)
