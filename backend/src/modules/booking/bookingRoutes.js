@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const printRoutes = require('./print/print.routes');
 const { verifyToken, requireRole } = require('./authMiddleware');
 const {
   getVenues,
@@ -21,4 +21,12 @@ router.get('/my-bookings',           verifyToken, getMyBookings);
 router.get('/pending',               verifyToken, requireRole('FACULTY', 'ADMIN'), getPendingBookings);
 router.patch('/:bookingId',          verifyToken, requireRole('FACULTY', 'ADMIN'), updateBookingStatus);
 
+// —— Restricted routes (FACULTY / ADMIN only) ——
+router.get('/pending',     verifyToken, requireRole('FACULTY', 'ADMIN'), getPendingBookings);
+router.patch('/:bookingId', verifyToken, requireRole('FACULTY', 'ADMIN'), updateBookingStatus);
+
+// 🖨️ Mount your Print Module Router
+router.use('/print', printRoutes);
+
+// 📤 Export EVERYTHING together at the very end
 module.exports = router;
