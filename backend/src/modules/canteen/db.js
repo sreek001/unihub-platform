@@ -1,8 +1,22 @@
 const { Pool } = require('pg');
+
 const pool = new Pool({
-  connectionString: "postgresql://postgres:siOKbrpSuT25Qnec@db.rxkkzmugyrzyrmgcfiph.supabase.co:5432/postgres",
-  ssl: { rejectUnauthorized: false },
-  connectionTimeoutMillis: 10000
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  database: process.env.DB_DATABASE,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
-pool.Promise = global.Promise;
+
+pool.connect()
+  .then(() => {
+    console.log('✅ Connected to Supabase PostgreSQL');
+  })
+  .catch(err => {
+    console.error('❌ Database connection failed:', err.message);
+  });
+
 module.exports = pool;
