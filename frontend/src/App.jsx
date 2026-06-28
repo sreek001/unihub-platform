@@ -1,11 +1,7 @@
 import React from 'react';
-<<<<<<< HEAD
-import PrintDashboard from './pages/Print/PrintDashboard';
-=======
 import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
 import { GraduationCap, Inbox, ArrowRight, Utensils, CalendarDays } from 'lucide-react';
 import './App.css';
->>>>>>> 18051670cacb6ee7f6cae0d57141a35bb0935b99
 
 import LostFound from './pages/LostFound/LostFound.jsx';
 
@@ -25,10 +21,6 @@ import Settings from './pages/academics/Settings.jsx';
 // ─── GLOBAL LAYOUT (PREMIUM DARK THEME) ───
 function AppLayout() {
   return (
-<<<<<<< HEAD
-    <div className="min-h-screen bg-[#06060e]">
-      <PrintDashboard />
-=======
     <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans selection:bg-indigo-500/30">
       <nav className="sticky top-0 z-50 bg-[#09090b]/80 backdrop-blur-2xl border-b border-white/5 px-6 py-4 shadow-2xl">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -66,7 +58,6 @@ function AppLayout() {
           <p>© {new Date().getFullYear()} UniHub. Built for premium campus experiences.</p>
         </div>
       </footer>
->>>>>>> 18051670cacb6ee7f6cae0d57141a35bb0935b99
     </div>
   );
 }
