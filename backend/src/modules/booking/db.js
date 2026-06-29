@@ -8,6 +8,10 @@ const pool = new Pool({
   connectionTimeoutMillis: 10000
 });
 
+pool.on('error', (err) => {
+  console.error('[Booking DB] Unexpected pg client pool error:', err.message);
+});
+
 pool.Promise = global.Promise;
 
 module.exports = pool;
