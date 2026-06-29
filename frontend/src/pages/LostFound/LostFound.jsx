@@ -344,6 +344,7 @@ function LostFound() {
           margin: 0 auto;
           padding: 32px 16px;
           font-family: system-ui, -apple-system, sans-serif;
+          color: #f1f5f9;
         }
 
         .bulletin-header {
@@ -353,7 +354,7 @@ function LostFound() {
           align-items: center;
           gap: 20px;
           padding-bottom: 24px;
-          border-bottom: 1px solid #e2e8f0;
+          border-bottom: 1px solid #1e293b;
           margin-bottom: 32px;
         }
 
@@ -366,13 +367,14 @@ function LostFound() {
         .bulletin-title {
           font-size: 2.25rem;
           font-weight: 800;
-          color: #0f172a;
+          color: #ffffff;
           margin: 0;
+          tracking-tight: -0.025em;
         }
 
         .bulletin-subtitle {
           font-size: 0.875rem;
-          color: #64748b;
+          color: #94a3b8;
           margin: 0;
         }
 
@@ -382,25 +384,26 @@ function LostFound() {
           font-weight: 700;
           font-size: 0.875rem;
           padding: 12px 20px;
-          border-radius: 8px;
+          border-radius: 12px;
           border: none;
           cursor: pointer;
-          transition: background-color 0.2s;
+          transition: background-color 0.2s, box-shadow 0.2s;
           white-space: nowrap;
           display: inline-flex;
           align-items: center;
           justify-content: center;
+          box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
         }
         .report-button:hover {
-          background-color: #4338ca;
+          background-color: #6366f1;
         }
 
         .filter-container {
-          background-color: white;
-          border: 1px solid #e2e8f0;
-          border-radius: 8px;
+          background-color: #0f172a;
+          border: 1px solid #1e293b;
+          border-radius: 16px;
           padding: 16px;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
           display: flex;
           flex-direction: row;
           align-items: center;
@@ -416,32 +419,38 @@ function LostFound() {
         .search-input {
           width: 100%;
           padding: 10px 16px 10px 40px;
-          border: 1px solid #e2e8f0;
-          border-radius: 8px;
+          border: 1px solid #1e293b;
+          border-radius: 12px;
           font-size: 0.875rem;
           outline: none;
-          background-color: #f8fafc;
+          background-color: #09090b;
+          color: #f8fafc;
           box-sizing: border-box;
+          transition: border-color 0.2s;
         }
         .search-input:focus {
-          border-color: #4f46e5;
-          background-color: white;
+          border-color: #6366f1;
         }
 
         .filter-select {
           padding: 10px 14px;
-          border: 1px solid #e2e8f0;
-          border-radius: 8px;
+          border: 1px solid #1e293b;
+          border-radius: 12px;
           font-size: 0.75rem;
           font-weight: 600;
-          background-color: white;
+          background-color: #09090b;
+          color: #94a3b8;
           cursor: pointer;
           outline: none;
           height: 38px;
           box-sizing: border-box;
+          transition: border-color 0.2s;
         }
         .filter-select:hover {
-          background-color: #f8fafc;
+          border-color: #334155;
+        }
+        .filter-select:focus {
+          border-color: #6366f1;
         }
 
         .cards-list {
@@ -451,21 +460,21 @@ function LostFound() {
         }
 
         .item-card {
-          background-color: white;
-          border-radius: 8px;
-          border: 1px solid #e2e8f0;
+          background-color: #0f172a;
+          border-radius: 16px;
+          border: 1px solid #1e293b;
           padding: 20px;
-          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
           margin-bottom: 1.5rem;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          transition: transform 0.2s, box-shadow 0.2s;
+          transition: transform 0.2s, border-color 0.2s;
           box-sizing: border-box;
         }
         .item-card:hover {
           transform: translateY(-2px);
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+          border-color: #334155;
         }
 
         .card-header {
@@ -478,7 +487,7 @@ function LostFound() {
         .item-title {
           font-size: 1.125rem;
           font-weight: 700;
-          color: #1e293b;
+          color: #ffffff;
           margin: 0;
           line-height: 1.4;
         }
@@ -494,7 +503,7 @@ function LostFound() {
           white-space: nowrap;
         }
         .badge-found {
-          background-color: #16a34a;
+          background-color: #10b981;
         }
         .badge-lost {
           background-color: #ef4444;
@@ -502,7 +511,7 @@ function LostFound() {
 
         .item-description {
           margin-top: 8px;
-          color: #64748b;
+          color: #94a3b8;
           font-size: 0.875rem;
           line-height: 1.6;
         }
@@ -518,12 +527,12 @@ function LostFound() {
 
         .metadata-icon {
           align-self: center;
-          color: #94a3b8;
+          color: #475569;
         }
 
         .card-footer {
           margin-top: 20px;
-          border-top: 1px solid #f1f5f9;
+          border-top: 1px solid #1e293b;
           padding-top: 16px;
           display: flex;
           flex-direction: column;
@@ -539,7 +548,7 @@ function LostFound() {
 
         .status-label {
           font-weight: 700;
-          color: #94a3b8;
+          color: #64748b;
         }
 
         .status-badge {
@@ -557,18 +566,19 @@ function LostFound() {
 
         .action-button-outline {
           padding: 8px 14px;
-          border: 1px solid #e2e8f0;
+          border: 1px solid #334155;
           border-radius: 8px;
           font-size: 0.75rem;
           font-weight: 700;
-          color: #475569;
-          background-color: white;
+          color: #cbd5e1;
+          background-color: #1e293b;
           text-decoration: none;
           text-align: center;
-          transition: background-color 0.2s;
+          transition: background-color 0.2s, border-color 0.2s;
         }
         .action-button-outline:hover {
-          background-color: #f8fafc;
+          background-color: #334155;
+          border-color: #475569;
         }
 
         .action-button-primary {
@@ -584,7 +594,7 @@ function LostFound() {
           transition: background-color 0.2s;
         }
         .action-button-primary:hover {
-          background-color: #4338ca;
+          background-color: #6366f1;
         }
       `}</style>
 
@@ -761,16 +771,16 @@ function LostFound() {
       </div>
 
       {/* Info Banner at Bottom */}
-      <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="rounded-[2rem] border border-slate-800 bg-slate-900 p-8 shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="space-y-1 text-center md:text-left">
-          <h3 className="font-bold text-slate-800 text-lg">Reported an item and want to check details?</h3>
-          <p className="text-slate-500 text-sm leading-relaxed">
+          <h3 className="font-bold text-white text-lg">Reported an item and want to check details?</h3>
+          <p className="text-slate-400 text-sm leading-relaxed">
             All submitted items are tracked on the server database or client cache.
           </p>
         </div>
         <button 
           onClick={() => setIsReportModalOpen(true)}
-          className="inline-flex items-center gap-2 rounded-xl bg-slate-800 hover:bg-slate-700 px-6 py-3.5 text-sm font-bold text-white transition shadow"
+          className="inline-flex items-center gap-2 rounded-xl bg-slate-850 hover:bg-slate-800 border border-slate-750 px-6 py-3.5 text-sm font-bold text-white transition shadow cursor-pointer"
         >
           File new report <ArrowRight className="h-4 w-4" />
         </button>
@@ -778,18 +788,18 @@ function LostFound() {
 
       {/* --- REPORT ITEM MODAL --- */}
       {isReportModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-[2rem] border border-slate-200 w-full max-w-lg p-8 shadow-2xl relative">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="bg-slate-900 rounded-[2rem] border border-slate-800 w-full max-w-lg p-8 shadow-2xl relative text-slate-100">
             <button 
               onClick={handleCloseReportModal}
-              className="absolute top-6 right-6 p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition"
+              className="absolute top-6 right-6 p-1.5 text-slate-500 hover:text-slate-300 hover:bg-slate-800 rounded-xl transition cursor-pointer"
             >
               <X className="h-5 w-5" />
             </button>
             
             <div className="space-y-2 mb-6">
-              <h2 className="text-2xl font-bold text-slate-800">Report Lost/Found Item</h2>
-              <p className="text-xs text-slate-500">Provide details to post this item on the campus bulletin board.</p>
+              <h2 className="text-2xl font-bold text-white">Report Lost/Found Item</h2>
+              <p className="text-xs text-slate-400">Provide details to post this item on the campus bulletin board.</p>
             </div>
 
             <form onSubmit={handleReportSubmit} className="space-y-4">
@@ -800,7 +810,7 @@ function LostFound() {
                   placeholder="e.g., Calculus Textbook, Leather Keyholder"
                   value={itemName}
                   onChange={(e) => setItemName(e.target.value)}
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none focus:border-indigo-500/50"
                   required
                 />
               </div>
@@ -811,7 +821,7 @@ function LostFound() {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none bg-slate-50 cursor-pointer"
+                    className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none cursor-pointer focus:border-indigo-500/50"
                   >
                     <option value="Lost">Lost</option>
                     <option value="Found">Found</option>
@@ -822,7 +832,7 @@ function LostFound() {
                   <select
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none bg-slate-50 cursor-pointer"
+                    className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none cursor-pointer focus:border-indigo-500/50"
                   >
                     {locations.map(loc => (
                       <option key={loc} value={loc}>{loc}</option>
@@ -838,7 +848,7 @@ function LostFound() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows="3"
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none focus:border-indigo-500/50 resize-none"
                   required
                 />
               </div>
@@ -851,7 +861,7 @@ function LostFound() {
                     placeholder="e.g., name@campus.edu"
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-slate-50/50 focus:bg-white"
+                    className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none focus:border-indigo-500/50"
                     required
                   />
                 </div>
@@ -862,7 +872,7 @@ function LostFound() {
                     placeholder="e.g., +1 800 555"
                     value={contactPhone}
                     onChange={(e) => setContactPhone(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-slate-50/50 focus:bg-white"
+                    className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none focus:border-indigo-500/50"
                   />
                 </div>
               </div>
@@ -880,17 +890,17 @@ function LostFound() {
                   />
                   <label 
                     htmlFor="image-uploader" 
-                    className="px-4 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs font-bold rounded-xl transition cursor-pointer bg-slate-50/50"
+                    className="px-4 py-2.5 border border-slate-800 hover:bg-slate-800 text-slate-300 text-xs font-bold rounded-xl transition cursor-pointer bg-slate-950"
                   >
                     Choose Picture File
                   </label>
                   {image ? (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-indigo-600 font-semibold truncate max-w-[200px]">Picture Selected!</span>
-                      <button type="button" onClick={() => setImage(null)} className="text-red-500 text-xs font-bold hover:underline">Clear</button>
+                      <span className="text-xs text-indigo-400 font-semibold truncate max-w-[200px]">Picture Selected!</span>
+                      <button type="button" onClick={() => setImage(null)} className="text-rose-500 text-xs font-bold hover:underline cursor-pointer">Clear</button>
                     </div>
                   ) : (
-                    <span className="text-xs text-slate-400">No image chosen (optional)</span>
+                    <span className="text-xs text-slate-500">No image chosen (optional)</span>
                   )}
                 </div>
               </div>
@@ -899,13 +909,13 @@ function LostFound() {
                 <button
                   type="button"
                   onClick={handleCloseReportModal}
-                  className="w-1/2 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-sm transition"
+                  className="w-1/2 py-3 rounded-xl border border-slate-800 hover:bg-slate-800 text-slate-400 font-bold text-sm transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="w-1/2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition shadow"
+                  className="w-1/2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition shadow cursor-pointer"
                 >
                   Submit Listing
                 </button>
@@ -917,22 +927,22 @@ function LostFound() {
 
       {/* --- CLAIM ITEM MODAL --- */}
       {isClaimModalOpen && activeClaimItem && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-[2rem] border border-slate-200 w-full max-w-lg p-8 shadow-2xl relative">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="bg-slate-900 rounded-[2rem] border border-slate-800 w-full max-w-lg p-8 shadow-2xl relative text-slate-100">
             
             {!claimSuccess ? (
               <>
                 <button 
                   onClick={() => setIsClaimModalOpen(false)}
-                  className="absolute top-6 right-6 p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition"
+                  className="absolute top-6 right-6 p-1.5 text-slate-500 hover:text-slate-300 hover:bg-slate-800 rounded-xl transition cursor-pointer"
                 >
                   <X className="h-5 w-5" />
                 </button>
 
                 <div className="space-y-2 mb-6">
-                  <span className="inline-flex rounded-full bg-indigo-50 px-2.5 py-0.5 text-[10px] font-bold text-indigo-700">Claim Validation</span>
-                  <h2 className="text-2xl font-bold text-slate-800 mt-1">Claim: {activeClaimItem.itemName}</h2>
-                  <p className="text-xs text-slate-500">Prove ownership of this found item.</p>
+                  <span className="inline-flex rounded-full bg-indigo-500/10 border border-indigo-500/25 px-2.5 py-0.5 text-[10px] font-bold text-indigo-400">Claim Validation</span>
+                  <h2 className="text-2xl font-bold text-white mt-1">Claim: {activeClaimItem.itemName}</h2>
+                  <p className="text-xs text-slate-400">Prove ownership of this found item.</p>
                 </div>
 
                 <form onSubmit={handleClaimSubmit} className="space-y-4">
@@ -943,7 +953,7 @@ function LostFound() {
                       value={claimProof}
                       onChange={(e) => setClaimProof(e.target.value)}
                       rows="4"
-                      className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-slate-50/50 focus:bg-white"
+                      className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none focus:border-indigo-500/50 resize-none"
                       required
                     />
                   </div>
@@ -956,7 +966,7 @@ function LostFound() {
                         placeholder="e.g., claimant@campus.edu"
                         value={claimEmail}
                         onChange={(e) => setClaimEmail(e.target.value)}
-                        className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-slate-50/50 focus:bg-white"
+                        className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none focus:border-indigo-500/50"
                         required
                       />
                     </div>
@@ -967,7 +977,7 @@ function LostFound() {
                         placeholder="e.g., +1 800 555"
                         value={claimPhone}
                         onChange={(e) => setClaimPhone(e.target.value)}
-                        className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-slate-50/50 focus:bg-white"
+                        className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none focus:border-indigo-500/50"
                       />
                     </div>
                   </div>
@@ -976,13 +986,13 @@ function LostFound() {
                     <button
                       type="button"
                       onClick={() => setIsClaimModalOpen(false)}
-                      className="w-1/2 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold text-sm transition"
+                      className="w-1/2 py-3 rounded-xl border border-slate-800 hover:bg-slate-800 text-slate-400 font-bold text-sm transition cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="w-1/2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition shadow"
+                      className="w-1/2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition shadow cursor-pointer"
                     >
                       Submit Claim Request
                     </button>
@@ -991,14 +1001,14 @@ function LostFound() {
               </>
             ) : (
               <div className="py-8 flex flex-col items-center justify-center text-center space-y-4">
-                <div className="h-16 w-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center animate-bounce">
+                <div className="h-16 w-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center animate-bounce border border-emerald-500/20">
                   <Check className="h-8 w-8" style={{ strokeWidth: 3 }} />
                 </div>
-                <h3 className="text-xl font-bold text-slate-800">Claim Request Submitted</h3>
+                <h3 className="text-xl font-bold text-white">Claim Request Submitted</h3>
                 <p className="text-xs text-slate-400 max-w-sm">
                   Your claim details for <strong>{activeClaimItem.itemName}</strong> have been submitted.
                 </p>
-                <p className="text-[10px] text-indigo-500 font-semibold uppercase tracking-wider animate-pulse pt-2">
+                <p className="text-[10px] text-indigo-400 font-semibold uppercase tracking-wider animate-pulse pt-2">
                   Closing dialog in a moment...
                 </p>
               </div>

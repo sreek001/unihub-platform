@@ -3,7 +3,8 @@
 -- Safe to run multiple times (IF NOT EXISTS / IF NOT EXISTS).
 -- Requires: PostgreSQL 9.5+ with btree_gist extension.
 -- ============================================================
-
+DROP TABLE IF EXISTS bookings CASCADE;
+DROP TABLE IF EXISTS venues CASCADE;
 -- Enable the extension needed for EXCLUDE constraints on
 -- non-btree types (date, tsrange). Idempotent.
 CREATE EXTENSION IF NOT EXISTS btree_gist;
@@ -16,14 +17,35 @@ CREATE TABLE IF NOT EXISTS venues (
     name        VARCHAR(120) NOT NULL UNIQUE,
     location    VARCHAR(200) NOT NULL DEFAULT '',
     capacity    INT          NOT NULL DEFAULT 50,
+    type        VARCHAR(50)  NOT NULL DEFAULT 'Seminar Hall',
+    status      VARCHAR(20)  NOT NULL DEFAULT 'Open',
     image_url   TEXT         NOT NULL DEFAULT '',
     created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
+-- Safe column additions for existing tables
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'venues' AND column_name = 'type'
+    ) THEN
+        ALTER TABLE venues ADD COLUMN type VARCHAR(50) NOT NULL DEFAULT 'Seminar Hall';
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'venues' AND column_name = 'status'
+    ) THEN
+        ALTER TABLE venues ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'Open';
+    END IF;
+END
+$$;
+
 -- -----------------------------------------------------------
 -- 2. BOOKINGS TABLE
---    • status enum: PENDING → APPROVED | REJECTED
---    • EXCLUDE constraint prevents any two APPROVED bookings
+--    * status enum: PENDING -> APPROVED | REJECTED
+--    * EXCLUDE constraint prevents any two APPROVED bookings
 --      from overlapping on the same venue+date at the DB level.
 -- -----------------------------------------------------------
 DO $$
@@ -84,12 +106,14 @@ CREATE INDEX IF NOT EXISTS idx_bookings_status
     ON bookings (status);
 
 -- -----------------------------------------------------------
--- 3. SEED DATA — Campus Venues
+-- 3. SEED DATA — Campus Venues (with type and status)
 -- -----------------------------------------------------------
-INSERT INTO venues (name, location, capacity) VALUES
-    ('Main Seminar Hall',        'Block A — Ground Floor',  250),
-    ('Department Seminar Hall',  'Block B — 2nd Floor',     120),
-    ('Advanced IoT Lab',         'Block C — 3rd Floor',      40),
-    ('Open Auditorium',          'Central Campus Grounds',  500),
-    ('Mini Conference Room',     'Admin Block — Room 104',   20)
+INSERT INTO venues (name, location, capacity, type, status) VALUES
+    ('Main Seminar Hall',        'Block A — Ground Floor',  250, 'Seminar Hall',  'Open'),
+    ('Department Seminar Hall',  'Block B — 2nd Floor',     120, 'Seminar Hall',  'Open'),
+    ('Advanced IoT Lab',         'Block C — 3rd Floor',      40, 'Lab',           'Open'),
+    ('Open Auditorium',          'Central Campus Grounds',  500, 'Seminar Hall',  'Open'),
+    ('Mini Conference Room',     'Admin Block — Room 104',   20, 'Project Space', 'Open'),
+    ('Robotics Research Lab',    'Block D — 1st Floor',      30, 'Lab',           'Open'),
+    ('Innovation Hub',           'Library Building — 4th',   60, 'Project Space', 'Maintenance')
 ON CONFLICT (name) DO NOTHING;

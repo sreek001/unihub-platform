@@ -1,35 +1,7 @@
 {
-  "name": "unihub-platform",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "db:seed": "prisma db seed"
-  },
   "dependencies": {
-    "@prisma/client": "^6.1.0",
+    "dotenv": "^17.4.2",
     "framer-motion": "^12.40.0",
-    "lucide-react": "^0.468.0",
-    "next": "^15.1.7",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4.0.0",
-    "@types/node": "^22.10.2",
-    "@types/react": "^19.0.2",
-    "@types/react-dom": "^19.0.2",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.49",
-    "prisma": "^6.1.0",
-    "tailwindcss": "^4.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "pg": "^8.22.0"
   }
 }

@@ -1,8 +1,8 @@
-const { query } = require('../db')
+const pool = require('../modules/lostFound/db');
 
 async function cleanupLostFoundPosts() {
   const deleteQuery = `DELETE FROM lost_found_posts WHERE created_at < NOW() - INTERVAL '14 days';`
-  const result = await query(deleteQuery)
+  const result = await pool.query(deleteQuery)
   console.log(`[LostFound Cleanup] removed ${result.rowCount} expired postings at ${new Date().toISOString()}`)
   return result.rowCount
 }
