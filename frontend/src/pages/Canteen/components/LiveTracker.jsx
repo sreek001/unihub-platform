@@ -2,69 +2,252 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Utensils, CheckCircle2, ChefHat, Sparkles } from 'lucide-react';
 
+const fluidSpring = { type: 'spring', stiffness: 280, damping: 28, mass: 0.8 };
+
 export default function LiveTracker({ activeOrder }) {
   if (!activeOrder) return null;
 
+  const steps = [
+    { step: 'Received', icon: CheckCircle2, active: true },
+    {
+      step: 'Preparing',
+      icon: ChefHat,
+      active: activeOrder.status === 'preparing' || activeOrder.status === 'ready',
+    },
+    { step: 'Ready', icon: Sparkles, active: activeOrder.status === 'ready' },
+  ];
+
   return (
-    <motion.div 
-      initial={{ opacity: 0, scale: 0.95 }}
+    <motion.div
+      initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
-      className="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8 backdrop-blur-md relative overflow-hidden"
+      transition={fluidSpring}
+      style={{
+        background: 'rgba(255,255,255,0.82)',
+        border: '1px solid rgba(15,76,129,0.08)',
+        borderRadius: 24,
+        padding: 32,
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        position: 'relative',
+        overflow: 'hidden',
+        boxShadow: '0 8px 40px rgba(15,76,129,0.06)',
+        willChange: 'transform, opacity',
+      }}
     >
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500" />
-      
-      <div className="flex justify-between items-center mb-10">
+      {/* Top accent bar — Blue→Teal→Gold */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          background: 'linear-gradient(90deg, #1d4ed8 0%, #14b8a6 55%, #d4af37 100%)',
+          borderRadius: '24px 24px 0 0',
+        }}
+      />
+
+      {/* Order header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
         <div>
-          <p className="text-zinc-500 font-medium text-sm mb-1 uppercase tracking-widest">Order ID</p>
-          <h2 className="text-2xl font-black text-white">{activeOrder.id}</h2>
+          <p
+            style={{
+              margin: 0,
+              fontSize: '0.65rem',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              color: '#94a3b8',
+              marginBottom: 4,
+            }}
+          >
+            Order Token
+          </p>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: '1.8rem',
+              fontWeight: 900,
+              color: '#0f172a',
+              letterSpacing: '-0.03em',
+            }}
+          >
+            {activeOrder.id}
+          </h2>
         </div>
-        <div className="text-right">
-          <p className="text-zinc-500 font-medium text-sm mb-1 uppercase tracking-widest">Queue Pos</p>
-          <h2 className="text-3xl font-black text-indigo-400">#{activeOrder.queue}</h2>
+        <div style={{ textAlign: 'right' }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: '0.65rem',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              color: '#94a3b8',
+              marginBottom: 4,
+            }}
+          >
+            Queue Position
+          </p>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: '2rem',
+              fontWeight: 900,
+              color: '#1d4ed8',
+              letterSpacing: '-0.03em',
+            }}
+          >
+            #{activeOrder.queue}
+          </h2>
         </div>
       </div>
 
-      <div className="relative mb-12">
-        <div className="absolute top-1/2 left-0 w-full h-1 bg-zinc-800 -translate-y-1/2 rounded-full" />
-        <motion.div 
+      {/* Progress bar */}
+      <div style={{ position: 'relative', marginBottom: 40 }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: 0,
+            width: '100%',
+            height: 4,
+            background: 'rgba(15,76,129,0.08)',
+            transform: 'translateY(-50%)',
+            borderRadius: 9999,
+          }}
+        />
+        <motion.div
           initial={{ width: 0 }}
           animate={{ width: activeOrder.status === 'ready' ? '100%' : '50%' }}
-          transition={{ duration: 1, ease: "easeInOut" }}
-          className="absolute top-1/2 left-0 h-1 bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.8)] -translate-y-1/2 rounded-full" 
+          transition={{ duration: 1.2, ease: 'easeInOut' }}
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: 0,
+            height: 4,
+            background: 'linear-gradient(90deg, #1d4ed8, #14b8a6)',
+            boxShadow: '0 0 12px rgba(20,184,166,0.3)',
+            transform: 'translateY(-50%)',
+            borderRadius: 9999,
+          }}
         />
-        
-        <div className="relative flex justify-between">
-          {[
-            { step: 'Received', icon: CheckCircle2, active: true },
-            { step: 'Preparing', icon: ChefHat, active: activeOrder.status === 'preparing' || activeOrder.status === 'ready' },
-            { step: 'Ready', icon: Sparkles, active: activeOrder.status === 'ready' }
-          ].map((s, i) => (
-            <div key={i} className="flex flex-col items-center gap-3">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors duration-500 ${
-                s.active ? 'bg-indigo-500 border-indigo-400 text-white shadow-[0_0_15px_rgba(99,102,241,0.4)]' : 'bg-zinc-900 border-zinc-700 text-zinc-600'
-              }`}>
-                <s.icon size={18} />
-              </div>
-              <span className={`text-xs font-bold ${s.active ? 'text-white' : 'text-zinc-600'}`}>{s.step}</span>
-            </div>
-          ))}
+
+        <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between' }}>
+          {steps.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <motion.div
+                key={i}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ ...fluidSpring, delay: i * 0.12 }}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}
+              >
+                <div
+                  style={{
+                    width: 42,
+                    height: 42,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '2px solid',
+                    borderColor: s.active ? '#14b8a6' : 'rgba(15,76,129,0.12)',
+                    background: s.active
+                      ? 'linear-gradient(135deg, #1d4ed8, #14b8a6)'
+                      : 'rgba(255,255,255,0.8)',
+                    color: s.active ? '#fff' : '#94a3b8',
+                    boxShadow: s.active ? '0 4px 16px rgba(20,184,166,0.25)' : 'none',
+                    transition: 'all 0.5s ease',
+                  }}
+                >
+                  <Icon style={{ width: 18, height: 18 }} />
+                </div>
+                <span
+                  style={{
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    color: s.active ? '#0f172a' : '#94a3b8',
+                    letterSpacing: '-0.01em',
+                  }}
+                >
+                  {s.step}
+                </span>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 
-      <div className="bg-zinc-950/50 rounded-2xl p-6 border border-zinc-800">
-        <h3 className="font-bold mb-4 flex items-center gap-2"><Utensils size={16} className="text-zinc-500"/> Order Summary</h3>
-        <ul className="space-y-3">
+      {/* Order summary */}
+      <div
+        style={{
+          background: 'rgba(15,76,129,0.03)',
+          border: '1px solid rgba(15,76,129,0.07)',
+          borderRadius: 16,
+          padding: 20,
+        }}
+      >
+        <h3
+          style={{
+            margin: '0 0 16px',
+            fontSize: '0.8rem',
+            fontWeight: 700,
+            color: '#64748b',
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
+          <Utensils style={{ width: 14, height: 14 }} />
+          Order Summary
+        </h3>
+        <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
           {activeOrder.items.map(item => (
-            <li key={item.id} className="flex justify-between text-sm font-medium text-zinc-300">
-              <span><span className="text-zinc-600 mr-2">{item.quantity}x</span>{item.name}</span>
-              <span>₹{item.price * item.quantity}</span>
+            <li
+              key={item.id}
+              style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', fontWeight: 600 }}
+            >
+              <span style={{ color: '#475569' }}>
+                <span style={{ color: '#94a3b8', marginRight: 8, fontWeight: 700 }}>
+                  {item.quantity}x
+                </span>
+                {item.name}
+              </span>
+              <span style={{ color: '#0f172a', fontWeight: 800 }}>₹{item.price * item.quantity}</span>
             </li>
           ))}
         </ul>
-        <div className="mt-4 pt-4 border-t border-zinc-800 flex justify-between font-black text-lg">
-          <span>Total</span>
-          <span className="text-indigo-400">₹{activeOrder.total}</span>
+        <div
+          style={{
+            marginTop: 16,
+            paddingTop: 14,
+            borderTop: '1px solid rgba(15,76,129,0.07)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+          }}
+        >
+          <span style={{ fontWeight: 700, fontSize: '0.875rem', color: '#64748b' }}>Total</span>
+          <span
+            style={{
+              fontSize: '1.25rem',
+              fontWeight: 900,
+              backgroundImage: 'linear-gradient(90deg, #d97706, #d4af37)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            ₹{activeOrder.total}
+          </span>
         </div>
       </div>
     </motion.div>

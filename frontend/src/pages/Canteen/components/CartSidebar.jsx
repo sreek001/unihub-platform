@@ -2,49 +2,202 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Utensils, Plus, Minus, ChevronRight } from 'lucide-react';
 
+const fluidSpring = { type: 'spring', stiffness: 280, damping: 28, mass: 0.8 };
+
 export default function CartSidebar({ cart, cartTotal, updateCart, placeOrder }) {
   return (
     <div className="hidden lg:block relative">
-      <motion.div 
-        className="sticky top-10 bg-zinc-900/30 border border-zinc-800/80 rounded-3xl p-6 backdrop-blur-xl shadow-2xl h-[calc(100vh-80px)] flex flex-col"
+      <motion.div
+        style={{
+          position: 'sticky',
+          top: 88,
+          background: 'rgba(255,255,255,0.82)',
+          border: '1px solid rgba(15,76,129,0.08)',
+          borderRadius: 24,
+          padding: 24,
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          boxShadow: '0 8px 40px rgba(15,76,129,0.07)',
+          height: 'calc(100vh - 112px)',
+          display: 'flex',
+          flexDirection: 'column',
+          willChange: 'transform',
+        }}
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
+        transition={fluidSpring}
       >
-        <h2 className="text-xl font-black mb-6 flex items-center gap-3">
-          <ShoppingCart className="text-indigo-500" size={24} /> 
-          Your Tray
-        </h2>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 11,
+              background: 'rgba(212,175,55,0.10)',
+              border: '1px solid rgba(212,175,55,0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <ShoppingCart style={{ width: 17, height: 17, color: '#d97706' }} />
+          </div>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: '1rem',
+              fontWeight: 800,
+              color: '#0f172a',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            Your Tray
+          </h2>
+          {cart.length > 0 && (
+            <span
+              style={{
+                marginLeft: 'auto',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 22,
+                height: 22,
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #1d4ed8, #14b8a6)',
+                color: '#fff',
+                fontSize: '0.65rem',
+                fontWeight: 800,
+              }}
+            >
+              {cart.length}
+            </span>
+          )}
+        </div>
 
-        <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
+        {/* Items list */}
+        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
           <AnimatePresence mode="popLayout">
             {cart.length === 0 ? (
-              <motion.div 
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="h-full flex flex-col items-center justify-center text-zinc-600 space-y-4"
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 12,
+                  color: '#94a3b8',
+                  padding: '40px 0',
+                }}
               >
-                <div className="w-24 h-24 rounded-full bg-zinc-800/50 flex items-center justify-center">
-                  <Utensils size={32} className="opacity-50" />
+                <div
+                  style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: '50%',
+                    background: 'rgba(15,76,129,0.04)',
+                    border: '1px solid rgba(15,76,129,0.07)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Utensils style={{ width: 26, height: 26, opacity: 0.35 }} />
                 </div>
-                <p className="font-medium text-sm">Your tray is empty</p>
+                <p style={{ margin: 0, fontSize: '0.82rem', fontWeight: 600, color: '#94a3b8' }}>
+                  Your tray is empty
+                </p>
               </motion.div>
             ) : (
               cart.map(item => (
-                <motion.div 
+                <motion.div
                   layout
-                  initial={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8, x: -20 }}
-                  key={item.id} 
-                  className="bg-zinc-950/50 border border-zinc-800 rounded-2xl p-4 flex justify-between items-center"
+                  exit={{ opacity: 0, scale: 0.9, x: -16 }}
+                  key={item.id}
+                  style={{
+                    background: 'rgba(255,255,255,0.7)',
+                    border: '1px solid rgba(15,76,129,0.07)',
+                    borderRadius: 14,
+                    padding: '12px 14px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    willChange: 'transform, opacity',
+                  }}
+                  transition={fluidSpring}
                 >
                   <div>
-                    <h4 className="font-bold text-sm text-white">{item.name}</h4>
-                    <p className="text-indigo-400 font-black text-xs mt-1">₹{item.price}</p>
+                    <h4
+                      style={{
+                        margin: 0,
+                        fontSize: '0.82rem',
+                        fontWeight: 700,
+                        color: '#0f172a',
+                      }}
+                    >
+                      {item.name}
+                    </h4>
+                    <p
+                      style={{
+                        margin: '3px 0 0',
+                        fontSize: '0.72rem',
+                        fontWeight: 800,
+                        color: '#d97706',
+                      }}
+                    >
+                      ₹{item.price}
+                    </p>
                   </div>
-                  <div className="flex items-center gap-3 bg-zinc-900 rounded-lg p-1 border border-zinc-800">
-                    <button onClick={() => updateCart(item, -1)} className="p-1 hover:text-white text-zinc-500 transition-colors"><Minus size={14}/></button>
-                    <span className="font-bold text-sm w-4 text-center">{item.quantity}</span>
-                    <button onClick={() => updateCart(item, 1)} className="p-1 hover:text-white text-zinc-500 transition-colors"><Plus size={14}/></button>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      background: 'rgba(15,76,129,0.05)',
+                      borderRadius: 9,
+                      padding: '2px 4px',
+                      border: '1px solid rgba(15,76,129,0.08)',
+                    }}
+                  >
+                    <motion.button
+                      whileTap={{ scale: 0.85 }}
+                      onClick={() => updateCart(item, -1)}
+                      style={{
+                        padding: '4px 6px',
+                        border: 'none',
+                        background: 'transparent',
+                        color: '#64748b',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Minus style={{ width: 13, height: 13 }} />
+                    </motion.button>
+                    <span style={{ fontWeight: 800, fontSize: '0.82rem', color: '#0f172a', minWidth: 16, textAlign: 'center' }}>
+                      {item.quantity}
+                    </span>
+                    <motion.button
+                      whileTap={{ scale: 0.85 }}
+                      onClick={() => updateCart(item, 1)}
+                      style={{
+                        padding: '4px 6px',
+                        border: 'none',
+                        background: 'transparent',
+                        color: '#64748b',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Plus style={{ width: 13, height: 13 }} />
+                    </motion.button>
                   </div>
                 </motion.div>
               ))
@@ -52,19 +205,55 @@ export default function CartSidebar({ cart, cartTotal, updateCart, placeOrder })
           </AnimatePresence>
         </div>
 
-        <div className="pt-6 border-t border-zinc-800 mt-auto">
-          <div className="flex justify-between items-end mb-6">
-            <span className="text-zinc-500 font-bold text-sm uppercase tracking-widest">Total</span>
-            <span className="text-3xl font-black tracking-tighter">₹{cartTotal}</span>
+        {/* Checkout footer */}
+        <div style={{ paddingTop: 20, borderTop: '1px solid rgba(15,76,129,0.08)', marginTop: 'auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 16 }}>
+            <span style={{ color: '#64748b', fontWeight: 700, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              Total
+            </span>
+            <span
+              style={{
+                fontSize: '1.8rem',
+                fontWeight: 900,
+                letterSpacing: '-0.03em',
+                backgroundImage: 'linear-gradient(90deg, #1d4ed8, #0f766e)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              ₹{cartTotal}
+            </span>
           </div>
           <motion.button
-            whileHover={cart.length > 0 ? { scale: 1.02 } : {}}
+            whileHover={cart.length > 0 ? { scale: 1.02, boxShadow: '0 10px 32px rgba(15,76,129,0.28)', transition: fluidSpring } : {}}
             whileTap={cart.length > 0 ? { scale: 0.98 } : {}}
             onClick={placeOrder}
             disabled={cart.length === 0}
-            className="w-full py-4 rounded-2xl font-black tracking-wide text-white transition-all flex items-center justify-center gap-2 disabled:bg-zinc-800 disabled:text-zinc-600 disabled:cursor-not-allowed bg-indigo-600 hover:bg-indigo-500 shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)]"
+            style={{
+              width: '100%',
+              padding: '14px 20px',
+              borderRadius: 16,
+              border: 'none',
+              background: cart.length > 0
+                ? 'linear-gradient(135deg, #1d4ed8 0%, #14b8a6 100%)'
+                : 'rgba(226,232,240,0.7)',
+              color: cart.length > 0 ? '#fff' : '#94a3b8',
+              fontSize: '0.875rem',
+              fontWeight: 800,
+              cursor: cart.length === 0 ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              fontFamily: 'Inter, sans-serif',
+              boxShadow: cart.length > 0 ? '0 4px 20px rgba(15,76,129,0.22)' : 'none',
+              willChange: 'transform',
+              transition: 'background 0.3s',
+            }}
           >
-            Checkout <ChevronRight size={18} />
+            Place Order
+            <ChevronRight style={{ width: 17, height: 17 }} />
           </motion.button>
         </div>
       </motion.div>

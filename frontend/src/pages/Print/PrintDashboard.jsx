@@ -256,7 +256,7 @@ export default function PrintDashboard() {
   });
 
   return (
-    <div className="print-root booking-root p-6 md:p-10 min-h-screen">
+    <div className="print-root p-6 md:p-10 min-h-screen" style={{ background: '#fafafc', color: '#0f172a' }}>
       {/* Toast Notification */}
       <AnimatePresence>
         {notification && (
@@ -264,10 +264,10 @@ export default function PrintDashboard() {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className={`fixed top-6 right-6 z-50 px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 backdrop-blur-xl border ${
-              notification.type === "error"
-                ? "bg-red-950/80 border-red-500/30 text-red-200"
-                : "bg-emerald-950/80 border-emerald-500/30 text-emerald-200"
+            className={`fixed top-6 right-6 z-50 px-6 py-4 rounded-xl shadow-lg flex items-center gap-3 backdrop-blur-xl border ${
+              notification.type === 'error'
+                ? 'bg-red-50/95 border-red-200 text-red-700'
+                : 'bg-teal-50/95 border-teal-200 text-teal-700'
             }`}
           >
             {notification.type === "error" ? (
@@ -281,40 +281,90 @@ export default function PrintDashboard() {
       </AnimatePresence>
 
       <div className="max-w-7xl mx-auto print-content">
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-zinc-800/50 pb-6">
+        {/* ── Page Intro — light mode ── */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            gap: 24,
+            marginBottom: 28,
+            paddingBottom: 20,
+            borderBottom: '1px solid rgba(15,76,129,0.07)',
+            flexWrap: 'wrap',
+          }}
+        >
           <div>
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-violet-600/10 rounded-xl border border-violet-500/20">
-                <Printer className="w-7 h-7 text-violet-400" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
+              <div
+                style={{
+                  padding: 10,
+                  background: 'rgba(20,184,166,0.08)',
+                  borderRadius: 14,
+                  border: '1px solid rgba(20,184,166,0.18)',
+                }}
+              >
+                <Printer style={{ width: 24, height: 24, color: '#14b8a6' }} />
               </div>
-              <h1 className="text-3xl font-extrabold tracking-tight text-white m-0">Print Hub</h1>
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: '1.75rem',
+                  fontWeight: 800,
+                  color: '#0f172a',
+                  letterSpacing: '-0.025em',
+                }}
+              >
+                Print Hub
+              </h1>
             </div>
-            <p className="text-zinc-400 text-sm mt-2 mb-0">
+            <p style={{ margin: 0, color: '#64748b', fontSize: '0.875rem', fontWeight: 500 }}>
               Submit printing orders or manage the print operations queue.
             </p>
           </div>
 
-          {/* Toggle Role Selector */}
-          <div className="flex items-center bg-zinc-950/70 border border-zinc-800 p-1.5 rounded-xl">
+          {/* Toggle Role Selector — light glass */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              background: 'rgba(255,255,255,0.75)',
+              border: '1px solid rgba(15,76,129,0.08)',
+              padding: 5,
+              borderRadius: 14,
+              backdropFilter: 'blur(16px)',
+              boxShadow: '0 2px 12px rgba(15,76,129,0.05)',
+            }}
+          >
             <button
-              onClick={() => setRole("student")}
+              onClick={() => setRole('student')}
               className={`px-4 py-2 rounded-lg text-xs font-bold tracking-wider uppercase transition-all duration-200 flex items-center gap-2 cursor-pointer ${
-                role === "student"
-                  ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg"
-                  : "text-zinc-400 hover:text-zinc-200"
+                role === 'student'
+                  ? 'text-white shadow-md'
+                  : 'text-slate-500 hover:text-slate-700'
               }`}
+              style={{
+                background: role === 'student'
+                  ? 'linear-gradient(135deg, #1d4ed8, #14b8a6)'
+                  : 'transparent',
+              }}
             >
               <Sparkles className="w-3.5 h-3.5" />
               Student Portal
             </button>
             <button
-              onClick={() => setRole("operator")}
+              onClick={() => setRole('operator')}
               className={`px-4 py-2 rounded-lg text-xs font-bold tracking-wider uppercase transition-all duration-200 flex items-center gap-2 cursor-pointer ${
-                role === "operator"
-                  ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg"
-                  : "text-zinc-400 hover:text-zinc-200"
+                role === 'operator'
+                  ? 'text-white shadow-md'
+                  : 'text-slate-500 hover:text-slate-700'
               }`}
+              style={{
+                background: role === 'operator'
+                  ? 'linear-gradient(135deg, #1d4ed8, #14b8a6)'
+                  : 'transparent',
+              }}
             >
               <Briefcase className="w-3.5 h-3.5" />
               Xerox Operator
