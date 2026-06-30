@@ -13,7 +13,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 3. Import Routes
 const printRoutes = require('./src/modules/print/print.routes');
-const bookingRoutes = require('./src/modules/booking/booking.routes'); // Make sure this path is correct
+const bookingRoutes = require('./src/modules/booking/bookingRoutes'); // Make sure this path is correct
 const canteenRoutes = require('./src/modules/canteen/canteenRoutes');
 const lostFoundRoutes = require('./src/modules/lostFound/lostFoundRoutes');
 const academicsRoutes = require('./src/modules/academics/academicsRoutes');

@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
-<<<<<<< HEAD
+
 import { GraduationCap, Inbox, ArrowRight, Utensils, CalendarDays, Printer } from 'lucide-react';
 =======
 import { GraduationCap, Inbox, CalendarDays, Utensils, Printer } from 'lucide-react';
->>>>>>> temp-db-fix
+
 import './App.css';
 
 import LostFound from './pages/LostFound/LostFound.jsx';
@@ -22,7 +22,7 @@ import Marketplace from './pages/academics/Marketplace.jsx';
 import Vault from './pages/academics/Vault.jsx';
 import Inventory from './pages/academics/Inventory.jsx';
 import Settings from './pages/academics/Settings.jsx';
-<<<<<<< HEAD
+
 // ─── GLOBAL LAYOUT (PREMIUM DARK THEME) ───
 function AppLayout() {
   return (
@@ -74,9 +74,8 @@ const NAV_ITEMS = [
   { to: '/bookings', label: 'Bookings', icon: CalendarDays, color: '#14b8a6' },
   { to: '/lost-found', label: 'Lost & Found', icon: Inbox, color: '#2563eb' },
   { to: '/canteen', label: 'Canteen', icon: Utensils, color: '#d97706' },
-  { to: '/print', label: 'Print', icon: Printer, color: '#0891b2' },
+  { to: '/print', label: 'Print', icon: Printer, color: '#0891b2' }
 ];
-
 // ─── GLOBAL LAYOUT (LIGHT GLASSMORPHISM NAV) ─────────────────────────────────
 function AppLayout() {
   return (
@@ -178,14 +177,14 @@ function AppLayout() {
       >
         <div className="max-w-7xl mx-auto">
           <p>&copy; {new Date().getFullYear()} UniHub. Campus Intelligence Platform.</p>
->>>>>>> temp-db-fix
+
         </div>
       </footer>
     </div>
   );
 }
 
-<<<<<<< HEAD
+
 // ─── HOME DASHBOARD (SEAMLESS DARK THEME) ───
 function Home() {
   return (
@@ -322,16 +321,16 @@ function Home() {
 
       {/* Home-specific cinematic footer with concentric rings */}
       <StackedCircularFooter />
->>>>>>> temp-db-fix
+
     </div>
   );
 }
 
-<<<<<<< HEAD
+
 // ─── MAIN APP ROUTER ───
 =======
 // ─── MAIN APP ROUTER ──────────────────────────────────────────────────────────
->>>>>>> temp-db-fix
+
 export default function App() {
   return (
     <UserProvider>
