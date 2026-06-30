@@ -3,7 +3,8 @@
 -- Safe to run multiple times (IF NOT EXISTS / IF NOT EXISTS).
 -- Requires: PostgreSQL 9.5+ with btree_gist extension.
 -- ============================================================
-
+DROP TABLE IF EXISTS bookings CASCADE;
+DROP TABLE IF EXISTS venues CASCADE;
 -- Enable the extension needed for EXCLUDE constraints on
 -- non-btree types (date, tsrange). Idempotent.
 CREATE EXTENSION IF NOT EXISTS btree_gist;

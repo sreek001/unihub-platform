@@ -252,88 +252,85 @@ export default function BookingDashboard() {
         )}
       </AnimatePresence>
 
-      {/* ── Header ── */}
+      {/* ── Page Intro — light mode ── */}
       <motion.div
-        initial={{ opacity: 0, y: -24 }}
+        initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'flex-start',
-          marginBottom: 36,
-          paddingBottom: 24,
-          borderBottom: '1px solid rgba(55,55,70,0.25)',
+          marginBottom: 32,
+          paddingBottom: 20,
+          borderBottom: '1px solid rgba(15,76,129,0.07)',
           flexWrap: 'wrap',
           gap: 16,
         }}
       >
         <div>
           <h1 style={{
-            fontSize: '2.25rem',
+            fontSize: '1.75rem',
             fontWeight: 800,
-            color: '#fff',
-            letterSpacing: '-0.02em',
+            color: '#0f172a',
+            letterSpacing: '-0.025em',
             display: 'flex',
             alignItems: 'center',
-            gap: 12,
+            gap: 10,
             margin: 0,
           }}>
-            <motion.div
-              animate={{ rotate: [0, 6, -6, 0] }}
-              transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
-            >
-              <Calendar
-                style={{
-                  width: 36,
-                  height: 36,
-                  color: '#a855f7',
-                  filter: 'drop-shadow(0 0 12px rgba(168,85,247,0.4))',
-                }}
-              />
-            </motion.div>
+            <CalendarDays
+              style={{
+                width: 28,
+                height: 28,
+                color: '#14b8a6',
+              }}
+            />
             Venue Booking
           </h1>
-          <p style={{ color: 'rgba(161,161,170,0.7)', fontSize: '0.875rem', marginTop: 6, marginBottom: 0 }}>
+          <p style={{ color: '#64748b', fontSize: '0.875rem', marginTop: 4, marginBottom: 0, fontWeight: 500 }}>
             Reserve seminar halls, labs, and project spaces — zero scheduling conflicts.
           </p>
         </div>
 
-        {/* User badge */}
+        {/* User badge — light glass */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.25 }}
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: 10,
-            background: 'rgba(15,15,25,0.6)',
-            border: '1px solid rgba(55,55,70,0.3)',
+            background: 'rgba(255,255,255,0.75)',
+            border: '1px solid rgba(15,76,129,0.10)',
             borderRadius: 12,
             padding: '10px 16px',
+            backdropFilter: 'blur(16px)',
+            boxShadow: '0 2px 12px rgba(15,76,129,0.06)',
           }}
         >
           <div style={{
             width: 32,
             height: 32,
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #7c3aed, #6366f1)',
+            background: 'linear-gradient(135deg, #1d4ed8, #14b8a6)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '0.75rem',
             fontWeight: 700,
             color: '#fff',
+            boxShadow: '0 2px 8px rgba(29,78,216,0.22)',
           }}>
             {user.name.charAt(0)}
           </div>
           <div>
-            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#e4e4e7' }}>{user.name}</div>
+            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#0f172a' }}>{user.name}</div>
             <div style={{
               fontSize: '0.65rem',
-              fontWeight: 600,
-              color: '#a78bfa',
+              fontWeight: 700,
+              color: '#14b8a6',
               textTransform: 'uppercase',
               letterSpacing: '0.06em',
             }}>{user.role}</div>
@@ -341,7 +338,7 @@ export default function BookingDashboard() {
         </motion.div>
       </motion.div>
 
-      {/* ── Tab Navigation ── */}
+      {/* ── Tab Navigation — light glass ── */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -362,7 +359,7 @@ export default function BookingDashboard() {
                 borderRadius: 10,
                 border: 'none',
                 background: 'transparent',
-                color: isActive ? '#c4b5fd' : 'rgba(161,161,170,0.6)',
+                color: isActive ? '#1d4ed8' : '#64748b',
                 fontSize: '0.8rem',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -380,11 +377,11 @@ export default function BookingDashboard() {
                   style={{
                     position: 'absolute',
                     inset: 0,
-                    background: 'rgba(139,92,246,0.1)',
-                    border: '1px solid rgba(139,92,246,0.25)',
+                    background: 'rgba(29,78,216,0.06)',
+                    border: '1px solid rgba(29,78,216,0.15)',
                     borderRadius: 10,
                   }}
-                  transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+                  transition={{ type: 'spring', stiffness: 280, damping: 28 }}
                 />
               )}
               <Icon style={{ width: 15, height: 15, position: 'relative', zIndex: 1 }} />
@@ -518,9 +515,9 @@ export default function BookingDashboard() {
                 marginBottom: 16,
                 paddingLeft: 4,
               }}>
-                <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#fff', margin: 0, letterSpacing: '-0.01em' }}>
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0f172a', margin: 0, letterSpacing: '-0.02em' }}>
                   {selectedVenue?.name || 'Select a Venue'}
-                  <span style={{ color: 'rgba(113,113,122,0.5)', fontWeight: 400, marginLeft: 8, fontSize: '0.85rem' }}>
+                  <span style={{ color: '#94a3b8', fontWeight: 400, marginLeft: 8, fontSize: '0.85rem' }}>
                     / {selectedDate}
                   </span>
                 </h2>
@@ -529,11 +526,11 @@ export default function BookingDashboard() {
                   style={{
                     fontSize: '0.7rem',
                     fontFamily: 'monospace',
-                    color: '#a78bfa',
-                    background: 'rgba(139,92,246,0.08)',
+                    color: '#0f766e',
+                    background: 'rgba(20,184,166,0.08)',
                     padding: '5px 12px',
                     borderRadius: 9999,
-                    border: '1px solid rgba(139,92,246,0.15)',
+                    border: '1px solid rgba(20,184,166,0.18)',
                     display: 'flex',
                     alignItems: 'center',
                   }}
@@ -577,7 +574,7 @@ export default function BookingDashboard() {
                               fontFamily: 'monospace',
                               fontSize: '0.85rem',
                               fontWeight: 600,
-                              color: '#e4e4e7',
+                              color: '#0f172a',
                               margin: 0,
                             }}>
                               {slot.display}
@@ -646,10 +643,10 @@ export default function BookingDashboard() {
               exit="exit"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff', margin: '8px 0 4px' }}>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#0f172a', margin: '8px 0 4px' }}>
                 Secure This Slot
               </h3>
-              <p style={{ fontSize: '0.75rem', color: 'rgba(161,161,170,0.6)', marginBottom: 24, marginTop: 0 }}>
+              <p style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: 24, marginTop: 0 }}>
                 Your reservation will be confirmed instantly upon submission.
               </p>
 
@@ -777,13 +774,13 @@ export default function BookingDashboard() {
                   <motion.button
                     type="submit"
                     disabled={submitting}
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ scale: 1.02, boxShadow: '0 8px 24px rgba(15,76,129,0.28)' }}
                     whileTap={{ scale: 0.97 }}
                     style={{
                       padding: '10px 24px',
                       borderRadius: 10,
                       border: 'none',
-                      background: 'linear-gradient(135deg, #7c3aed, #6366f1)',
+                      background: 'linear-gradient(135deg, #1d4ed8, #14b8a6)',
                       color: '#fff',
                       fontSize: '0.82rem',
                       fontWeight: 700,
@@ -793,7 +790,8 @@ export default function BookingDashboard() {
                       alignItems: 'center',
                       gap: 6,
                       fontFamily: 'Inter, sans-serif',
-                      boxShadow: '0 4px 16px rgba(124,58,237,0.25)',
+                      boxShadow: '0 4px 16px rgba(15,76,129,0.22)',
+                      willChange: 'transform',
                     }}
                   >
                     {submitting && <Loader2 style={{ width: 14, height: 14, animation: 'spin 1s linear infinite' }} />}

@@ -343,8 +343,9 @@ function LostFound() {
           max-width: 1024px;
           margin: 0 auto;
           padding: 32px 16px;
-          font-family: system-ui, -apple-system, sans-serif;
-          color: #f1f5f9;
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
+          color: #0f172a;
+          background: #fafafc;
         }
 
         .bulletin-header {
@@ -353,9 +354,9 @@ function LostFound() {
           justify-content: space-between;
           align-items: center;
           gap: 20px;
-          padding-bottom: 24px;
-          border-bottom: 1px solid #1e293b;
-          margin-bottom: 32px;
+          padding-bottom: 20px;
+          border-bottom: 1px solid rgba(15,76,129,0.07);
+          margin-bottom: 28px;
         }
 
         .bulletin-header-text {
@@ -365,50 +366,56 @@ function LostFound() {
         }
 
         .bulletin-title {
-          font-size: 2.25rem;
+          font-size: 1.75rem;
           font-weight: 800;
-          color: #ffffff;
+          color: #0f172a;
           margin: 0;
-          tracking-tight: -0.025em;
+          letter-spacing: -0.025em;
         }
 
         .bulletin-subtitle {
           font-size: 0.875rem;
-          color: #94a3b8;
+          color: #64748b;
           margin: 0;
+          font-weight: 500;
         }
 
         .report-button {
-          background-color: #4f46e5;
+          background: linear-gradient(135deg, #1d4ed8, #14b8a6);
           color: white;
           font-weight: 700;
-          font-size: 0.875rem;
-          padding: 12px 20px;
+          font-size: 0.82rem;
+          padding: 11px 20px;
           border-radius: 12px;
           border: none;
           cursor: pointer;
-          transition: background-color 0.2s, box-shadow 0.2s;
+          transition: opacity 0.2s, box-shadow 0.2s, transform 0.15s;
           white-space: nowrap;
           display: inline-flex;
           align-items: center;
+          gap: 7px;
           justify-content: center;
-          box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+          box-shadow: 0 4px 16px rgba(15,76,129,0.22);
+          will-change: transform;
         }
         .report-button:hover {
-          background-color: #6366f1;
+          opacity: 0.9;
+          box-shadow: 0 6px 24px rgba(15,76,129,0.3);
+          transform: translateY(-1px);
         }
 
         .filter-container {
-          background-color: #0f172a;
-          border: 1px solid #1e293b;
+          background: rgba(255,255,255,0.75);
+          border: 1px solid rgba(15,76,129,0.07);
           border-radius: 16px;
-          padding: 16px;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+          padding: 14px 16px;
+          box-shadow: 0 2px 16px rgba(15,76,129,0.05);
           display: flex;
           flex-direction: row;
           align-items: center;
-          gap: 16px;
-          margin-bottom: 32px;
+          gap: 12px;
+          margin-bottom: 28px;
+          backdrop-filter: blur(16px);
         }
 
         .search-input-wrapper {
@@ -419,38 +426,41 @@ function LostFound() {
         .search-input {
           width: 100%;
           padding: 10px 16px 10px 40px;
-          border: 1px solid #1e293b;
+          border: 1px solid rgba(15,76,129,0.12);
           border-radius: 12px;
           font-size: 0.875rem;
+          font-family: 'Inter', sans-serif;
           outline: none;
-          background-color: #09090b;
-          color: #f8fafc;
+          background: rgba(255,255,255,0.9);
+          color: #0f172a;
           box-sizing: border-box;
-          transition: border-color 0.2s;
+          transition: border-color 0.2s, box-shadow 0.2s;
         }
+        .search-input::placeholder { color: #94a3b8; }
         .search-input:focus {
-          border-color: #6366f1;
+          border-color: rgba(15,76,129,0.4);
+          box-shadow: 0 0 0 3px rgba(15,76,129,0.07);
         }
 
         .filter-select {
-          padding: 10px 14px;
-          border: 1px solid #1e293b;
+          padding: 10px 12px;
+          border: 1px solid rgba(15,76,129,0.10);
           border-radius: 12px;
           font-size: 0.75rem;
           font-weight: 600;
-          background-color: #09090b;
-          color: #94a3b8;
+          font-family: 'Inter', sans-serif;
+          background: rgba(255,255,255,0.9);
+          color: #475569;
           cursor: pointer;
           outline: none;
-          height: 38px;
+          height: 40px;
           box-sizing: border-box;
           transition: border-color 0.2s;
         }
-        .filter-select:hover {
-          border-color: #334155;
-        }
+        .filter-select:hover { border-color: rgba(15,76,129,0.2); }
         .filter-select:focus {
-          border-color: #6366f1;
+          border-color: rgba(15,76,129,0.4);
+          box-shadow: 0 0 0 3px rgba(15,76,129,0.07);
         }
 
         .cards-list {
@@ -460,21 +470,24 @@ function LostFound() {
         }
 
         .item-card {
-          background-color: #0f172a;
-          border-radius: 16px;
-          border: 1px solid #1e293b;
-          padding: 20px;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-          margin-bottom: 1.5rem;
+          background: rgba(255,255,255,0.75);
+          border-radius: 18px;
+          border: 1px solid rgba(15,76,129,0.07);
+          padding: 22px;
+          box-shadow: 0 2px 16px rgba(15,76,129,0.05);
+          margin-bottom: 16px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          transition: transform 0.2s, border-color 0.2s;
+          transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
           box-sizing: border-box;
+          backdrop-filter: blur(16px);
+          will-change: transform;
         }
         .item-card:hover {
-          transform: translateY(-2px);
-          border-color: #334155;
+          transform: translateY(-4px);
+          border-color: rgba(20,184,166,0.22);
+          box-shadow: 0 8px 32px rgba(15,76,129,0.08);
         }
 
         .card-header {
@@ -485,11 +498,12 @@ function LostFound() {
         }
 
         .item-title {
-          font-size: 1.125rem;
+          font-size: 1.05rem;
           font-weight: 700;
-          color: #ffffff;
+          color: #0f172a;
           margin: 0;
           line-height: 1.4;
+          letter-spacing: -0.015em;
         }
 
         .pill-badge {
@@ -497,46 +511,49 @@ function LostFound() {
           font-weight: 800;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          padding: 4px 10px;
+          padding: 4px 12px;
           border-radius: 9999px;
-          color: white;
           white-space: nowrap;
         }
         .badge-found {
-          background-color: #10b981;
+          background: rgba(20,184,166,0.1);
+          color: #0f766e;
+          border: 1px solid rgba(20,184,166,0.22);
         }
         .badge-lost {
-          background-color: #ef4444;
+          background: rgba(244,63,94,0.08);
+          color: #be123c;
+          border: 1px solid rgba(244,63,94,0.18);
         }
 
         .item-description {
           margin-top: 8px;
-          color: #94a3b8;
+          color: #64748b;
           font-size: 0.875rem;
-          line-height: 1.6;
+          line-height: 1.65;
         }
 
         .item-metadata {
-          margin-top: 16px;
+          margin-top: 12px;
           display: flex;
           align-items: baseline;
           gap: 6px;
-          color: #64748b;
+          color: #94a3b8;
           font-size: 0.75rem;
         }
 
         .metadata-icon {
           align-self: center;
-          color: #475569;
+          color: #14b8a6;
         }
 
         .card-footer {
-          margin-top: 20px;
-          border-top: 1px solid #1e293b;
-          padding-top: 16px;
+          margin-top: 18px;
+          border-top: 1px solid rgba(15,76,129,0.06);
+          padding-top: 14px;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 10px;
         }
 
         .status-row {
@@ -548,12 +565,15 @@ function LostFound() {
 
         .status-label {
           font-weight: 700;
-          color: #64748b;
+          color: #94a3b8;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          font-size: 0.65rem;
         }
 
         .status-badge {
           font-weight: 800;
-          padding: 2px 10px;
+          padding: 3px 12px;
           border-radius: 9999px;
           font-size: 10px;
         }
@@ -566,51 +586,55 @@ function LostFound() {
 
         .action-button-outline {
           padding: 8px 14px;
-          border: 1px solid #334155;
-          border-radius: 8px;
+          border: 1px solid rgba(15,76,129,0.12);
+          border-radius: 10px;
           font-size: 0.75rem;
           font-weight: 700;
-          color: #cbd5e1;
-          background-color: #1e293b;
+          color: #475569;
+          font-family: 'Inter', sans-serif;
+          background: rgba(255,255,255,0.7);
           text-decoration: none;
           text-align: center;
-          transition: background-color 0.2s, border-color 0.2s;
+          transition: background 0.2s, border-color 0.2s;
+          cursor: pointer;
         }
         .action-button-outline:hover {
-          background-color: #334155;
-          border-color: #475569;
+          background: rgba(255,255,255,0.95);
+          border-color: rgba(15,76,129,0.25);
+          color: #0f172a;
         }
 
         .action-button-primary {
           padding: 8px 14px;
           border: none;
-          border-radius: 8px;
+          border-radius: 10px;
           font-size: 0.75rem;
           font-weight: 700;
           color: white;
-          background-color: #4f46e5;
+          font-family: 'Inter', sans-serif;
+          background: linear-gradient(135deg, #1d4ed8, #14b8a6);
           cursor: pointer;
           text-align: center;
-          transition: background-color 0.2s;
+          transition: opacity 0.2s;
+          box-shadow: 0 2px 10px rgba(15,76,129,0.18);
         }
-        .action-button-primary:hover {
-          background-color: #6366f1;
-        }
+        .action-button-primary:hover { opacity: 0.88; }
       `}</style>
 
       {/* Header Banner */}
       <header className="bulletin-header">
         <div className="bulletin-header-text">
-          <h1 className="bulletin-title">Campus Bulletin Board</h1>
+          <h1 className="bulletin-title">Campus Lost &amp; Found</h1>
           <p className="bulletin-subtitle">
-            Explore items lost or found on campus, submit new listings, or request claims.
+            Browse items lost or found on campus. Submit listings or request claims.
           </p>
         </div>
         <button
           onClick={() => setIsReportModalOpen(true)}
           className="report-button"
         >
-          + Report a New Item
+          <Plus style={{ width: 15, height: 15 }} />
+          Report New Item
         </button>
       </header>
 
@@ -771,68 +795,124 @@ function LostFound() {
       </div>
 
       {/* Info Banner at Bottom */}
-      <div className="rounded-[2rem] border border-slate-800 bg-slate-900 p-8 shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
-        <div className="space-y-1 text-center md:text-left">
-          <h3 className="font-bold text-white text-lg">Reported an item and want to check details?</h3>
-          <p className="text-slate-400 text-sm leading-relaxed">
+      <div
+        style={{
+          borderRadius: '1.5rem',
+          border: '1px solid rgba(15,76,129,0.08)',
+          background: 'rgba(255,255,255,0.75)',
+          padding: '28px 32px',
+          boxShadow: '0 4px 24px rgba(15,76,129,0.06)',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: 24,
+          backdropFilter: 'blur(20px)',
+          flexWrap: 'wrap',
+        }}
+      >
+        <div>
+          <h3 style={{ fontWeight: 700, color: '#0f172a', fontSize: '1rem', margin: '0 0 4px', letterSpacing: '-0.015em' }}>
+            Reported an item and want to check details?
+          </h3>
+          <p style={{ color: '#64748b', fontSize: '0.875rem', lineHeight: 1.6, margin: 0 }}>
             All submitted items are tracked on the server database or client cache.
           </p>
         </div>
-        <button 
+        <button
           onClick={() => setIsReportModalOpen(true)}
-          className="inline-flex items-center gap-2 rounded-xl bg-slate-850 hover:bg-slate-800 border border-slate-750 px-6 py-3.5 text-sm font-bold text-white transition shadow cursor-pointer"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            borderRadius: 12,
+            border: '1px solid rgba(15,76,129,0.12)',
+            background: 'rgba(15,76,129,0.05)',
+            padding: '11px 20px',
+            fontSize: '0.82rem',
+            fontWeight: 700,
+            color: '#1d4ed8',
+            cursor: 'pointer',
+            transition: 'background 0.2s',
+            fontFamily: 'Inter, sans-serif',
+          }}
         >
-          File new report <ArrowRight className="h-4 w-4" />
+          File new report <ArrowRight style={{ width: 15, height: 15 }} />
         </button>
       </div>
 
       {/* --- REPORT ITEM MODAL --- */}
       {isReportModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 rounded-[2rem] border border-slate-800 w-full max-w-lg p-8 shadow-2xl relative text-slate-100">
-            <button 
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{ background: 'rgba(15,23,42,0.45)', backdropFilter: 'blur(8px)' }}>
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.97)',
+              borderRadius: '1.5rem',
+              border: '1px solid rgba(15,76,129,0.09)',
+              width: '100%',
+              maxWidth: 520,
+              padding: 32,
+              boxShadow: '0 25px 60px rgba(15,76,129,0.12)',
+              position: 'relative',
+              color: '#0f172a',
+            }}
+          >
+            <button
               onClick={handleCloseReportModal}
-              className="absolute top-6 right-6 p-1.5 text-slate-500 hover:text-slate-300 hover:bg-slate-800 rounded-xl transition cursor-pointer"
+              style={{
+                position: 'absolute',
+                top: 20,
+                right: 20,
+                padding: 6,
+                border: '1px solid rgba(15,76,129,0.10)',
+                background: 'rgba(15,76,129,0.04)',
+                borderRadius: 10,
+                cursor: 'pointer',
+                color: '#64748b',
+                display: 'flex',
+                alignItems: 'center',
+                transition: 'background 0.2s',
+              }}
             >
-              <X className="h-5 w-5" />
+              <X style={{ width: 18, height: 18 }} />
             </button>
-            
-            <div className="space-y-2 mb-6">
-              <h2 className="text-2xl font-bold text-white">Report Lost/Found Item</h2>
-              <p className="text-xs text-slate-400">Provide details to post this item on the campus bulletin board.</p>
+
+            <div style={{ marginBottom: 24 }}>
+              <h2 style={{ margin: '0 0 4px', fontSize: '1.3rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.025em' }}>Report Lost/Found Item</h2>
+              <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>Provide details to post this item on the campus bulletin board.</p>
             </div>
 
-            <form onSubmit={handleReportSubmit} className="space-y-4">
+            <form onSubmit={handleReportSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Item Name / Title</label>
+                <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Item Name / Title</label>
                 <input
                   type="text"
                   placeholder="e.g., Calculus Textbook, Leather Keyholder"
                   value={itemName}
                   onChange={(e) => setItemName(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none focus:border-indigo-500/50"
+                  style={{ width: '100%', padding: '10px 14px', border: '1px solid rgba(15,76,129,0.12)', borderRadius: 10, fontSize: '0.875rem', color: '#0f172a', background: 'rgba(255,255,255,0.9)', outline: 'none', boxSizing: 'border-box', fontFamily: 'Inter, sans-serif' }}
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Category</label>
+                  <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Category</label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none cursor-pointer focus:border-indigo-500/50"
+                    style={{ width: '100%', padding: '10px 12px', border: '1px solid rgba(15,76,129,0.12)', borderRadius: 10, fontSize: '0.875rem', color: '#0f172a', background: 'rgba(255,255,255,0.9)', outline: 'none', cursor: 'pointer', boxSizing: 'border-box', fontFamily: 'Inter, sans-serif' }}
                   >
                     <option value="Lost">Lost</option>
                     <option value="Found">Found</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Campus Location</label>
+                  <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Campus Location</label>
                   <select
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none cursor-pointer focus:border-indigo-500/50"
+                    style={{ width: '100%', padding: '10px 12px', border: '1px solid rgba(15,76,129,0.12)', borderRadius: 10, fontSize: '0.875rem', color: '#0f172a', background: 'rgba(255,255,255,0.9)', outline: 'none', cursor: 'pointer', boxSizing: 'border-box', fontFamily: 'Inter, sans-serif' }}
                   >
                     {locations.map(loc => (
                       <option key={loc} value={loc}>{loc}</option>
@@ -842,37 +922,37 @@ function LostFound() {
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Item Description</label>
+                <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Item Description</label>
                 <textarea
                   placeholder="e.g., color, markings, brand name"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows="3"
-                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none focus:border-indigo-500/50 resize-none"
+                  style={{ width: '100%', padding: '10px 14px', border: '1px solid rgba(15,76,129,0.12)', borderRadius: 10, fontSize: '0.875rem', color: '#0f172a', background: 'rgba(255,255,255,0.9)', outline: 'none', resize: 'none', boxSizing: 'border-box', fontFamily: 'Inter, sans-serif' }}
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Contact Email</label>
+                  <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Contact Email</label>
                   <input
                     type="email"
                     placeholder="e.g., name@campus.edu"
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none focus:border-indigo-500/50"
+                    style={{ width: '100%', padding: '10px 14px', border: '1px solid rgba(15,76,129,0.12)', borderRadius: 10, fontSize: '0.875rem', color: '#0f172a', background: 'rgba(255,255,255,0.9)', outline: 'none', boxSizing: 'border-box', fontFamily: 'Inter, sans-serif' }}
                     required
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Contact Phone</label>
+                  <label style={{ display: 'block', fontSize: '0.65rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Contact Phone</label>
                   <input
                     type="text"
                     placeholder="e.g., +1 800 555"
                     value={contactPhone}
                     onChange={(e) => setContactPhone(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 outline-none focus:border-indigo-500/50"
+                    style={{ width: '100%', padding: '10px 14px', border: '1px solid rgba(15,76,129,0.12)', borderRadius: 10, fontSize: '0.875rem', color: '#0f172a', background: 'rgba(255,255,255,0.9)', outline: 'none', boxSizing: 'border-box', fontFamily: 'Inter, sans-serif' }}
                   />
                 </div>
               </div>
