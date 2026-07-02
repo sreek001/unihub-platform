@@ -6,7 +6,8 @@ const bookingRoutes = require('./src/modules/booking/bookingRoutes');
 const printRoutes = require('./src/modules/print/print.routes');
 
 
-const bookingRoutes = require('./src/modules/booking/bookingRoutes'); // Make sure this path is correct
+
+
 
 const canteenRoutes = require('./src/modules/canteen/canteenRoutes');
 const lostFoundRoutes = require('./src/modules/lostFound/lostFoundRoutes');
