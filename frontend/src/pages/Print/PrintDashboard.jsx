@@ -523,7 +523,7 @@ export default function PrintDashboard() {
                           <select
                             value={layout}
                             onChange={(e) => setLayout(e.target.value)}
-                            className="print-select pl-10"
+                            className="print-select pl-10 !important"
                           >
                             <option value="Single Side">Single Side</option>
                             <option value="Double Side">Double Side</option>
