@@ -207,6 +207,10 @@ exports.updateOrderStatus = async (req, res) => {
         message: "Invalid status."
       });
     }
+// ======================================
+// GET ORDER BY ID
+// ======================================
+
 
     const order = await CanteenModel.updateOrderStatus(
       id,
@@ -223,6 +227,40 @@ exports.updateOrderStatus = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Order status updated successfully.",
+      order
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    return res.status(500).json({
+      success: false,
+      message: err.message
+    });
+
+  }
+
+};
+exports.getOrderById = async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const order = await CanteenModel.getOrderById(id);
+
+    if (!order) {
+
+      return res.status(404).json({
+        success: false,
+        message: "Order not found."
+      });
+
+    }
+
+    return res.status(200).json({
+      success: true,
       order
     });
 

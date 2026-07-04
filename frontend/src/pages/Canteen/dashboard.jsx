@@ -43,6 +43,60 @@ export default function CanteenDashboard() {
   useEffect(() => {
     fetchMenu();
   }, []);
+  const fetchActiveOrder = async () => {
+
+  if (!activeOrder?.orderId) return;
+
+  try {
+
+    const response = await fetch(
+      `http://localhost:4000/api/canteen/order/${activeOrder.orderId}`
+    );
+
+    const data = await response.json();
+console.log("Live Order:", data.order.status);
+    if (data.success) {
+
+      setActiveOrder(prev => ({
+
+  ...prev,
+
+  id: data.order.token_number,
+
+  token_number: data.order.token_number,
+
+  items: data.order.items,
+
+  total: Number(data.order.total_amount),
+
+  status: data.order.status,
+
+  queue: data.order.queuePosition ?? prev.queue,
+
+  eta: data.order.estimatedTime ?? prev.eta
+
+}));
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+};
+useEffect(() => {
+
+  if (!activeOrder?.orderId) return;
+
+  fetchActiveOrder();
+
+  const interval = setInterval(fetchActiveOrder, 3000);
+
+  return () => clearInterval(interval);
+
+}, [activeOrder?.orderId]);
 
   // ─── STATE LOGIC ───
   const updateCart = (item, delta) => {
@@ -90,6 +144,8 @@ export default function CanteenDashboard() {
 
       const maxPrep = Math.max(...cart.map(i => i.prepTime));
       setActiveOrder({
+         orderId: data.order.id,
+        token_number: data.order.token_number,
         id: data.order.token_number,
         items: [...cart],
         total: cartTotal,

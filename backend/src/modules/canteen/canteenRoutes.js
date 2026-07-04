@@ -10,7 +10,10 @@ router.get('/menu', canteenController.getMenu);
 
 
 router.post('/order', canteenController.createOrder);
-
+router.get(
+  "/order/:id",
+  canteenController.getOrderById
+);
 
 router.get(
   '/orders',
