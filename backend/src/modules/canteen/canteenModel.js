@@ -7,16 +7,23 @@ const CanteenModel = {
   // ==========================
 
   async getMenu() {
-    const query = `
-      SELECT *
-      FROM menu_items
-      WHERE available = TRUE
-      ORDER BY id;
-    `;
 
-    const { rows } = await db.query(query);
-    return rows;
-  },
+  const query = `
+    SELECT
+      id,
+      name,
+      description,
+      price,
+      prep_time,
+      available
+    FROM menu_items
+    ORDER BY id;
+  `;
+
+  const { rows } = await db.query(query);
+
+  return rows;
+},
 
   async getMenuItemById(id) {
     const query = `

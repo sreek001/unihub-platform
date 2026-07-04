@@ -28,8 +28,11 @@ router.patch(
   canteenController.updateOrderStatus
 );
 router.patch(
-  "/menu/:id/stock",
-  canteenController.updateStock
+  "/menu/:id/availability",
+  canteenController.updateAvailability
 );
-
+router.patch(
+  "/menu/:id/availability",
+  canteenController.updateAvailability
+);
 module.exports = router;

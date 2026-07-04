@@ -23,15 +23,14 @@ export default function CanteenDashboard() {
       const response = await fetch('http://localhost:4000/api/canteen/menu');
       const data = await response.json();
       const formattedMenu = data.menu.map(item => ({
-        id: item.id,
-        name: item.name,
-        price: Number(item.price),
-        prepTime: item.prep_time,
-        stock: item.stock > 0,
-        stockCount: item.stock,
-        icon: Utensils,
-        color: '#1d4ed8',
-      }));
+  id: item.id,
+  name: item.name,
+  price: Number(item.price),
+  prepTime: item.prep_time,
+  available: item.available,
+  icon: Utensils,
+  color: "#1d4ed8",
+}));
       setMenuItems(formattedMenu);
     } catch (error) {
       console.error('Error fetching menu:', error);
@@ -41,8 +40,14 @@ export default function CanteenDashboard() {
   };
 
   useEffect(() => {
-    fetchMenu();
-  }, []);
+
+  fetchMenu();
+
+  const interval = setInterval(fetchMenu, 3000);
+
+  return () => clearInterval(interval);
+
+}, []);
   const fetchActiveOrder = async () => {
 
   if (!activeOrder?.orderId) return;
@@ -100,7 +105,7 @@ useEffect(() => {
 
   // ─── STATE LOGIC ───
   const updateCart = (item, delta) => {
-    if (!item.stock) return;
+    if (!item.available) return;
     setCart(prev => {
       const existing = prev.find(i => i.id === item.id);
       if (existing) {

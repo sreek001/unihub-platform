@@ -43,19 +43,12 @@ export default function AdminDashboard() {
 
       if (data.success) {
 
-        const menu = data.menu.map(item => ({
+       const menu = data.menu.map(item => ({
+  ...item,
+  prepTime: item.prep_time
+}));
 
-          id: item.id,
-
-          name: item.name,
-
-          stock: item.stock > 0,
-
-          stockCount: item.stock
-
-        }));
-
-        setMenuItems(menu);
+setMenuItems(menu);
 
       }
 
@@ -190,13 +183,46 @@ export default function AdminDashboard() {
   // TOGGLE STOCK
   // ===============================
 
-  const toggleStock = (item) => {
+  const toggleAvailability = async (item) => {
 
-    console.log("Selected Menu Item:", item);
+  try {
 
-    // Stock popup will be connected in Part 3
+    const newAvailability = !item.available;
 
-  };
+    const response = await fetch(
+      `http://localhost:4000/api/canteen/menu/${item.id}/availability`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          available: newAvailability,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+
+      setMenuItems(prev =>
+        prev.map(menu =>
+          menu.id === item.id
+            ? { ...menu, available: newAvailability }
+            : menu
+        )
+      );
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+};
   return (
     <div className="h-screen bg-[#09090b] text-zinc-100 flex font-sans selection:bg-indigo-500/30 overflow-hidden">
       
@@ -228,9 +254,9 @@ export default function AdminDashboard() {
       {/* RIGHT SIDEBAR: MENU TOGGLES */}
       <div className="w-80 border-l border-zinc-800/80 bg-zinc-950/30">
   <AdminSidebar
-    menuItems={menuItems}
-    toggleStock={toggleStock}
-  />
+  menuItems={menuItems}
+  toggleAvailability={toggleAvailability}
+/>
 </div>
 
     </div>

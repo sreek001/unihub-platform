@@ -54,45 +54,45 @@ export default function MenuGrid({ menuItems, cart, updateCart }) {
         const ItemIcon = item.icon;
         const cartItem = cart.find(i => i.id === item.id);
         const qty = cartItem ? cartItem.quantity : 0;
-
+console.log(item);
         return (
           <motion.div
             key={item.id}
             variants={childVariants}
-            whileHover={item.stock ? { y: -6, scale: 1.015, transition: fluidSpring } : {}}
-            whileTap={item.stock ? { scale: 0.985 } : {}}
+            whileHover={item.available ? { y: -6, scale: 1.015, transition: fluidSpring } : {}}
+            whileTap={item.available ? { scale: 0.985 } : {}}
             style={{
               position: 'relative',
               overflow: 'hidden',
               padding: '22px 20px',
               borderRadius: 20,
-              border: item.stock
+              border: item.available
                 ? '1px solid rgba(15,76,129,0.07)'
                 : '1px solid rgba(15,76,129,0.04)',
-              background: item.stock
+              background: item.available
                 ? 'rgba(255,255,255,0.75)'
                 : 'rgba(249,250,251,0.6)',
               backdropFilter: 'blur(16px)',
               WebkitBackdropFilter: 'blur(16px)',
-              boxShadow: item.stock
+              boxShadow: item.available
                 ? '0 2px 16px rgba(15,76,129,0.05)'
                 : 'none',
-              opacity: item.stock ? 1 : 0.5,
-              filter: item.stock ? 'none' : 'grayscale(0.4)',
+              opacity: item.available ? 1 : 0.5,
+              filter: item.available ? 'none' : 'grayscale(0.4)',
               willChange: 'transform, opacity',
               transition: 'border-color 0.3s',
             }}
             onMouseEnter={e => {
-              if (item.stock) e.currentTarget.style.borderColor = 'rgba(212,175,55,0.35)';
+              if (item.available) e.currentTarget.style.borderColor = 'rgba(212,175,55,0.35)';
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.borderColor = item.stock
+              e.currentTarget.style.borderColor = item.available
                 ? 'rgba(15,76,129,0.07)'
                 : 'rgba(15,76,129,0.04)';
             }}
           >
             {/* Gold shimmer accent — top edge */}
-            {item.stock && (
+            {item.available && (
               <div
                 aria-hidden="true"
                 style={{
@@ -121,9 +121,9 @@ export default function MenuGrid({ menuItems, cart, updateCart }) {
                 style={{
                   padding: 9,
                   borderRadius: 12,
-                  background: item.stock ? 'rgba(29,78,216,0.08)' : 'rgba(15,76,129,0.04)',
-                  border: item.stock ? '1px solid rgba(29,78,216,0.12)' : '1px solid transparent',
-                  color: item.stock ? '#1d4ed8' : '#94a3b8',
+                  background: item.available ? 'rgba(29,78,216,0.08)' : 'rgba(15,76,129,0.04)',
+                  border: item.available ? '1px solid rgba(29,78,216,0.12)' : '1px solid transparent',
+                  color: item.available ? '#1d4ed8' : '#94a3b8',
                 }}
               >
                 <ItemIcon style={{ width: 18, height: 18 }} />
@@ -136,14 +136,14 @@ export default function MenuGrid({ menuItems, cart, updateCart }) {
                   alignItems: 'center',
                   padding: '4px 12px',
                   borderRadius: 9999,
-                  background: item.stock
+                  background: item.available
                     ? 'linear-gradient(90deg, #f59e0b, #d97706)'
                     : 'rgba(203,213,225,0.5)',
-                  color: item.stock ? '#fff' : '#94a3b8',
+                  color: item.available ? '#fff' : '#94a3b8',
                   fontSize: '0.85rem',
                   fontWeight: 800,
                   letterSpacing: '-0.01em',
-                  boxShadow: item.stock ? '0 2px 8px rgba(217,119,6,0.2)' : 'none',
+                  boxShadow: item.available ? '0 2px 8px rgba(217,119,6,0.2)' : 'none',
                 }}
               >
                 ₹{item.price}
@@ -178,7 +178,7 @@ export default function MenuGrid({ menuItems, cart, updateCart }) {
             </p>
 
             {/* Cart controls */}
-            {item.stock ? (
+            {item.available ? (
               qty > 0 ? (
                 <div
                   style={{

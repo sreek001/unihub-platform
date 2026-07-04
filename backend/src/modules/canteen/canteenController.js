@@ -65,7 +65,7 @@ exports.createOrder = async (req, res) => {
         throw new Error(`${menuItem.name} is currently unavailable.`);
       }
 
-     if (menuItem.stock < item.quantity) {
+     if (!menuItem.available) {
 
   await client.query("ROLLBACK");
 
@@ -73,10 +73,11 @@ exports.createOrder = async (req, res) => {
     success: false,
     message: "Insufficient stock.",
     itemName: menuItem.name,
-    availableStock: menuItem.stock
+    availableStock: menuitem.available
   });
 
 }
+
 
       totalAmount += Number(menuItem.price) * item.quantity;
 
@@ -106,17 +107,7 @@ exports.createOrder = async (req, res) => {
       );
 
       // Reduce stock
-      await client.query(
-        `
-        UPDATE menu_items
-        SET stock = stock - $1
-        WHERE id = $2
-        `,
-        [
-          item.quantity,
-          item.id
-        ]
-      );
+      
 
     }
 
@@ -276,30 +267,25 @@ exports.getOrderById = async (req, res) => {
   }
 
 };
-exports.updateStock = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { stock } = req.body;
+exports.updateAvailability = async (req, res) => {
 
-    if (stock === undefined || stock < 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid stock value."
-      });
-    }
+  try {
+
+    const { id } = req.params;
+    const { available } = req.body;
 
     await db.query(
       `
       UPDATE menu_items
-      SET stock = $1
+      SET available = $1
       WHERE id = $2
       `,
-      [stock, id]
+      [available, id]
     );
 
     return res.json({
       success: true,
-      message: "Stock updated successfully."
+      message: "Availability updated."
     });
 
   } catch (err) {
@@ -312,4 +298,6 @@ exports.updateStock = async (req, res) => {
     });
 
   }
+
 };
+
