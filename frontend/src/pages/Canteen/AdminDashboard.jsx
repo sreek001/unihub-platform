@@ -5,12 +5,12 @@ import "./CanteenDashboard.css";
 
 import AdminKanban from "./components/admin/AdminKanban";
 import AdminSidebar from "./components/admin/AdminSidebar";
-
+import AddItemModal from "./components/admin/AddItemModal";
 export default function AdminDashboard() {
 
   const [menuItems, setMenuItems] = useState([]);
   const [orders, setOrders] = useState([]);
-
+const [showAddModal, setShowAddModal] = useState(false);
   useEffect(() => {
 
     fetchMenu();
@@ -223,6 +223,44 @@ setMenuItems(menu);
   }
 
 };
+const addMenuItem = async (item) => {
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:4000/api/canteen/menu",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(item),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+
+      setShowAddModal(false);
+
+      fetchMenu();
+
+    } else {
+
+      alert(data.message);
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Unable to add menu item.");
+
+  }
+
+};
   return (
     <div className="h-screen bg-[#09090b] text-zinc-100 flex font-sans selection:bg-indigo-500/30 overflow-hidden">
       
@@ -256,9 +294,14 @@ setMenuItems(menu);
   <AdminSidebar
   menuItems={menuItems}
   toggleAvailability={toggleAvailability}
+   openAddModal={() => setShowAddModal(true)}
 />
 </div>
-
+<AddItemModal
+  isOpen={showAddModal}
+  onClose={() => setShowAddModal(false)}
+  onAdd={addMenuItem}
+/>
     </div>
   );
 }

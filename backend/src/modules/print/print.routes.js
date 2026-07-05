@@ -4,14 +4,26 @@ const multer = require('multer');
 const printController = require('./print.controller');
 
 // ⚙️ Configure multer for memory storage of PDFs
+const path = require("path");
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/");
+    },
+    filename: (req, file, cb) => {
+        const uniqueName = Date.now() + "-" + file.originalname;
+        cb(null, uniqueName);
+    }
+});
+
 const upload = multer({
-    storage: multer.memoryStorage(),
+    storage,
     limits: {
-        fileSize: 20 * 1024 * 1024 // 20 MB size limit
+        fileSize: 20 * 1024 * 1024
     },
     fileFilter: (req, file, cb) => {
-    cb(null, true);
-}
+        cb(null, true);
+    }
 });
 
 // 🖨️ Core Print Module Endpoints

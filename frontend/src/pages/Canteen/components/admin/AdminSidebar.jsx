@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { LayoutGrid, ToggleRight, ToggleLeft } from 'lucide-react';
 
-export default function AdminSidebar({ menuItems, toggleAvailability }) {
+export default function AdminSidebar({ menuItems, toggleAvailability, openAddModal }) {
   return (
     <div className="hidden lg:flex flex-col bg-zinc-900/40 border-l border-zinc-800/80 p-6 backdrop-blur-xl h-full">
       <div className="mb-8">
@@ -12,7 +12,12 @@ export default function AdminSidebar({ menuItems, toggleAvailability }) {
         </h2>
         <p className="text-zinc-500 text-sm mt-1 font-medium">Toggle availability live.</p>
       </div>
-
+<button
+  onClick={openAddModal}
+  className="w-full mb-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition"
+>
+  + Add Menu Item
+</button>
       <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
         {menuItems.map(item => (
           <div 

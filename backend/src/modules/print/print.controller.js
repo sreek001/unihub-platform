@@ -12,10 +12,8 @@ const createPrintJob = async (req, res) => {
             });
         }
 
-        const fileName = req.file.originalname;
-
-        // Demo values
-        const fileUrl = `/uploads/${fileName}`;
+   const fileName = req.file.filename;
+const fileUrl = `/uploads/${req.file.filename}`;
         const pageCount = 1;
 
         // Pricing

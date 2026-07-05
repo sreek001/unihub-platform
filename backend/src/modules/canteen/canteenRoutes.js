@@ -6,10 +6,16 @@ const { verifyToken, requireRole } = require('./authMiddleware');
 
 
 
-router.get('/menu', canteenController.getMenu);
+router.get("/menu", canteenController.getMenu);
+
+router.post("/menu", canteenController.addMenuItem);
 
 
 router.post('/order', canteenController.createOrder);
+router.post(
+  "/menu",
+  canteenController.addMenuItem
+);
 router.get(
   "/order/:id",
   canteenController.getOrderById
@@ -35,4 +41,5 @@ router.patch(
   "/menu/:id/availability",
   canteenController.updateAvailability
 );
+
 module.exports = router;

@@ -172,6 +172,39 @@ const CanteenModel = {
 
     return rows[0];
   },
+  async addMenuItem(item) {
+
+  const query = `
+    INSERT INTO menu_items
+    (
+      name,
+      description,
+      price,
+      prep_time,
+      available
+    )
+    VALUES
+    ($1,$2,$3,$4,$5)
+    RETURNING *;
+  `;
+
+  const { rows } = await db.query(query, [
+
+    item.name,
+
+    item.description,
+
+    item.price,
+
+    item.prep_time,
+
+    item.available
+
+  ]);
+
+  return rows[0];
+
+},
 
   async updateOrderStatus(orderId, status) {
 
@@ -191,8 +224,41 @@ const CanteenModel = {
     );
 
     return rows[0];
-  }
+  },
+// ==========================
+// ADD MENU ITEM
+// ==========================
 
+async addMenuItem(item) {
+
+  const query = `
+    INSERT INTO menu_items
+    (
+      name,
+      description,
+      price,
+      prep_time,
+      available
+    )
+    VALUES
+    ($1,$2,$3,$4,$5)
+    RETURNING *;
+  `;
+
+  const { rows } = await db.query(
+    query,
+    [
+      item.name,
+      item.description,
+      item.price,
+      item.prep_time,
+      item.available
+    ]
+  );
+
+  return rows[0];
+},
 };
+
 
 module.exports = CanteenModel;

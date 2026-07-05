@@ -300,4 +300,41 @@ exports.updateAvailability = async (req, res) => {
   }
 
 };
+exports.addMenuItem = async (req, res) => {
+
+  try {
+
+    const {
+      name,
+      description,
+      price,
+      prep_time,
+      available
+    } = req.body;
+
+    const item = await CanteenModel.addMenuItem({
+      name,
+      description,
+      price,
+      prep_time,
+      available
+    });
+
+    res.status(201).json({
+      success: true,
+      item
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+
+  }
+
+};
 
