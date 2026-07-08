@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ChefHat } from "lucide-react";
 import "./CanteenDashboard.css";
@@ -11,6 +11,11 @@ export default function AdminDashboard() {
   const [menuItems, setMenuItems] = useState([]);
   const [orders, setOrders] = useState([]);
 const [showAddModal, setShowAddModal] = useState(false);
+const previousOrderCount = useRef(0);
+
+const notificationSound = useRef(
+    new Audio("/sounds/new-order.mp3")
+);
   useEffect(() => {
 
     fetchMenu();
@@ -26,7 +31,31 @@ const [showAddModal, setShowAddModal] = useState(false);
     return () => clearInterval(interval);
 
   }, []);
+useEffect(() => {
 
+  if (previousOrderCount.current === 0) {
+
+    previousOrderCount.current = orders.length;
+
+    return;
+
+  }
+
+  if (orders.length > previousOrderCount.current) {
+
+    notificationSound.current.currentTime = 0;
+
+    notificationSound.current.play().catch(err => {
+
+      console.log("Sound blocked:", err);
+
+    });
+
+  }
+
+  previousOrderCount.current = orders.length;
+
+}, [orders]);
   // ===============================
   // FETCH MENU
   // ===============================
