@@ -2,13 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
+const authRoutes = require('./src/modules/auth/authRoutes');
 const bookingRoutes = require('./src/modules/booking/bookingRoutes');
 const printRoutes = require('./src/modules/print/print.routes');
-
-
-
-
-
 const canteenRoutes = require('./src/modules/canteen/canteenRoutes');
 const lostFoundRoutes = require('./src/modules/lostFound/lostFoundRoutes');
 const academicsRoutes = require('./src/modules/academics/academicsRoutes');
@@ -20,7 +16,11 @@ const PORT = process.env.PORT || 4000;
 const path = require('path');
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -36,6 +36,7 @@ app.get('/api', (req, res) => {
 
 
 // Mount Modules
+app.use('/api/auth', authRoutes);
 app.use('/api/booking', bookingRoutes);
 app.use('/api/print', printRoutes);
 app.use('/api/canteen', canteenRoutes);

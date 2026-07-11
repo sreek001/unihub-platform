@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar,
@@ -103,7 +105,13 @@ const modalContentVariants = {
   },
 };
 
-export default function BookingDashboard() {
+export default function BookingDashboard({ adminView = false }) {
+  // ── Auth context ──
+  const { user: authUser } = useAuth();
+  const navigate = useNavigate();
+  // Resolve the active user: prefer real auth, fall back to demo for offline dev
+  const user = authUser || DEMO_USER;
+  const isFacultyAdmin = user.role === 'faculty' || adminView;
   // ── State ──
   const [venues, setVenues] = useState([]);
   const [selectedVenue, setSelectedVenue] = useState(null);
@@ -117,15 +125,14 @@ export default function BookingDashboard() {
   const [error, setError] = useState(null);
   const [toast, setToast] = useState(null);
 
-  // ── Form state ──
+  // ── Form state (seeded from real authenticated user) ──
   const [form, setForm] = useState({
     event_name: '',
     time_slot: TIME_SLOTS[0].label,
-    user_name: DEMO_USER.name,
-    user_role: DEMO_USER.role,
+    user_name: user.name,
+    user_role: user.role,
   });
 
-  const user = DEMO_USER;
 
   function showToast(message) {
     setToast(message);
@@ -182,6 +189,11 @@ export default function BookingDashboard() {
   }
 
   function handleTabChange(tab) {
+    // RBAC Intercept: Faculty clicking 'booking' tab goes to the admin venue sub-route
+    if (user?.role === 'faculty' && tab === 'booking') {
+      navigate('/dashboard/booking-admin');
+      return;
+    }
     setActiveTab(tab);
   }
 
@@ -235,6 +247,50 @@ export default function BookingDashboard() {
 
   return (
     <div className="booking-root" style={{ padding: '32px 24px', maxWidth: 1280, margin: '0 auto' }}>
+
+      {/* ── Faculty Admin Mode Banner ── */}
+      {isFacultyAdmin && (
+        <div
+          id="faculty-admin-banner"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            marginBottom: 24,
+            padding: '12px 20px',
+            borderRadius: 12,
+            background: 'linear-gradient(135deg, rgba(20,184,166,0.10), rgba(29,78,216,0.08))',
+            border: '1px solid rgba(20,184,166,0.25)',
+            boxShadow: '0 2px 16px rgba(20,184,166,0.07)',
+          }}
+        >
+          <div style={{
+            width: 32, height: 32, borderRadius: 8,
+            background: 'linear-gradient(135deg, #14b8a6, #1d4ed8)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 2px 8px rgba(20,184,166,0.35)',
+            flexShrink: 0,
+          }}>
+            <CalendarDays style={{ width: 16, height: 16, color: '#fff' }} />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#0f766e', letterSpacing: '0.01em' }}>
+              Faculty Venue Booking Admin
+            </div>
+            <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 1 }}>
+              You have priority access to all campus venue slots. Bookings submitted here are flagged as Faculty reservations.
+            </div>
+          </div>
+          <div style={{
+            marginLeft: 'auto', fontSize: '0.68rem', fontWeight: 700,
+            color: '#0f766e', background: 'rgba(20,184,166,0.12)',
+            padding: '4px 10px', borderRadius: 6, letterSpacing: '0.05em',
+            border: '1px solid rgba(20,184,166,0.2)',
+          }}>
+            FACULTY ACCESS
+          </div>
+        </div>
+      )}
 
       {/* ── Success Toast ── */}
       <AnimatePresence>
@@ -703,7 +759,7 @@ export default function BookingDashboard() {
                     />
                   </div>
 
-                  {/* User Name + Role */}
+                  {/* User Name + Role — locked to authenticated session */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                     <div>
                       <label className="form-label">Your Name</label>
@@ -717,15 +773,30 @@ export default function BookingDashboard() {
                     </div>
                     <div>
                       <label className="form-label">Role</label>
-                      <select
-                        value={form.user_role}
-                        onChange={(e) => setForm({ ...form, user_role: e.target.value })}
+                      {/* Locked to authenticated role — not editable */}
+                      <div
                         className="form-input"
-                        style={{ cursor: 'pointer' }}
+                        title="Your role is determined by your authenticated session"
+                        style={{
+                          background: 'rgba(15,15,25,0.5)',
+                          color: isFacultyAdmin ? '#0f766e' : 'rgba(161,161,170,0.8)',
+                          cursor: 'default',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 6,
+                          fontWeight: 600,
+                          userSelect: 'none',
+                        }}
                       >
-                        <option value="Student">Student</option>
-                        <option value="Admin">Admin</option>
-                      </select>
+                        {user.role.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                        {isFacultyAdmin && (
+                          <span style={{
+                            fontSize: '0.6rem', fontWeight: 700, color: '#0f766e',
+                            background: 'rgba(20,184,166,0.12)', padding: '2px 6px',
+                            borderRadius: 4, letterSpacing: '0.05em',
+                          }}>PRIORITY</span>
+                        )}
+                      </div>
                     </div>
                   </div>
 

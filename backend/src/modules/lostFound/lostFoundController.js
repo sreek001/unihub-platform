@@ -1,4 +1,4 @@
-const pool = require('./db');
+const { pool } = require('./db');
 const { cleanupLostFoundPosts } = require('../../cron/cleanupLostFound');
 
 // --- Fallback In-Memory Datastore ---

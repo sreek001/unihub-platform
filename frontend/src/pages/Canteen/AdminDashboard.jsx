@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChefHat } from "lucide-react";
+import { ChefHat, LogOut } from "lucide-react";
 import "./CanteenDashboard.css";
+import { useAuth } from "../../context/AuthContext";
 
 import AdminKanban from "./components/admin/AdminKanban";
 import AdminSidebar from "./components/admin/AdminSidebar";
 import AddItemModal from "./components/admin/AddItemModal";
 export default function AdminDashboard() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    logout();           // clears localStorage token + resets auth state
+    navigate('/login'); // redirect to login screen
+  };
 
   const [menuItems, setMenuItems] = useState([]);
   const [orders, setOrders] = useState([]);
-const [showAddModal, setShowAddModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   useEffect(() => {
 
     fetchMenu();
@@ -278,9 +287,46 @@ const addMenuItem = async (item) => {
             </h1>
             <p className="text-zinc-500 text-sm mt-1 font-medium">{orders.length} Active Tickets in Queue</p>
           </div>
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-2 flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="font-bold text-sm tracking-wide">SYSTEM LIVE</span>
+          <div className="flex items-center gap-3">
+            <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-2 flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="font-bold text-sm tracking-wide">SYSTEM LIVE</span>
+            </div>
+            {/* ── Sign Out Button ── */}
+            <button
+              id="canteen-admin-signout"
+              onClick={handleSignOut}
+              title="Sign out of admin panel"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 7,
+                padding: '8px 16px',
+                borderRadius: 12,
+                border: '1px solid rgba(239,68,68,0.25)',
+                background: 'rgba(239,68,68,0.08)',
+                color: '#f87171',
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.18s',
+                fontFamily: 'inherit',
+                letterSpacing: '0.01em',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(239,68,68,0.18)';
+                e.currentTarget.style.borderColor = 'rgba(239,68,68,0.5)';
+                e.currentTarget.style.boxShadow = '0 0 18px rgba(239,68,68,0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(239,68,68,0.08)';
+                e.currentTarget.style.borderColor = 'rgba(239,68,68,0.25)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <LogOut size={15} />
+              Sign Out
+            </button>
           </div>
         </motion.header>
 
