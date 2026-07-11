@@ -1,7 +1,8 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { OriginButton } from '@/components/ui/origin-button';
 import {
   ArrowLeft, CheckCircle2, XCircle, Clock, Building2,
   Calendar, User, Tag, Filter, LogOut, Shield, Users,
@@ -178,18 +179,21 @@ export default function VenueAuthorizerPage() {
 
                   {isPending && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flexShrink: 0, alignSelf: 'center' }}>
-                      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
+                      <OriginButton
                         onClick={() => handleDecision(req.id, 'approved')}
                         disabled={isProcessing}
-                        style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, border: '1px solid rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.08)', color: '#059669', fontSize: 13, fontWeight: 700, cursor: isProcessing ? 'wait' : 'pointer', fontFamily: 'inherit', opacity: isProcessing ? 0.6 : 1 }}>
-                        <CheckCircle2 size={14} /> {isProcessing ? 'Processing…' : 'Approve'}
-                      </motion.button>
-                      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
+                        loading={isProcessing}
+                        className="border-[0.5px] border-emerald-500/30 bg-emerald-500/5 text-emerald-600 hover:bg-emerald-500/10 h-10 px-4 rounded-xl font-bold flex items-center gap-2"
+                      >
+                        <CheckCircle2 size={14} /> Approve
+                      </OriginButton>
+                      <OriginButton
                         onClick={() => handleDecision(req.id, 'rejected')}
                         disabled={isProcessing}
-                        style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, border: '1px solid rgba(220,38,38,0.2)', background: 'rgba(220,38,38,0.06)', color: '#dc2626', fontSize: 13, fontWeight: 700, cursor: isProcessing ? 'wait' : 'pointer', fontFamily: 'inherit', opacity: isProcessing ? 0.6 : 1 }}>
+                        className="border-[0.5px] border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10 h-10 px-4 rounded-xl font-bold flex items-center gap-2"
+                      >
                         <XCircle size={14} /> Reject
-                      </motion.button>
+                      </OriginButton>
                     </div>
                   )}
 

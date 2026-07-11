@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth, getDefaultRouteForRole } from '../../context/AuthContext';
 import { GraduationCap, Eye, EyeOff, Loader2, AlertCircle, X } from 'lucide-react';
+import { BackgroundPaths } from '@/components/ui/animated-infinity-background';
+import { OriginButton } from '@/components/ui/origin-button';
 
 // ── Role badge config ─────────────────────────────────────────────────────────
 const ROLE_META = {
@@ -116,82 +118,14 @@ export default function LoginPage() {
   if (loading) return null;
 
   return (
-    <div
-      id="login-page"
-      style={{
-        minHeight:  '100vh',
-        background: '#09090b',
-        display:    'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontFamily: "'Inter', system-ui, sans-serif",
-        padding:    '24px 16px',
-        position:   'relative',
-        overflow:   'hidden',
-      }}
+    <BackgroundPaths
+      title="UniHub Platform"
+      subtitle="Seamless Campus Automation Ecosystems"
+      titleBackground={true}
+      backgroundStyle="gradient"
     >
-      {/* ── Animated mesh accent orbs ── */}
-      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-        {/* Indigo top-left */}
-        <div
-          style={{
-            position:   'absolute',
-            top:        '-15%',
-            left:       '-10%',
-            width:       600,
-            height:      600,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%)',
-            animation:  'meshFloat 14s ease-in-out infinite',
-            filter:     'blur(1px)',
-          }}
-        />
-        {/* Teal bottom-right */}
-        <div
-          style={{
-            position:   'absolute',
-            bottom:     '-20%',
-            right:      '-10%',
-            width:       700,
-            height:      700,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(20,184,166,0.14) 0%, transparent 70%)',
-            animation:  'meshFloatB 18s ease-in-out infinite',
-            filter:     'blur(1px)',
-          }}
-        />
-        {/* Amber mid-right accent */}
-        <div
-          style={{
-            position:   'absolute',
-            top:        '40%',
-            right:      '20%',
-            width:       400,
-            height:      400,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(245,158,11,0.07) 0%, transparent 70%)',
-            animation:  'meshFloatC 22s ease-in-out infinite',
-          }}
-        />
-      </div>
-
-      {/* ── Subtle grid overlay ── */}
-      <div
-        aria-hidden="true"
-        style={{
-          position:        'absolute',
-          inset:           0,
-          pointerEvents:   'none',
-          backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px',
-        }}
-      />
-
       {/* ── Content container ── */}
-      <div style={{ width: '100%', maxWidth: 440, position: 'relative', zIndex: 10 }}>
+      <div style={{ width: '100%', maxWidth: 440, position: 'relative', zIndex: 10, margin: '20px auto 0', textAlign: 'left' }}>
 
         {/* ── Logo lockup ── */}
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
@@ -437,41 +371,14 @@ export default function LoginPage() {
             </div>
 
             {/* Submit button */}
-            <button
+            <OriginButton
               id="btn-submit"
               type="submit"
-              disabled={submitting}
-              style={{
-                marginTop:     4,
-                padding:      '13px 0',
-                borderRadius:  12,
-                border:       'none',
-                cursor:        submitting ? 'not-allowed' : 'pointer',
-                fontWeight:    700,
-                fontSize:      15,
-                letterSpacing: '0.01em',
-                fontFamily:   "'Inter', system-ui, sans-serif",
-                display:      'flex',
-                alignItems:   'center',
-                justifyContent: 'center',
-                gap:            8,
-                transition:   'all 0.2s',
-                background:    submitting
-                  ? 'rgba(99,102,241,0.35)'
-                  : 'linear-gradient(135deg,#4f46e5,#0d9488)',
-                color:        '#fff',
-                boxShadow:     submitting ? 'none' : '0 0 28px rgba(99,102,241,0.35)',
-              }}
+              loading={submitting}
+              className="w-full mt-1"
             >
-              {submitting ? (
-                <>
-                  <Loader2 size={18} style={{ animation: 'loginSpin 0.8s linear infinite' }} />
-                  {mode === 'login' ? 'Signing in…' : 'Creating account…'}
-                </>
-              ) : (
-                mode === 'login' ? 'Sign In' : 'Create Account'
-              )}
-            </button>
+              {mode === 'login' ? 'Sign In' : 'Create Account'}
+            </OriginButton>
           </form>
         </div>
 
@@ -567,6 +474,6 @@ export default function LoginPage() {
         #login-page input::placeholder { color: #3f3f46; }
         #login-page input              { outline: none;  }
       `}</style>
-    </div>
+    </BackgroundPaths>
   );
 }

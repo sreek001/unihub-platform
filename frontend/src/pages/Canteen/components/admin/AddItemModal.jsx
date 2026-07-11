@@ -1,6 +1,7 @@
     import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, PlusCircle } from "lucide-react";
+import { OriginButton } from "@/components/ui/origin-button";
 
 export default function AddItemModal({
   isOpen,
@@ -175,22 +176,12 @@ export default function AddItemModal({
               Available
             </label>
 
-            <button
+            <OriginButton
               onClick={submit}
-              style={{
-                width: "100%",
-                marginTop: 25,
-                background: "#2563eb",
-                color: "white",
-                border: "none",
-                padding: 14,
-                borderRadius: 12,
-                cursor: "pointer",
-                fontWeight: 700,
-              }}
+              className="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition"
             >
               Add Item
-            </button>
+            </OriginButton>
 
           </motion.div>
 
