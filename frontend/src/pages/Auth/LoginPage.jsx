@@ -31,26 +31,7 @@ const DEMO_ACCOUNTS = [
 // role 'venue_admin'   → '/venue/admin'   (spatial allocation control board)
 
 // ── Shared input styles ───────────────────────────────────────────────────────
-const inputBase = {
-  width:      '100%',
-  padding:    '12px 14px',
-  background: 'rgba(9,9,11,0.65)',
-  border:     '1px solid rgba(63,63,70,0.65)',
-  borderRadius: 10,
-  color:      '#fafafa',
-  fontSize:    14,
-  boxSizing:  'border-box',
-  transition: 'border-color 0.2s, box-shadow 0.2s, background 0.2s',
-  fontFamily: "'Inter', system-ui, sans-serif",
-  outline:    'none',
-};
-
-const inputFocus = {
-  ...inputBase,
-  borderColor: 'rgba(99,102,241,0.75)',
-  boxShadow:   '0 0 0 3px rgba(99,102,241,0.14), 0 0 14px rgba(99,102,241,0.1)',
-  background:  'rgba(15,15,22,0.85)',
-};
+const inputClassName = "w-full px-[14px] py-[12px] text-sm transition-all duration-200 outline-none bg-white/80 border border-slate-200/80 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500/50 backdrop-blur-md rounded-xl";
 
 export default function LoginPage() {
   const navigate  = useNavigate();
@@ -118,106 +99,104 @@ export default function LoginPage() {
   if (loading) return null;
 
   return (
-    <BackgroundPaths
-      title="UniHub Platform"
-      subtitle="Seamless Campus Automation Ecosystems"
-      titleBackground={true}
-      backgroundStyle="gradient"
-    >
-      {/* ── Content container ── */}
-      <div style={{ width: '100%', maxWidth: 440, position: 'relative', zIndex: 10, margin: '20px auto 0', textAlign: 'left' }}>
+    <div className="bg-slate-50 min-h-screen w-full">
+      <BackgroundPaths
+        title="UniHub Platform"
+        subtitle="Seamless Campus Automation Ecosystems"
+        titleBackground={true}
+        backgroundStyle="gradient"
+      >
+        {/* ── Content container ── */}
+        <div style={{ width: '100%', maxWidth: 440, position: 'relative', zIndex: 10, margin: '20px auto 0', textAlign: 'left' }}>
 
-        {/* ── Logo lockup ── */}
-        <div style={{ textAlign: 'center', marginBottom: 36 }}>
-          <a
-            href="/"
-            style={{
-              display:       'inline-flex',
-              flexDirection: 'column',
-              alignItems:    'center',
-              gap:            12,
-              textDecoration: 'none',
-            }}
-          >
-            <div
+          {/* ── Logo lockup ── */}
+          <div style={{ textAlign: 'center', marginBottom: 36 }}>
+            <a
+              href="/"
               style={{
-                width:      56,
-                height:     56,
-                borderRadius: 16,
-                background: 'linear-gradient(135deg,#4f46e5,#0d9488)',
-                display:    'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow:  '0 0 40px rgba(99,102,241,0.35), 0 0 0 1px rgba(99,102,241,0.2)',
+                display:       'inline-flex',
+                flexDirection: 'column',
+                alignItems:    'center',
+                gap:            12,
+                textDecoration: 'none',
               }}
             >
-              <GraduationCap size={28} color="#fff" />
-            </div>
-            <span
-              style={{
-                fontSize:   28,
-                fontWeight: 900,
-                letterSpacing: '-0.5px',
-                backgroundImage: 'linear-gradient(90deg,#818cf8,#34d399)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor:  'transparent',
-              }}
-            >
-              UniHub
-            </span>
-          </a>
-          <p style={{ color: '#52525b', fontSize: 14, marginTop: 8, marginBottom: 0 }}>
-            Campus platform — sign in to continue
-          </p>
-        </div>
-
-        {/* ── Glassmorphism card ── */}
-        <div
-          style={{
-            background:           'rgba(24,24,27,0.75)',
-            border:               '1px solid rgba(63,63,70,0.6)',
-            borderRadius:         20,
-            backdropFilter:       'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            padding:              '36px 32px',
-            boxShadow:            '0 24px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
-          }}
-        >
-          {/* ── Mode tabs ── */}
-          <div
-            style={{
-              display:      'flex',
-              background:   'rgba(9,9,11,0.6)',
-              borderRadius:  12,
-              padding:       4,
-              marginBottom:  28,
-              border:       '1px solid rgba(63,63,70,0.5)',
-            }}
-          >
-            {['login', 'register'].map((m) => (
-              <button
-                key={m}
-                id={`tab-${m}`}
-                onClick={() => { setMode(m); setError(''); setSuccessRole(null); }}
+              <div
                 style={{
-                  flex:         1,
-                  padding:      '9px 0',
-                  borderRadius:  9,
-                  border:       'none',
-                  cursor:       'pointer',
-                  fontWeight:    600,
-                  fontSize:      14,
-                  fontFamily:   "'Inter', system-ui, sans-serif",
-                  transition:   'all 0.2s',
-                  background:   mode === m ? 'rgba(99,102,241,0.18)' : 'transparent',
-                  color:        mode === m ? '#818cf8'                : '#71717a',
-                  boxShadow:    mode === m ? '0 0 0 1px rgba(99,102,241,0.35)' : 'none',
+                  width:      56,
+                  height:     56,
+                  borderRadius: 16,
+                  background: 'linear-gradient(135deg,#4f46e5,#0d9488)',
+                  display:    'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow:  '0 0 40px rgba(99,102,241,0.35), 0 0 0 1px rgba(99,102,241,0.2)',
                 }}
               >
-                {m === 'login' ? 'Sign In' : 'Register'}
-              </button>
-            ))}
+                <GraduationCap size={28} color="#fff" />
+              </div>
+              <span
+                style={{
+                  fontSize:   28,
+                  fontWeight: 900,
+                  letterSpacing: '-0.5px',
+                  backgroundImage: 'linear-gradient(90deg,#818cf8,#34d399)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor:  'transparent',
+                }}
+              >
+                UniHub
+              </span>
+            </a>
+            <p
+              className="text-slate-600 font-medium"
+              style={{ fontSize: 14, marginTop: 8, marginBottom: 0 }}
+            >
+              Campus platform — sign in to continue
+            </p>
           </div>
+
+          {/* ── Glassmorphism card ── */}
+          <div
+            className="bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.08)] rounded-3xl"
+            style={{
+              padding:              '36px 32px',
+            }}
+          >
+            {/* ── Mode tabs ── */}
+            <div
+              className="bg-slate-100/80 border border-slate-200/50 backdrop-blur-md"
+              style={{
+                display:      'flex',
+                borderRadius:  12,
+                padding:       4,
+                marginBottom:  28,
+              }}
+            >
+              {['login', 'register'].map((m) => (
+                <button
+                  key={m}
+                  id={`tab-${m}`}
+                  onClick={() => { setMode(m); setError(''); setSuccessRole(null); }}
+                  style={{
+                    flex:         1,
+                    padding:      '9px 0',
+                    borderRadius:  9,
+                    border:       'none',
+                    cursor:       'pointer',
+                    fontWeight:    600,
+                    fontSize:      14,
+                    fontFamily:   "'Inter', system-ui, sans-serif",
+                    transition:   'all 0.2s',
+                    background:   mode === m ? 'rgba(99,102,241,0.12)' : 'transparent',
+                    color:        mode === m ? '#4f46e5'                : '#475569',
+                    boxShadow:    mode === m ? '0 1px 2px rgba(99,102,241,0.1), 0 0 0 1px rgba(99,102,241,0.2)' : 'none',
+                  }}
+                >
+                  {m === 'login' ? 'Sign In' : 'Register'}
+                </button>
+              ))}
+            </div>
 
           {/* ── Success flash banner ── */}
           {successRole && (
@@ -283,7 +262,8 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="input-name"
-                  style={{ display: 'block', color: '#a1a1aa', fontSize: 13, fontWeight: 500, marginBottom: 6 }}
+                  className="text-slate-600 font-medium"
+                  style={{ display: 'block', fontSize: 13, marginBottom: 6 }}
                 >
                   Full Name
                 </label>
@@ -294,9 +274,7 @@ export default function LoginPage() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Anannya Sunny"
                   required
-                  style={inputBase}
-                  onFocus={(e) => Object.assign(e.target.style, inputFocus)}
-                  onBlur={(e)  => Object.assign(e.target.style, inputBase)}
+                  className={inputClassName}
                 />
               </div>
             )}
@@ -305,7 +283,8 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="input-email"
-                style={{ display: 'block', color: '#a1a1aa', fontSize: 13, fontWeight: 500, marginBottom: 6 }}
+                className="text-slate-600 font-medium"
+                style={{ display: 'block', fontSize: 13, marginBottom: 6 }}
               >
                 Campus Email
               </label>
@@ -317,9 +296,7 @@ export default function LoginPage() {
                 placeholder="you@unihub.com"
                 required
                 autoComplete="email"
-                style={inputBase}
-                onFocus={(e) => Object.assign(e.target.style, inputFocus)}
-                onBlur={(e)  => Object.assign(e.target.style, inputBase)}
+                className={inputClassName}
               />
             </div>
 
@@ -327,7 +304,8 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="input-password"
-                style={{ display: 'block', color: '#a1a1aa', fontSize: 13, fontWeight: 500, marginBottom: 6 }}
+                className="text-slate-600 font-medium"
+                style={{ display: 'block', fontSize: 13, marginBottom: 6 }}
               >
                 Security Password
               </label>
@@ -340,9 +318,7 @@ export default function LoginPage() {
                   placeholder={mode === 'login' ? 'Your password' : 'Min. 8 characters'}
                   required
                   autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                  style={{ ...inputBase, paddingRight: 44 }}
-                  onFocus={(e) => Object.assign(e.target.style, { ...inputFocus, paddingRight: '44px' })}
-                  onBlur={(e)  => Object.assign(e.target.style, { ...inputBase, paddingRight: '44px' })}
+                  className={`${inputClassName} pr-11`}
                 />
                 <button
                   type="button"
@@ -358,12 +334,12 @@ export default function LoginPage() {
                     border:     'none',
                     cursor:     'pointer',
                     padding:     0,
-                    color:      '#52525b',
+                    color:      '#64748b',
                     display:    'flex',
                     transition: 'color 0.15s',
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = '#a1a1aa'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = '#52525b'; }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = '#334155'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = '#64748b'; }}
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -384,21 +360,16 @@ export default function LoginPage() {
 
         {/* ── Demo accounts quick-fill panel ── */}
         <div
+          className="bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl"
           style={{
             marginTop:            20,
-            background:           'rgba(24,24,27,0.5)',
-            border:               '1px solid rgba(63,63,70,0.4)',
-            borderRadius:          16,
-            backdropFilter:       'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
             padding:              '20px 24px',
           }}
         >
           <p
+            className="text-slate-600 font-semibold"
             style={{
-              color:          '#52525b',
               fontSize:        12,
-              fontWeight:      600,
               textTransform:  'uppercase',
               letterSpacing:  '0.08em',
               margin:         '0 0 12px',
@@ -445,7 +416,7 @@ export default function LoginPage() {
               );
             })}
           </div>
-          <p style={{ color: '#3f3f46', fontSize: 11, margin: '12px 0 0', textAlign: 'center' }}>
+          <p style={{ color: '#475569', fontSize: 11, margin: '12px 0 0', textAlign: 'center' }}>
             Click a card to pre-fill credentials, then Sign In
           </p>
         </div>
@@ -471,9 +442,9 @@ export default function LoginPage() {
         @keyframes loginSpin {
           to { transform: rotate(360deg); }
         }
-        #login-page input::placeholder { color: #3f3f46; }
-        #login-page input              { outline: none;  }
+        input              { outline: none;  }
       `}</style>
     </BackgroundPaths>
+  </div>
   );
 }

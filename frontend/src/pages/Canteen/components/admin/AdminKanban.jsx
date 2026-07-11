@@ -16,14 +16,14 @@ export default function AdminKanban({ orders, advanceStatus }) {
         const Icon = col.icon;
 
         return (
-          <div key={col.id} className="flex flex-col h-full bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+          <div key={col.id} className="flex flex-col h-full bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl overflow-hidden">
             {/* Column Header */}
-            <div className={`p-4 border-b border-slate-100 flex items-center justify-between ${col.bg}`}>
+            <div className={`p-4 border-b border-slate-100/50 flex items-center justify-between ${col.bg}`}>
               <div className="flex items-center gap-2">
                 <Icon size={18} className={col.color} />
-                <h3 className={`font-black tracking-wide ${col.color}`}>{col.label}</h3>
+                <h3 className={`font-bold tracking-wide ${col.color}`}>{col.label}</h3>
               </div>
-              <span className="bg-slate-100 px-3 py-1 rounded-full text-xs font-bold text-slate-500">
+              <span className="bg-slate-100/80 px-3 py-1 rounded-full text-xs font-bold text-slate-600">
                 {columnOrders.length}
               </span>
             </div>
@@ -39,7 +39,7 @@ export default function AdminKanban({ orders, advanceStatus }) {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ type: "spring", stiffness: 200, damping: 20 }}
                     key={order.id}
-                    className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden group"
+                    className="bg-white/80 backdrop-blur-md border border-slate-200/60 rounded-2xl p-5 shadow-sm relative overflow-hidden group"
                   >
                     {/* Accent line on the left */}
                     <div className={`absolute top-0 left-0 w-1 h-full ${col.bg.replace('/10', '')}`} />

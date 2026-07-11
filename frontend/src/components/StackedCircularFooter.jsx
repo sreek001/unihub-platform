@@ -97,8 +97,10 @@ export default function StackedCircularFooter() {
     <footer
       style={{
         position: 'relative',
-        background: '#fafafc',
-        borderTop: '1px solid rgba(15,76,129,0.06)',
+        background: 'rgba(255,255,255,0.60)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderTop: '1px solid rgba(15,76,129,0.08)',
         overflow: 'hidden',
         padding: '72px 24px 48px',
       }}

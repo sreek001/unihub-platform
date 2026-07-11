@@ -139,7 +139,7 @@ export default function Vault() {
       </div>
 
       {/* Filter and search bar */}
-      <div className="space-y-4 bg-white/70 backdrop-blur-md border border-blue-900/[0.05] p-5 rounded-2xl shadow-sm">
+      <div className="space-y-4 bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 rounded-2xl">
         <div className="relative w-full">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
@@ -147,7 +147,7 @@ export default function Vault() {
             placeholder="Search by note title, subject, or uploader name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white border border-blue-900/[0.08] focus:border-blue-500/40 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 outline-none transition shadow-sm"
+            className="w-full bg-white/80 border border-slate-300/80 text-slate-900 focus:ring-2 focus:ring-indigo-500/50 backdrop-blur-md rounded-xl pl-10 pr-4 py-2.5 text-sm placeholder-slate-400 outline-none transition shadow-sm"
           />
         </div>
         
@@ -211,7 +211,7 @@ export default function Vault() {
           {filteredResources.map((res) => (
             <div
               key={res.id}
-              className="bg-white/50 border border-blue-900/[0.06] hover:border-blue-500/20 rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 group hover:shadow-lg hover:shadow-blue-500/[0.02]"
+              className="bg-white/80 backdrop-blur-md border border-slate-200/60 shadow-sm rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 group hover:shadow-lg hover:shadow-blue-500/[0.02]"
             >
               <div className="space-y-4">
                 {/* Type and Semester */}
@@ -258,7 +258,7 @@ export default function Vault() {
       {/* Upload Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-          <div className="bg-white border border-blue-900/10 rounded-3xl p-6 w-full max-w-md shadow-2xl relative">
+          <div className="bg-white/95 backdrop-blur-xl border border-blue-900/10 rounded-3xl p-6 w-full max-w-md shadow-2xl relative">
             <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
               <Database className="w-5 h-5 text-blue-600" /> Upload a PDF Document
             </h2>

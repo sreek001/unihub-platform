@@ -76,11 +76,11 @@ export default function Settings() {
       <div className="grid grid-cols-1 gap-6">
         {/* Switch Profile Dropdown (Demo Mode Switcher) */}
         {users.length > 0 && (
-          <div className="bg-white/85 border border-blue-900/[0.04] rounded-3xl p-6 shadow-sm">
-            <h2 className="text-base font-bold text-slate-800 mb-2 flex items-center gap-2">
-              <User className="w-4 h-4 text-blue-600" /> Switch Simulated Profile
+          <div className="bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-6">
+            <h2 className="text-base font-bold text-slate-900 mb-2 flex items-center gap-2 tracking-tight">
+              <User className="text-indigo-600 w-4 h-4" /> Switch Simulated Profile
             </h2>
-            <p className="text-xs text-slate-400 mb-4 font-medium">
+            <p className="text-xs text-slate-600 mb-4 font-medium">
               Select which student account to simulate for testing book handovers and requests.
             </p>
             <select
@@ -89,7 +89,7 @@ export default function Settings() {
                 const u = users.find((x) => x.id === e.target.value);
                 if (u) setActiveUser(u);
               }}
-              className="w-full bg-white border border-blue-900/[0.12] focus:border-blue-500/40 rounded-xl px-3 py-2.5 text-sm text-slate-700 outline-none cursor-pointer shadow-sm"
+              className="w-full bg-white/80 border border-slate-300/80 text-slate-900 focus:ring-2 focus:ring-indigo-500/50 backdrop-blur-md rounded-xl px-3 py-2.5 text-sm outline-none cursor-pointer shadow-sm"
             >
               {users.map((u) => (
                 <option key={u.id} value={u.id}>
@@ -101,9 +101,9 @@ export default function Settings() {
         )}
 
         {/* Profile Card */}
-        <div className="bg-white/85 border border-blue-900/[0.04] rounded-3xl p-6 shadow-sm">
-          <h2 className="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <User className="w-4 h-4 text-blue-600" /> Edit Profile Details
+        <div className="bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-6">
+          <h2 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2 tracking-tight">
+            <User className="text-indigo-600 w-4 h-4" /> Edit Profile Details
           </h2>
 
           <form onSubmit={handleSaveChanges} className="space-y-4">
@@ -114,7 +114,7 @@ export default function Settings() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-white border border-blue-900/[0.12] focus:border-blue-500/40 rounded-xl px-4 py-2.5 text-sm text-slate-700 outline-none shadow-sm"
+                className="w-full bg-white/80 border border-slate-300/80 text-slate-900 focus:ring-2 focus:ring-indigo-500/50 backdrop-blur-md rounded-xl px-4 py-2.5 text-sm outline-none shadow-sm"
               />
             </div>
 
@@ -126,7 +126,7 @@ export default function Settings() {
                   required
                   value={branch}
                   onChange={(e) => setBranch(e.target.value)}
-                  className="w-full bg-white border border-blue-900/[0.12] focus:border-blue-500/40 rounded-xl px-4 py-2.5 text-sm text-slate-700 outline-none shadow-sm"
+                  className="w-full bg-white/80 border border-slate-300/80 text-slate-900 focus:ring-2 focus:ring-indigo-500/50 backdrop-blur-md rounded-xl px-4 py-2.5 text-sm outline-none shadow-sm"
                   placeholder="e.g. Computer Science"
                 />
               </div>
@@ -136,7 +136,7 @@ export default function Settings() {
                 <select
                   value={semester}
                   onChange={(e) => setSemester(e.target.value)}
-                  className="w-full bg-white border border-blue-900/[0.12] focus:border-blue-500/40 rounded-xl px-3 py-2.5 text-sm text-slate-700 outline-none cursor-pointer shadow-sm"
+                  className="w-full bg-white/80 border border-slate-300/80 text-slate-900 focus:ring-2 focus:ring-indigo-500/50 backdrop-blur-md rounded-xl px-3 py-2.5 text-sm outline-none cursor-pointer shadow-sm"
                 >
                   <option value="1">Semester 1</option>
                   <option value="2">Semester 2</option>
@@ -163,9 +163,9 @@ export default function Settings() {
         </div>
 
         {/* Notifications Mock Card */}
-        <div className="bg-white/85 border border-blue-900/[0.04] rounded-3xl p-6 shadow-sm opacity-90">
-          <h2 className="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <Bell className="w-4 h-4 text-blue-600" /> Notifications &amp; Sounds
+        <div className="bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-6 opacity-95">
+          <h2 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2 tracking-tight">
+            <Bell className="text-indigo-600 w-4 h-4" /> Notifications &amp; Sounds
           </h2>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -187,9 +187,9 @@ export default function Settings() {
         </div>
 
         {/* Account Mock Card */}
-        <div className="bg-white/85 border border-blue-900/[0.04] rounded-3xl p-6 shadow-sm opacity-90">
-          <h2 className="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <Shield className="w-4 h-4 text-blue-600" /> Privacy &amp; Security
+        <div className="bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-6 opacity-95">
+          <h2 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2 tracking-tight">
+            <Shield className="text-indigo-600 w-4 h-4" /> Privacy &amp; Security
           </h2>
           <div className="space-y-4">
             <div className="flex items-center justify-between">

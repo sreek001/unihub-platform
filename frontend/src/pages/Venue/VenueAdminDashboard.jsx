@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -51,14 +51,14 @@ export default function VenueAdminDashboard() {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fafafc', fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: 'transparent', fontFamily: "'Inter', system-ui, sans-serif" }}>
 
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 260, damping: 28 }}
         style={{
-          background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(16px)',
+          background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
           borderBottom: '1px solid rgba(15,23,42,0.07)',
           padding: '0 32px', height: 68,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -139,24 +139,25 @@ export default function VenueAdminDashboard() {
             <LogOut size={15} /> Sign Out
           </button>
         </div>
-      </motion.header>
+    </motion.header>
 
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '36px 32px' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '36px 32px' }}>
 
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 22, delay: 0.05 }} style={{ marginBottom: 28 }}>
-          <h1 style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.025em', margin: 0 }}>Campus Venue Overview</h1>
-          <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: 4, fontWeight: 500 }}>Manage all bookable spaces · Monitor availability · Authorize faculty requests</p>
-        </motion.div>
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 22, delay: 0.05 }} style={{ marginBottom: 28 }}>
+        <h1 style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.025em', margin: 0 }}>Campus Venue Overview</h1>
+        <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: 4, fontWeight: 500 }}>Manage all bookable spaces · Monitor availability · Authorize faculty requests</p>
+      </motion.div>
 
         <motion.div variants={containerVariants} initial="hidden" animate="show" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 18, marginBottom: 32 }}>
           {stats.map((stat) => {
             const Icon = stat.icon;
             return (
               <motion.div key={stat.label} variants={itemVariants} style={{
-                background: '#fff', border: '1px solid rgba(15,23,42,0.07)',
+                background: 'rgba(255,255,255,0.60)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
+                border: '1px solid rgba(255,255,255,0.60)',
                 borderRadius: 18, padding: '24px 26px',
                 display: 'flex', alignItems: 'center', gap: 16,
-                boxShadow: '0 2px 12px rgba(15,23,42,0.05)', position: 'relative', overflow: 'hidden',
+                boxShadow: '0 8px 30px rgba(0,0,0,0.04)', position: 'relative', overflow: 'hidden',
               }}>
                 <div style={{ width: 52, height: 52, borderRadius: 14, background: stat.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 4px 12px ${stat.glow}` }}>
                   <Icon size={24} color={stat.color} />
@@ -171,8 +172,8 @@ export default function VenueAdminDashboard() {
           })}
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 22, delay: 0.2 }} style={{ background: '#fff', border: '1px solid rgba(15,23,42,0.07)', borderRadius: 20, overflow: 'hidden', boxShadow: '0 2px 16px rgba(15,23,42,0.05)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2.5fr 1fr 1.3fr 0.8fr 1fr', padding: '14px 24px', background: '#f8fafc', borderBottom: '1px solid rgba(15,23,42,0.07)', fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 22, delay: 0.2 }} style={{ background: 'rgba(255,255,255,0.60)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.60)', borderRadius: 20, overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2.5fr 1fr 1.3fr 0.8fr 1fr', padding: '14px 24px', background: 'rgba(248,250,252,0.60)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(15,23,42,0.07)', fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             <span>Venue Name</span><span>Type</span><span>Location</span><span>Capacity</span><span>Status</span>
           </div>
           <motion.div variants={containerVariants} initial="hidden" animate="show">

@@ -79,10 +79,12 @@ export default function AddItemModal({
             transition={{ type: 'spring', stiffness: 340, damping: 28 }}
             style={{
               width: 450,
-              background: '#ffffff',
+              background: 'rgba(255,255,255,0.95)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
               borderRadius: 20,
               padding: 28,
-              border: '1px solid #e2e8f0',
+              border: '1px solid rgba(226,232,240,0.8)',
               boxShadow: '0 20px 60px rgba(15,23,42,0.12)',
             }}
           >

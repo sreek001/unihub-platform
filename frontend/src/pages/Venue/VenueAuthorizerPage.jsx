@@ -61,13 +61,13 @@ export default function VenueAuthorizerPage() {
   const pendingCount = requests.filter(r => r.status === 'pending').length;
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fafafc', fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: 'transparent', fontFamily: "'Inter', system-ui, sans-serif" }}>
 
       <motion.header
         initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 260, damping: 28 }}
         style={{
-          background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(16px)',
+          background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
           borderBottom: '1px solid rgba(15,23,42,0.07)',
           padding: '0 32px', height: 68,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -78,7 +78,7 @@ export default function VenueAuthorizerPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <button
             onClick={() => navigate('/venue/admin')}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 9, border: '1px solid rgba(15,23,42,0.1)', background: '#f8fafc', color: '#64748b', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 9, border: '1px solid rgba(15,23,42,0.1)', background: 'rgba(248,250,252,0.80)', color: '#64748b', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
           >
             <ArrowLeft size={15} /> Back
           </button>
@@ -121,7 +121,7 @@ export default function VenueAuthorizerPage() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 240, damping: 24, delay: 0.08 }}
-          style={{ display: 'flex', gap: 4, marginBottom: 28, background: '#fff', border: '1px solid rgba(15,23,42,0.07)', borderRadius: 12, padding: 5, width: 'fit-content', boxShadow: '0 2px 8px rgba(15,23,42,0.04)' }}>
+          style={{ display: 'flex', gap: 4, marginBottom: 28, background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(15,23,42,0.07)', borderRadius: 12, padding: 5, width: 'fit-content', boxShadow: '0 2px 8px rgba(15,23,42,0.04)' }}>
           {TABS.map(tab => {
             const isActive = activeTab === tab;
             const count = tab === 'All' ? requests.length : requests.filter(r => r.status === tab.toLowerCase()).length;
@@ -149,7 +149,7 @@ export default function VenueAuthorizerPage() {
               const isProcessing = processing === req.id;
               return (
                 <motion.div key={req.id} variants={cardVariants} initial="hidden" animate="show" exit="exit" layout
-                  style={{ background: '#fff', border: '1px solid rgba(15,23,42,0.07)', borderRadius: 18, padding: '24px 28px', marginBottom: 14, boxShadow: '0 2px 12px rgba(15,23,42,0.04)', display: 'flex', gap: 24, alignItems: 'flex-start', position: 'relative', overflow: 'hidden' }}>
+                  style={{ background: 'rgba(255,255,255,0.60)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.60)', borderRadius: 18, padding: '24px 28px', marginBottom: 14, boxShadow: '0 8px 30px rgba(0,0,0,0.04)', display: 'flex', gap: 24, alignItems: 'flex-start', position: 'relative', overflow: 'hidden' }}>
 
                   <div style={{ position: 'absolute', left: 0, top: 0, width: 4, height: '100%', background: ss.color, borderRadius: '18px 0 0 18px', opacity: 0.7 }} />
 

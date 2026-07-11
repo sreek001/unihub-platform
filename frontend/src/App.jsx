@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link, NavLink, Outlet, useNavigate, Navigate } from 'react-router-dom';
-import { getDefaultRouteForRole } from './context/AuthContext';
-import { MagneticCursor } from '@/components/ui/magnetic-cursor';
+import { InfiniteGridBackground } from '@/components/ui/infinite-grid-background';
 import {
   GraduationCap,
   Inbox,
@@ -15,7 +14,7 @@ import {
 import './App.css';
 
 // ── Auth layer ────────────────────────────────────────────────────────────────
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider, useAuth, getDefaultRouteForRole } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/Auth/LoginPage';
 
@@ -243,18 +242,20 @@ function AppLayout() {
   );
 
   return (
-    <div
-      className="min-h-screen flex flex-col font-sans"
-      style={{ background: '#fafafc', color: '#0f172a' }}
-    >
+    <InfiniteGridBackground>
+      <div
+        className="min-h-screen flex flex-col font-sans relative z-10"
+        style={{ background: 'transparent', color: '#0f172a' }}
+      >
       {/* Sticky glassmorphic navbar */}
       <nav
         className="sticky top-0 z-50 px-6 py-4"
         style={{
-          background:    'rgba(255,255,255,0.85)',
-          backdropFilter: 'blur(28px)',
-          borderBottom:  '1px solid rgba(15,76,129,0.06)',
-          boxShadow:     '0 1px 24px rgba(15,76,129,0.04)',
+          background:    'rgba(255,255,255,0.60)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          borderBottom:  '1px solid rgba(255,255,255,0.60)',
+          boxShadow:     '0 8px 30px rgba(0,0,0,0.04)',
         }}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -321,14 +322,15 @@ function AppLayout() {
       >
         © {new Date().getFullYear()} UniHub Campus Platform
       </footer>
-    </div>
+      </div>
+    </InfiniteGridBackground>
   );
 }
 
 // ── Public home page ──────────────────────────────────────────────────────────
 function Home() {
   return (
-    <div style={{ position: 'relative', overflow: 'hidden', background: '#fafafc' }}>
+    <div style={{ position: 'relative', overflow: 'hidden', background: 'transparent' }}>
       <HeroGeometric
         badge="UniHub Platform"
         title1="One Platform."
@@ -348,128 +350,134 @@ export default function App() {
   return (
     <AuthProvider>
       <UserProvider>
-        <MagneticCursor blendMode="exclusion" cursorSize={40} magneticFactor={0.55}>
-          <BrowserRouter>
-            <Routes>
+        <BrowserRouter>
+          <Routes>
 
-              {/* ── Public standalone route: Login (no AppLayout shell) ── */}
-              <Route path="/login" element={<LoginPage />} />
+            {/* ── Public standalone route: Login (no AppLayout shell) ── */}
+            <Route path="/login" element={<LoginPage />} />
 
-              {/* ── Full-screen admin routes (bypass AppLayout shell) ──── */}
+            {/* ── Full-screen admin routes (bypass AppLayout shell) ──── */}
 
-              {/* Canteen admin — queue control panel */}
-              <Route
-                path="/canteen/admin"
-                element={
-                  <ProtectedRoute allowedRoles={['canteen_admin']}>
+            {/* Canteen admin — queue control panel */}
+            <Route
+              path="/canteen/admin"
+              element={
+                <ProtectedRoute allowedRoles={['canteen_admin']}>
+                  <InfiniteGridBackground>
                     <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
+                  </InfiniteGridBackground>
+                </ProtectedRoute>
+              }
+            />
 
-              {/* Xerox / print admin — operator metrics */}
-              <Route
-                path="/print/admin"
-                element={
-                  <ProtectedRoute allowedRoles={['xerox_admin']}>
+            {/* Xerox / print admin — operator metrics */}
+            <Route
+              path="/print/admin"
+              element={
+                <ProtectedRoute allowedRoles={['xerox_admin']}>
+                  <InfiniteGridBackground>
                     <PrintDashboard adminMode={true} />
-                  </ProtectedRoute>
-                }
-              />
+                  </InfiniteGridBackground>
+                </ProtectedRoute>
+              }
+            />
 
-              {/* Venue admin — spatial allocation control board */}
-              <Route
-                path="/venue/admin"
-                element={
-                  <ProtectedRoute allowedRoles={['venue_admin']}>
+            {/* Venue admin — spatial allocation control board */}
+            <Route
+              path="/venue/admin"
+              element={
+                <ProtectedRoute allowedRoles={['venue_admin']}>
+                  <InfiniteGridBackground>
                     <VenueAdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
+                  </InfiniteGridBackground>
+                </ProtectedRoute>
+              }
+            />
 
-              {/* Venue authorizer — booking approval queue */}
-              <Route
-                path="/venue/admin/authorizer"
-                element={
-                  <ProtectedRoute allowedRoles={['venue_admin']}>
+            {/* Venue authorizer — booking approval queue */}
+            <Route
+              path="/venue/admin/authorizer"
+              element={
+                <ProtectedRoute allowedRoles={['venue_admin']}>
+                  <InfiniteGridBackground>
                     <VenueAuthorizerPage />
+                  </InfiniteGridBackground>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* ── Main app shell routes (wrapped in AppLayout) ──────── */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
+              {/* Public home — accessible to all authenticated users */}
+              <Route path="/" element={<Home />} />
+
+              {/* Bookings — faculty + students */}
+              <Route
+                path="/bookings"
+                element={
+                  <ProtectedRoute allowedRoles={['faculty', 'student']}>
+                    <BookingDashboard />
                   </ProtectedRoute>
                 }
               />
 
-              {/* ── Main app shell routes (wrapped in AppLayout) ──────── */}
+              {/* Venue Booking Admin — faculty only (intercept target from BookingDashboard) */}
               <Route
+                path="/dashboard/booking-admin"
                 element={
-                  <ProtectedRoute>
-                    <AppLayout />
+                  <ProtectedRoute allowedRoles={['faculty']}>
+                    <BookingDashboard adminView={true} />
                   </ProtectedRoute>
                 }
-              >
-                {/* Public home — accessible to all authenticated users */}
-                <Route path="/" element={<Home />} />
+              />
 
-                {/* Bookings — faculty + students */}
-                <Route
-                  path="/bookings"
-                  element={
-                    <ProtectedRoute allowedRoles={['faculty', 'student']}>
-                      <BookingDashboard />
-                    </ProtectedRoute>
-                  }
-                />
+              {/* Print — student-facing submission portal */}
+              <Route
+                path="/print"
+                element={
+                  <ProtectedRoute allowedRoles={['student', 'faculty']}>
+                    <PrintDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-                {/* Venue Booking Admin — faculty only (intercept target from BookingDashboard) */}
-                <Route
-                  path="/dashboard/booking-admin"
-                  element={
-                    <ProtectedRoute allowedRoles={['faculty']}>
-                      <BookingDashboard adminView={true} />
-                    </ProtectedRoute>
-                  }
-                />
+              {/* Lost & Found */}
+              <Route
+                path="/lost-found"
+                element={
+                  <ProtectedRoute allowedRoles={['student', 'faculty']}>
+                    <LostFound />
+                  </ProtectedRoute>
+                }
+              />
 
-                {/* Print — student-facing submission portal */}
-                <Route
-                  path="/print"
-                  element={
-                    <ProtectedRoute allowedRoles={['student', 'faculty']}>
-                      <PrintDashboard />
-                    </ProtectedRoute>
-                  }
-                />
+              {/* Canteen — student-facing ordering view */}
+              <Route
+                path="/canteen"
+                element={
+                  <ProtectedRoute allowedRoles={['student', 'faculty']}>
+                    <CanteenDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-                {/* Lost & Found */}
-                <Route
-                  path="/lost-found"
-                  element={
-                    <ProtectedRoute allowedRoles={['student', 'faculty']}>
-                      <LostFound />
-                    </ProtectedRoute>
-                  }
-                />
-
-                {/* Canteen — student-facing ordering view */}
-                <Route
-                  path="/canteen"
-                  element={
-                    <ProtectedRoute allowedRoles={['student', 'faculty']}>
-                      <CanteenDashboard />
-                    </ProtectedRoute>
-                  }
-                />
-
-                {/* Academics — nested sub-routes */}
-                <Route path="/academics" element={<AcademicsLayout />}>
-                  <Route path="marketplace" element={<Marketplace />} />
-                  <Route path="vault"       element={<Vault />}       />
-                  <Route path="inventory"   element={<Inventory />}   />
-                  <Route path="settings"    element={<Settings />}    />
-                </Route>
+              {/* Academics — nested sub-routes */}
+              <Route path="/academics" element={<AcademicsLayout />}>
+                <Route path="marketplace" element={<Marketplace />} />
+                <Route path="vault"       element={<Vault />}       />
+                <Route path="inventory"   element={<Inventory />}   />
+                <Route path="settings"    element={<Settings />}    />
               </Route>
+            </Route>
 
-            </Routes>
-          </BrowserRouter>
-        </MagneticCursor>
+          </Routes>
+        </BrowserRouter>
       </UserProvider>
     </AuthProvider>
   );

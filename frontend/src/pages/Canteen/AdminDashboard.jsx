@@ -301,7 +301,7 @@ export default function AdminDashboard() {
 
   };
   return (
-    <div className="h-screen bg-slate-50 text-slate-900 flex font-sans overflow-hidden">
+    <div className="h-screen bg-transparent text-slate-900 flex font-sans overflow-hidden">
 
       {/* MAIN KANBAN AREA */}
       <div className="flex-1 flex flex-col p-6 md:p-8 h-full">
@@ -319,7 +319,7 @@ export default function AdminDashboard() {
             <p className="text-slate-500 text-sm mt-1 font-medium">{orders.length} Active Tickets in Queue</p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="bg-white border border-slate-200 rounded-xl px-4 py-2 flex items-center gap-2 shadow-sm">
+            <div className="bg-white/80 backdrop-blur-md border border-slate-200/60 rounded-xl px-4 py-2 flex items-center gap-2 shadow-sm">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="font-bold text-sm tracking-wide text-slate-700">SYSTEM LIVE</span>
             </div>
@@ -342,7 +342,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* RIGHT SIDEBAR: MENU TOGGLES */}
-      <div className="w-80 border-l border-slate-200 bg-white">
+      <div className="w-80 border-l border-slate-200/50 bg-white/60 backdrop-blur-xl shadow-lg">
         <AdminSidebar
           menuItems={menuItems}
           toggleAvailability={toggleAvailability}

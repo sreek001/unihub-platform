@@ -12,8 +12,10 @@
   margin-top: 14px;
   padding: 14px 16px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: #0f172a;
   font-size: 15px;
   outline: none;
@@ -28,7 +30,7 @@
 
 .admin-input:focus {
   border-color: #6366f1;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 

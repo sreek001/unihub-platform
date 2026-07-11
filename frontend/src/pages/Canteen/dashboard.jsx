@@ -176,7 +176,7 @@ useEffect(() => {
     <div
       className="min-h-screen font-sans"
       style={{
-        background: '#fafafc',
+        background: 'transparent',
         color: '#0f172a',
       }}
     >

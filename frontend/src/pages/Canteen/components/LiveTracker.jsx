@@ -686,13 +686,17 @@ export default function LiveTracker({ activeOrder }) {
 
         style={{
 
-          background: "#f8fafc",
+          background: "rgba(255,255,255,0.80)",
+
+          backdropFilter: "blur(16px)",
+
+          WebkitBackdropFilter: "blur(16px)",
 
           borderRadius: 18,
 
           padding: 22,
 
-          border: "1px solid #e2e8f0"
+          border: "1px solid rgba(226,232,240,0.7)"
 
         }}
 

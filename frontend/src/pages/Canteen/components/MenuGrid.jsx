@@ -67,15 +67,15 @@ console.log(item);
               padding: '22px 20px',
               borderRadius: 20,
               border: item.available
-                ? '1px solid rgba(15,76,129,0.07)'
-                : '1px solid rgba(15,76,129,0.04)',
+                ? '1px solid rgba(255,255,255,0.60)'
+                : '1px solid rgba(255,255,255,0.30)',
               background: item.available
-                ? 'rgba(255,255,255,0.75)'
-                : 'rgba(249,250,251,0.6)',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
+                ? 'rgba(255,255,255,0.60)'
+                : 'rgba(249,250,251,0.40)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
               boxShadow: item.available
-                ? '0 2px 16px rgba(15,76,129,0.05)'
+                ? '0 8px 30px rgba(0, 0, 0, 0.04)'
                 : 'none',
               opacity: item.available ? 1 : 0.5,
               filter: item.available ? 'none' : 'grayscale(0.4)',
@@ -87,8 +87,8 @@ console.log(item);
             }}
             onMouseLeave={e => {
               e.currentTarget.style.borderColor = item.available
-                ? 'rgba(15,76,129,0.07)'
-                : 'rgba(15,76,129,0.04)';
+                ? 'rgba(255,255,255,0.60)'
+                : 'rgba(255,255,255,0.30)';
             }}
           >
             {/* Gold shimmer accent — top edge */}

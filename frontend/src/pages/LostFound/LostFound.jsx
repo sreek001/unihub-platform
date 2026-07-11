@@ -345,7 +345,7 @@ function LostFound() {
           padding: 32px 16px;
           font-family: 'Inter', system-ui, -apple-system, sans-serif;
           color: #0f172a;
-          background: #fafafc;
+          background: transparent;
         }
 
         .bulletin-header {
@@ -405,17 +405,18 @@ function LostFound() {
         }
 
         .filter-container {
-          background: rgba(255,255,255,0.75);
-          border: 1px solid rgba(15,76,129,0.07);
+          background: rgba(255,255,255,0.60);
+          border: 1px solid rgba(255,255,255,0.60);
           border-radius: 16px;
           padding: 14px 16px;
-          box-shadow: 0 2px 16px rgba(15,76,129,0.05);
+          box-shadow: 0 8px 30px rgba(0,0,0,0.04);
           display: flex;
           flex-direction: row;
           align-items: center;
           gap: 12px;
           margin-bottom: 28px;
-          backdrop-filter: blur(16px);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
         }
 
         .search-input-wrapper {
@@ -426,41 +427,45 @@ function LostFound() {
         .search-input {
           width: 100%;
           padding: 10px 16px 10px 40px;
-          border: 1px solid rgba(15,76,129,0.12);
+          border: 1px solid rgba(203,213,225,0.8);
           border-radius: 12px;
           font-size: 0.875rem;
           font-family: 'Inter', sans-serif;
           outline: none;
-          background: rgba(255,255,255,0.9);
+          background: rgba(255,255,255,0.80);
           color: #0f172a;
           box-sizing: border-box;
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
           transition: border-color 0.2s, box-shadow 0.2s;
         }
         .search-input::placeholder { color: #94a3b8; }
         .search-input:focus {
-          border-color: rgba(15,76,129,0.4);
-          box-shadow: 0 0 0 3px rgba(15,76,129,0.07);
+          border-color: rgba(99,102,241,0.5);
+          box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
         }
 
         .filter-select {
           padding: 10px 12px;
-          border: 1px solid rgba(15,76,129,0.10);
+          border: 1px solid rgba(203,213,225,0.8);
           border-radius: 12px;
           font-size: 0.75rem;
           font-weight: 600;
           font-family: 'Inter', sans-serif;
-          background: rgba(255,255,255,0.9);
+          background: rgba(255,255,255,0.80);
           color: #475569;
           cursor: pointer;
           outline: none;
           height: 40px;
           box-sizing: border-box;
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
           transition: border-color 0.2s;
         }
-        .filter-select:hover { border-color: rgba(15,76,129,0.2); }
+        .filter-select:hover { border-color: rgba(99,102,241,0.3); }
         .filter-select:focus {
-          border-color: rgba(15,76,129,0.4);
-          box-shadow: 0 0 0 3px rgba(15,76,129,0.07);
+          border-color: rgba(99,102,241,0.5);
+          box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
         }
 
         .cards-list {
@@ -470,24 +475,25 @@ function LostFound() {
         }
 
         .item-card {
-          background: rgba(255,255,255,0.75);
+          background: rgba(255,255,255,0.80);
           border-radius: 18px;
-          border: 1px solid rgba(15,76,129,0.07);
+          border: 1px solid rgba(255,255,255,0.60);
           padding: 22px;
-          box-shadow: 0 2px 16px rgba(15,76,129,0.05);
+          box-shadow: 0 8px 30px rgba(0,0,0,0.04);
           margin-bottom: 16px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
           transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
           box-sizing: border-box;
-          backdrop-filter: blur(16px);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
           will-change: transform;
         }
         .item-card:hover {
           transform: translateY(-4px);
-          border-color: rgba(20,184,166,0.22);
-          box-shadow: 0 8px 32px rgba(15,76,129,0.08);
+          border-color: rgba(99,102,241,0.22);
+          box-shadow: 0 12px 40px rgba(0,0,0,0.06);
         }
 
         .card-header {
@@ -689,7 +695,7 @@ function LostFound() {
       {/* Listings */}
       <div className="cards-list">
         {filteredListings.length === 0 ? (
-          <div className="py-16 bg-white border border-dashed border-slate-200 rounded-lg flex flex-col items-center justify-center text-slate-400">
+          <div className="py-16 bg-white/60 backdrop-blur-xl border border-dashed border-slate-300/80 rounded-lg flex flex-col items-center justify-center text-slate-500">
             <Search className="h-12 w-12 text-slate-300 mb-3" />
             <p className="font-bold text-lg">No listings matches your filters</p>
             <p className="text-sm mt-1">Try modifying your filters or search terms.</p>

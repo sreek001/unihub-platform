@@ -135,7 +135,7 @@ export default function Inventory() {
             {books.map((book) => (
               <div
                 key={book.id}
-                className="bg-white/85 backdrop-blur-md border border-blue-900/[0.04] rounded-2xl p-5 flex flex-col justify-between shadow-sm"
+                className="bg-white/80 backdrop-blur-md border border-slate-200/60 shadow-sm rounded-2xl p-5 flex flex-col justify-between"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -196,7 +196,7 @@ export default function Inventory() {
                 {requests.incoming.map((req) => (
                   <div
                     key={req.id}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/85 border border-blue-900/[0.04] rounded-2xl gap-4 shadow-sm"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/80 backdrop-blur-md border border-slate-200/60 rounded-2xl gap-4 shadow-sm"
                   >
                     <div>
                       <h4 className="text-sm font-bold text-slate-800">{req.textbookTitle}</h4>
@@ -242,7 +242,7 @@ export default function Inventory() {
                 {requests.outgoing.map((req) => (
                   <div
                     key={req.id}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/85 border border-blue-900/[0.04] rounded-2xl gap-4 shadow-sm"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/80 backdrop-blur-md border border-slate-200/60 rounded-2xl gap-4 shadow-sm"
                   >
                     <div>
                       <h4 className="text-sm font-bold text-slate-800">{req.textbookTitle}</h4>
@@ -255,7 +255,7 @@ export default function Inventory() {
                           <Clock className="w-3.5 h-3.5" /> Pending Approval
                         </span>
                       ) : req.status === 'Accepted' ? (
-                        <div className="flex flex-col items-end gap-1 text-right bg-white p-3.5 rounded-xl border border-blue-900/[0.08] shadow-sm">
+                        <div className="flex flex-col items-end gap-1 text-right bg-white/90 backdrop-blur-sm border border-slate-200/60 p-3.5 rounded-xl shadow-sm">
                           <span className="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200/40 px-3 py-1 rounded-xl flex items-center gap-1">
                             <Check className="w-3.5 h-3.5" /> Request Accepted
                           </span>

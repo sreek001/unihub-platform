@@ -23,9 +23,9 @@ export default function AcademicsLayout() {
   ];
 
   return (
-    <div className="flex h-screen bg-[#fafafc] overflow-hidden text-slate-800 font-sans">
+    <div className="flex h-screen bg-transparent overflow-hidden text-slate-800 font-sans">
       {/* Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 bg-white/70 backdrop-blur-xl border-r border-blue-900/[0.05] z-20">
+      <aside className="hidden md:flex flex-col w-64 bg-white/60 backdrop-blur-xl border-r border-slate-200/50 shadow-lg z-20">
         {/* Sidebar Header */}
         <div className="flex items-center gap-3 px-6 py-5 border-b border-blue-900/[0.05]">
           <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-teal-500 shadow-lg shadow-blue-500/10">
@@ -70,8 +70,8 @@ export default function AcademicsLayout() {
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden bg-[#fafafc]">
-        <header className="flex items-center justify-between px-6 py-4 bg-white/60 backdrop-blur-md border-b border-blue-900/[0.05] z-10">
+      <div className="flex-1 flex flex-col overflow-hidden bg-transparent">
+        <header className="flex items-center justify-between px-6 py-4 bg-white/60 backdrop-blur-xl border-b border-slate-200/50 z-10">
           <div>
             <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
               {navItems.find((n) => pathname === n.href)?.name || 'Dashboard'}
@@ -79,7 +79,7 @@ export default function AcademicsLayout() {
           </div>
           <div className="flex items-center gap-4">
             {activeUser && (
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/80 border border-blue-900/[0.05] rounded-xl text-xs shadow-sm">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/80 border border-slate-200/50 rounded-xl text-xs shadow-sm">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span className="text-slate-700 font-semibold">{activeUser.name}</span>
                 <span className="text-slate-400">({activeUser.branch})</span>

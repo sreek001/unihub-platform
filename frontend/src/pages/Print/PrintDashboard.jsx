@@ -280,7 +280,7 @@ const handleOrderSubmit = async (e) => {
   });
 
   return (
-    <div className="print-root p-6 md:p-10 min-h-screen" style={{ background: '#fafafc', color: '#0f172a' }}>
+    <div className="print-root p-6 md:p-10 min-h-screen" style={{ background: 'transparent', color: '#0f172a' }}>
       {/* Toast Notification */}
       <AnimatePresence>
         {notification && (

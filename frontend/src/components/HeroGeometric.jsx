@@ -120,7 +120,7 @@ export default function HeroGeometric({
         minHeight: 600,
         maxHeight: 1000,
         overflow: 'hidden',
-        background: '#fafafc',
+        background: 'transparent',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

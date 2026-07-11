@@ -105,10 +105,10 @@ function FeatureCard({ card, index }) {
           transition: { type: 'spring', stiffness: 240, damping: 22 },
         }}
         style={{
-          background: `linear-gradient(145deg, ${card.gradientFrom}, rgba(255,255,255,0.9))`,
+          background: `linear-gradient(145deg, ${card.gradientFrom}, rgba(255,255,255,0.60))`,
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
-          border: '1px solid rgba(15,76,129,0.08)',
+          border: '1px solid rgba(255,255,255,0.60)',
           borderRadius: 24,
           padding: '32px 28px',
           display: 'flex',
@@ -224,7 +224,7 @@ export default function DisplayCards() {
       id="features"
       style={{
         position: 'relative',
-        background: '#fafafc',
+        background: 'transparent',
         paddingBottom: '6rem',
         overflow: 'hidden',
       }}

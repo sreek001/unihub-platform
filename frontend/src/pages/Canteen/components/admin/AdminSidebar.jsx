@@ -3,13 +3,13 @@ import { LayoutGrid, ToggleRight, ToggleLeft } from 'lucide-react';
 
 export default function AdminSidebar({ menuItems, toggleAvailability, openAddModal }) {
   return (
-    <div className="hidden lg:flex flex-col bg-white border-l border-slate-200 p-6 h-full">
+    <div className="hidden lg:flex flex-col bg-white/60 backdrop-blur-xl border-l border-slate-200/50 p-6 h-full shadow-lg">
       <div className="mb-8">
-        <h2 className="text-xl font-black flex items-center gap-3 text-slate-900">
-          <LayoutGrid className="text-indigo-500" size={24} />
+        <h2 className="text-xl font-bold flex items-center gap-3 text-slate-900 tracking-tight">
+          <LayoutGrid className="text-indigo-600" size={24} />
           Menu Availability
         </h2>
-        <p className="text-slate-500 text-sm mt-1 font-medium">Toggle availability live.</p>
+        <p className="text-slate-600 text-sm mt-1 font-medium">Toggle availability live.</p>
       </div>
       <button
         onClick={openAddModal}
@@ -23,8 +23,8 @@ export default function AdminSidebar({ menuItems, toggleAvailability, openAddMod
             key={item.id}
             className={`flex items-center justify-between p-4 rounded-2xl border transition-colors ${
               item.available
-                ? 'bg-slate-50 border-slate-200'
-                : 'bg-red-50 border-red-200'
+                ? 'bg-white/50 border-slate-200/60'
+                : 'bg-red-50/50 border-red-200/60'
             }`}
           >
             <span className={`font-bold text-sm ${item.available ? 'text-slate-700' : 'text-red-500'}`}>

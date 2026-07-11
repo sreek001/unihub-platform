@@ -40,7 +40,7 @@ function FloatingPaths({ position }: FloatingPathsProps) {
     return (
         <div className="absolute inset-0 pointer-events-none">
             <svg
-                className="w-full h-full text-slate-950 dark:text-white"
+                className="w-full h-full text-slate-950"
                 viewBox="0 0 696 316"
                 fill="none"
             >
@@ -93,20 +93,20 @@ export function BackgroundPaths({
     const getBackgroundClasses = () => {
         switch (backgroundStyle) {
             case "glass":
-                return "bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 shadow-2xl";
+                return "bg-white/10 border border-white/20 shadow-2xl";
             case "gradient":
-                return "bg-gradient-to-br from-white/20 via-white/10 to-transparent dark:from-black/40 dark:via-black/20 dark:to-transparent backdrop-blur-md border border-white/30 dark:border-white/10 shadow-2xl";
+                return "bg-gradient-to-br from-white/20 via-white/10 to-transparent backdrop-blur-md border border-white/30 shadow-2xl";
             case "solid":
-                return "bg-white/90 dark:bg-black/90 backdrop-blur-sm shadow-2xl";
+                return "bg-white/90 backdrop-blur-sm shadow-2xl";
             case "glow":
-                return "bg-white/5 dark:bg-black/10 backdrop-blur-2xl border border-white/30 dark:border-white/20 shadow-2xl shadow-white/20 dark:shadow-white/10";
+                return "bg-white/5 backdrop-blur-2xl border border-white/30 shadow-2xl shadow-white/20";
             default:
                 return "";
         }
     };
 
     return (
-        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white dark:bg-neutral-950">
+        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white">
             {showGradientOrb && (
                 <motion.div
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
@@ -146,8 +146,8 @@ export function BackgroundPaths({
                     >
                         {titleBackground && backgroundStyle === "glass" && (
                             <>
-                                <div className="absolute -top-px -left-px -right-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent dark:via-white/20" />
-                                <div className="absolute -bottom-px -left-px -right-px h-px bg-gradient-to-r from-transparent via-white/30 to-transparent dark:via-white/10" />
+                                <div className="absolute -top-px -left-px -right-px h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+                                <div className="absolute -bottom-px -left-px -right-px h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
                             </>
                         )}
 
@@ -170,7 +170,6 @@ export function BackgroundPaths({
                                             }}
                                             className="inline-block text-transparent bg-clip-text 
                                                 bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-700 
-                                                dark:from-white dark:via-neutral-200 dark:to-neutral-400
                                                 drop-shadow-2xl"
                                         >
                                             {letter}
@@ -185,14 +184,14 @@ export function BackgroundPaths({
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.8, duration: 0.8 }}
-                                className="mt-6 text-lg sm:text-xl md:text-2xl text-neutral-600 dark:text-neutral-400 font-light"
+                                className="mt-6 text-lg sm:text-xl md:text-2xl text-neutral-600 font-light"
                             >
                                 {subtitle}
                             </motion.p>
                         )}
 
                         <motion.div
-                            className="mt-8 mx-auto h-1 bg-gradient-to-r from-transparent via-neutral-400 to-transparent dark:via-neutral-600"
+                            className="mt-8 mx-auto h-1 bg-gradient-to-r from-transparent via-neutral-400 to-transparent"
                             initial={{ width: 0 }}
                             animate={{ width: "100%" }}
                             transition={{ delay: 1, duration: 1.5, ease: "easeOut" }}
@@ -210,7 +209,7 @@ export function BackgroundPaths({
                             {[...Array(6)].map((_, i) => (
                                 <motion.div
                                     key={i}
-                                    className="absolute w-2 h-2 bg-white/30 dark:bg-white/20 rounded-full"
+                                    className="absolute w-2 h-2 bg-white/30 rounded-full"
                                     style={{
                                         left: `${20 + i * 15}%`,
                                         top: `${30 + (i % 2) * 40}%`,
