@@ -93,9 +93,10 @@ function FeatureCard({ card, index }) {
       initial={{ opacity: 0, y: 32 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ type: 'spring', stiffness: 80, damping: 20, delay: index * 0.08 }}
     >
       <motion.div
+        animate={{ filter: 'grayscale(0)' }}
         whileHover={{
           y: -10,
           filter: 'grayscale(0)',
@@ -103,7 +104,6 @@ function FeatureCard({ card, index }) {
           borderColor: card.borderHover,
           transition: { type: 'spring', stiffness: 240, damping: 22 },
         }}
-        initial={{ filter: 'grayscale(0.2)' }}
         style={{
           background: `linear-gradient(145deg, ${card.gradientFrom}, rgba(255,255,255,0.9))`,
           backdropFilter: 'blur(24px)',

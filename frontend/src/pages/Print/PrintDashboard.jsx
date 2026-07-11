@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   UploadCloud,
@@ -18,7 +20,8 @@ import {
   TrendingUp,
   X,
   FileCheck,
-  Briefcase
+  Briefcase,
+  LogOut,
 } from "lucide-react";
 import "./PrintDashboard.css";
 
@@ -54,9 +57,19 @@ const countPdfPagesLocally = async (file) => {
   });
 };
 
-export default function PrintDashboard() {
+export default function PrintDashboard({ adminMode = false }) {
+  // Auth + navigation
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    logout();           // wipes localStorage token + resets auth context
+    navigate('/login'); // redirect to login page
+  };
+
   // Navigation role state: 'student' | 'operator'
-  const [role, setRole] = useState("student");
+  // If adminMode is true (rendered at /print/admin), lock to operator view.
+  const [role, setRole] = useState(adminMode ? "operator" : "student");
   
   // Shared state
   const [jobs, setJobs] = useState([]);
@@ -335,50 +348,93 @@ const handleOrderSubmit = async (e) => {
             </p>
           </div>
 
-          {/* Toggle Role Selector — light glass */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              background: 'rgba(255,255,255,0.75)',
-              border: '1px solid rgba(15,76,129,0.08)',
-              padding: 5,
-              borderRadius: 14,
-              backdropFilter: 'blur(16px)',
-              boxShadow: '0 2px 12px rgba(15,76,129,0.05)',
-            }}
-          >
+          {/* Right side: Role Toggle (hidden for print admin) + Sign Out */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {/* Role toggle — only shown to users who can switch views (not locked print admins) */}
+            {!adminMode && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: 'rgba(255,255,255,0.75)',
+                  border: '1px solid rgba(15,76,129,0.08)',
+                  padding: 5,
+                  borderRadius: 14,
+                  backdropFilter: 'blur(16px)',
+                  boxShadow: '0 2px 12px rgba(15,76,129,0.05)',
+                }}
+              >
+                <button
+                  onClick={() => setRole('student')}
+                  className={`px-4 py-2 rounded-lg text-xs font-bold tracking-wider uppercase transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+                    role === 'student'
+                      ? 'text-white shadow-md'
+                      : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                  style={{
+                    background: role === 'student'
+                      ? 'linear-gradient(135deg, #1d4ed8, #14b8a6)'
+                      : 'transparent',
+                  }}
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Student Portal
+                </button>
+                <button
+                  onClick={() => setRole('operator')}
+                  className={`px-4 py-2 rounded-lg text-xs font-bold tracking-wider uppercase transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+                    role === 'operator'
+                      ? 'text-white shadow-md'
+                      : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                  style={{
+                    background: role === 'operator'
+                      ? 'linear-gradient(135deg, #1d4ed8, #14b8a6)'
+                      : 'transparent',
+                  }}
+                >
+                  <Briefcase className="w-3.5 h-3.5" />
+                  Xerox Operator
+                </button>
+              </div>
+            )}
+
+            {/* ── Sign Out Button ── */}
             <button
-              onClick={() => setRole('student')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold tracking-wider uppercase transition-all duration-200 flex items-center gap-2 cursor-pointer ${
-                role === 'student'
-                  ? 'text-white shadow-md'
-                  : 'text-slate-500 hover:text-slate-700'
-              }`}
+              id="print-admin-signout"
+              onClick={handleSignOut}
+              title="Sign out of Print Hub"
               style={{
-                background: role === 'student'
-                  ? 'linear-gradient(135deg, #1d4ed8, #14b8a6)'
-                  : 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 7,
+                padding: '9px 18px',
+                borderRadius: 12,
+                border: '1px solid rgba(239,68,68,0.2)',
+                background: 'rgba(239,68,68,0.06)',
+                color: '#ef4444',
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.18s',
+                fontFamily: 'Inter, system-ui, sans-serif',
+                letterSpacing: '0.01em',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(239,68,68,0.14)';
+                e.currentTarget.style.borderColor = 'rgba(239,68,68,0.45)';
+                e.currentTarget.style.boxShadow = '0 0 18px rgba(239,68,68,0.12)';
+                e.currentTarget.style.color = '#f87171';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(239,68,68,0.06)';
+                e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)';
+                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.color = '#ef4444';
               }}
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              Student Portal
-            </button>
-            <button
-              onClick={() => setRole('operator')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold tracking-wider uppercase transition-all duration-200 flex items-center gap-2 cursor-pointer ${
-                role === 'operator'
-                  ? 'text-white shadow-md'
-                  : 'text-slate-500 hover:text-slate-700'
-              }`}
-              style={{
-                background: role === 'operator'
-                  ? 'linear-gradient(135deg, #1d4ed8, #14b8a6)'
-                  : 'transparent',
-              }}
-            >
-              <Briefcase className="w-3.5 h-3.5" />
-              Xerox Operator
+              <LogOut size={15} />
+              Sign Out
             </button>
           </div>
         </div>

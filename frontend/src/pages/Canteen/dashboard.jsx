@@ -138,14 +138,13 @@ useEffect(() => {
       console.log(data);
 
       if (!data.success) {
-        const stockMessage =
-          data.availableStock === 0
-            ? `${data.itemName} is completely out of stock.`
-            : `${data.itemName} has only ${data.availableStock} item(s) left.`;
-        alert(`Order Failed\n\n${stockMessage}\n\nPlease reduce the quantity and try again.`);
-        fetchMenu();
-        return;
-      }
+
+  alert(data.message);
+
+  fetchMenu();
+
+  return;
+}
 
       const maxPrep = Math.max(...cart.map(i => i.prepTime));
       setActiveOrder({

@@ -1,4 +1,4 @@
-const pool = require('./db');
+const { pool } = require('./db');
 
 // --- Mock Data Fallbacks (Matching your 6 students and 5 cheap items exactly) ---
 let mockStudents = [

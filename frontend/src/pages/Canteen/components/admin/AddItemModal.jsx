@@ -72,15 +72,17 @@ export default function AddItemModal({
         >
 
           <motion.div
-            initial={{ scale: .9 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: .9 }}
+            initial={{ scale: .9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: .9, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 340, damping: 28 }}
             style={{
               width: 450,
-              background: "#18181b",
+              background: '#ffffff',
               borderRadius: 20,
               padding: 28,
-              border: "1px solid #3f3f46",
+              border: '1px solid #e2e8f0',
+              boxShadow: '0 20px 60px rgba(15,23,42,0.12)',
             }}
           >
 
@@ -94,10 +96,12 @@ export default function AddItemModal({
 
               <h2
                 style={{
-                  color: "white",
-                  display: "flex",
+                  color: '#0f172a',
+                  display: 'flex',
                   gap: 10,
-                  alignItems: "center",
+                  alignItems: 'center',
+                  fontWeight: 700,
+                  fontSize: '1.05rem',
                 }}
               >
                 <PlusCircle />
@@ -107,10 +111,10 @@ export default function AddItemModal({
               <button
                 onClick={onClose}
                 style={{
-                  background: "none",
-                  border: "none",
-                  color: "white",
-                  cursor: "pointer",
+                  background: 'none',
+                  border: 'none',
+                  color: '#64748b',
+                  cursor: 'pointer',
                 }}
               >
                 <X />
@@ -154,10 +158,12 @@ export default function AddItemModal({
 
             <label
               style={{
-                color: "white",
-                display: "flex",
+                color: '#0f172a',
+                display: 'flex',
                 gap: 10,
                 marginTop: 15,
+                fontSize: '0.875rem',
+                fontWeight: 500,
               }}
             >
               <input

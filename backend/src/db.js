@@ -1,17 +1,29 @@
 const { Pool } = require('pg');
 
+// 🌟 FIXED: Dynamically construct the connection URI if a single DATABASE_URL isn't provided
+let connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  if (process.env.DB_USER && process.env.DB_PASSWORD && process.env.DB_HOST && process.env.DB_PORT && process.env.DB_DATABASE) {
+    connectionString = `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`;
+  } else {
+    throw new Error('FATAL: Neither DATABASE_URL nor complete separate DB environment variables are set. Check backend/.env');
+  }
+}
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || "postgresql://postgres.wzojlmakqklkdwnbjafg:UniHubSecureDb2026!@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres",
+  connectionString: connectionString.split('?')[0], // Safely strips any trailing url parameters
   ssl: {
-    rejectUnauthorized: false
+    rejectUnauthorized: false // Necessary for accepting Supabase self-signed certificates
   },
-  connectionTimeoutMillis: 10000
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 15000
 });
 
-// Create a query function that uses the pool
 const query = (text, params) => pool.query(text, params);
 
 module.exports = {
-  query, // Now you are exporting the function 'query'
+  query,
   pool
 };
