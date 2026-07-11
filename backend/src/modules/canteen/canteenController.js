@@ -34,7 +34,7 @@ exports.getMenu = async (req, res) => {
 
 exports.createOrder = async (req, res) => {
 
-  const client = await db.connect();
+  const client = await db.pool.connect();
 
   try {
 
@@ -65,18 +65,7 @@ exports.createOrder = async (req, res) => {
         throw new Error(`${menuItem.name} is currently unavailable.`);
       }
 
-     if (!menuItem.available) {
-
-  await client.query("ROLLBACK");
-
-  return res.status(400).json({
-    success: false,
-    message: "Insufficient stock.",
-    itemName: menuItem.name,
-    availableStock: menuitem.available
-  });
-
-}
+  
 
 
       totalAmount += Number(menuItem.price) * item.quantity;
@@ -106,7 +95,7 @@ exports.createOrder = async (req, res) => {
         item.price
       );
 
-      // Reduce stock
+      
       
 
     }
