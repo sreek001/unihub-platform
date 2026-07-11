@@ -162,50 +162,61 @@ export default function PrintDashboard() {
   const ratePerPage = printType === "Color" ? 5 : 2;
   const estimatedPrice = pageCount * ratePerPage * copies;
 
-  // Submit Student Order
-  const handleOrderSubmit = async (e) => {
-    e.preventDefault();
-    if (!file) {
-      showNotification("Please upload a PDF document first.", "error");
-      return;
+// Submit Student Order
+const handleOrderSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!file) {
+    showNotification("Please upload a PDF document first.", "error");
+    return;
+  }
+
+  try {
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("studentName", studentName);
+    formData.append("copies", copies);
+    formData.append("printType", printType);
+    formData.append("layout", layout);
+
+    const res = await fetch(`${API}/submit`, {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      showNotification(
+  `✅ Order submitted successfully!\nAmount: ₹${data.order.price}`,
+  "success"
+);
+
+      // Reset form
+      setFile(null);
+      setPageCount(0);
+      setCopies(1);
+      setPrintType("B&W");
+      setLayout("Single Side");
+
+      // Re-fetch jobs
+      fetchJobs();
+    } else {
+      showNotification(
+        data.message || "Failed to submit print order.",
+        "error"
+      );
     }
 
-    try {
-      setUploading(true);
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("studentName", studentName);
-      formData.append("copies", copies);
-      formData.append("printType", printType);
-      formData.append("layout", layout);
-
-      const res = await fetch(`${API}/submit`, {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        showNotification(`Order placed! Total: ₹${data.price}`);
-        // Reset form
-        setFile(null);
-        setPageCount(0);
-        setCopies(1);
-        setPrintType("B&W");
-        setLayout("Single Side");
-        // Re-fetch jobs
-        fetchJobs();
-      } else {
-        showNotification(data.message || "Failed to submit print order.", "error");
-      }
-    } catch (err) {
-      console.error(err);
-      showNotification("Network error submitting print order.", "error");
-    } finally {
-      setUploading(false);
-    }
-  };
-
+  } catch (err) {
+    console.error(err);
+    showNotification("Network error submitting print order.", "error");
+  } finally {
+    setUploading(false);
+  }
+};
   // Operator: Update Order Status
   const handleUpdateStatus = async (jobId, newStatus) => {
     try {
