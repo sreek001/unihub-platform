@@ -26,6 +26,12 @@ async function initDatabase() {
   try {
     // Run central Auth setup first
     console.log('Setting up Auth schema (users table + roles)...');
+    try {
+      await pool.query("ALTER TYPE user_role ADD VALUE IF NOT EXISTS 'venue_admin'");
+      console.log('🔹 Added venue_admin to user_role enum if it existed.');
+    } catch (e) {
+      console.log('Note: ALTER TYPE user_role skipped/failed (expected on fresh setup):', e.message);
+    }
     const authPath = path.join(__dirname, 'modules/auth/auth.sql');
     await executeSqlFile(authPath);
     console.log('🔹 Auth infrastructure successfully verified.');

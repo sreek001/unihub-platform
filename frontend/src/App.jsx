@@ -24,6 +24,8 @@ import CanteenDashboard from './pages/Canteen/dashboard.jsx';
 import AdminDashboard from './pages/Canteen/AdminDashboard.jsx';
 import BookingDashboard from './pages/Booking/BookingDashboard.jsx';
 import PrintDashboard from './pages/Print/PrintDashboard.jsx';
+import VenueAdminDashboard from './pages/Venue/VenueAdminDashboard.jsx';
+import VenueAuthorizerPage from './pages/Venue/VenueAuthorizerPage.jsx';
 
 import { UserProvider } from './pages/academics/UserContext.jsx';
 import AcademicsLayout from './pages/academics/AcademicsLayout.jsx';
@@ -43,6 +45,7 @@ const ROLE_STYLE = {
   faculty:       { color: '#14b8a6', bg: 'rgba(20,184,166,0.12)',  label: 'Faculty'       },
   canteen_admin: { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)',  label: 'Canteen Admin' },
   xerox_admin:   { color: '#0891b2', bg: 'rgba(8,145,178,0.12)',   label: 'Print Admin'   },
+  venue_admin:   { color: '#7c3aed', bg: 'rgba(124,58,237,0.12)',  label: 'Venue Admin'   },
 };
 
 // ── Primary navigation items with per-role visibility ───────────────────────
@@ -226,9 +229,9 @@ function AppLayout() {
   const { user } = useAuth();
 
   // ── Role guard: admin-only roles don't belong in the general app shell ───────
-  // If canteen_admin or xerox_admin somehow land here (e.g. manual URL entry),
+  // If canteen_admin, xerox_admin or venue_admin land here (e.g. manual URL entry),
   // immediately eject them to their isolated admin workspace.
-  if (user && (user.role === 'canteen_admin' || user.role === 'xerox_admin')) {
+  if (user && (user.role === 'canteen_admin' || user.role === 'xerox_admin' || user.role === 'venue_admin')) {
     return <Navigate to={getDefaultRouteForRole(user.role)} replace />;
   }
 
@@ -365,6 +368,26 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={['xerox_admin']}>
                   <PrintDashboard adminMode={true} />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Venue admin — spatial allocation control board */}
+            <Route
+              path="/venue/admin"
+              element={
+                <ProtectedRoute allowedRoles={['venue_admin']}>
+                  <VenueAdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Venue authorizer — booking approval queue */}
+            <Route
+              path="/venue/admin/authorizer"
+              element={
+                <ProtectedRoute allowedRoles={['venue_admin']}>
+                  <VenueAuthorizerPage />
                 </ProtectedRoute>
               }
             />

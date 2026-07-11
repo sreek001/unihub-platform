@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChefHat, LogOut } from "lucide-react";
@@ -300,26 +300,27 @@ export default function AdminDashboard() {
 
   };
   return (
-    <div className="h-screen bg-[#09090b] text-zinc-100 flex font-sans selection:bg-indigo-500/30 overflow-hidden">
+    <div className="h-screen bg-slate-50 text-slate-900 flex font-sans overflow-hidden">
 
       {/* MAIN KANBAN AREA */}
       <div className="flex-1 flex flex-col p-6 md:p-8 h-full">
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between pb-6 mb-6 border-b border-zinc-800"
+          transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+          className="flex items-center justify-between pb-6 mb-6 border-b border-slate-200"
         >
           <div>
             <h1 className="text-3xl font-black tracking-tight flex items-center gap-3">
               <ChefHat className="text-amber-500 drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]" size={32} />
               Kitchen Display System
             </h1>
-            <p className="text-zinc-500 text-sm mt-1 font-medium">{orders.length} Active Tickets in Queue</p>
+            <p className="text-slate-500 text-sm mt-1 font-medium">{orders.length} Active Tickets in Queue</p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-2 flex items-center gap-2">
+            <div className="bg-white border border-slate-200 rounded-xl px-4 py-2 flex items-center gap-2 shadow-sm">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-bold text-sm tracking-wide">SYSTEM LIVE</span>
+              <span className="font-bold text-sm tracking-wide text-slate-700">SYSTEM LIVE</span>
             </div>
             {/* ── Sign Out Button ── */}
             <button
@@ -365,7 +366,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* RIGHT SIDEBAR: MENU TOGGLES */}
-      <div className="w-80 border-l border-zinc-800/80 bg-zinc-950/30">
+      <div className="w-80 border-l border-slate-200 bg-white">
         <AdminSidebar
           menuItems={menuItems}
           toggleAvailability={toggleAvailability}

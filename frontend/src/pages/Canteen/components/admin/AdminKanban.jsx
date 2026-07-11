@@ -16,14 +16,14 @@ export default function AdminKanban({ orders, advanceStatus }) {
         const Icon = col.icon;
 
         return (
-          <div key={col.id} className="flex flex-col h-full bg-zinc-900/20 rounded-3xl border border-zinc-800/50 overflow-hidden">
+          <div key={col.id} className="flex flex-col h-full bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
             {/* Column Header */}
-            <div className={`p-4 border-b border-zinc-800/50 flex items-center justify-between ${col.bg}`}>
+            <div className={`p-4 border-b border-slate-100 flex items-center justify-between ${col.bg}`}>
               <div className="flex items-center gap-2">
                 <Icon size={18} className={col.color} />
                 <h3 className={`font-black tracking-wide ${col.color}`}>{col.label}</h3>
               </div>
-              <span className="bg-zinc-950 px-3 py-1 rounded-full text-xs font-bold text-zinc-400">
+              <span className="bg-slate-100 px-3 py-1 rounded-full text-xs font-bold text-slate-500">
                 {columnOrders.length}
               </span>
             </div>
@@ -39,26 +39,26 @@ export default function AdminKanban({ orders, advanceStatus }) {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ type: "spring", stiffness: 200, damping: 20 }}
                     key={order.id}
-                    className="bg-zinc-950/80 border border-zinc-800 rounded-2xl p-5 shadow-lg relative overflow-hidden group"
+                    className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden group"
                   >
                     {/* Accent line on the left */}
                     <div className={`absolute top-0 left-0 w-1 h-full ${col.bg.replace('/10', '')}`} />
 
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h4 className="font-black text-lg text-white">{order.id}</h4>
-                        <p className="text-xs text-zinc-500 font-medium mt-0.5">{order.time}</p>
+                        <h4 className="font-black text-lg text-slate-900">{order.id}</h4>
+                        <p className="text-xs text-slate-400 font-medium mt-0.5">{order.time}</p>
                       </div>
                       <div className="text-right">
-                        <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold block">Queue</span>
-                        <span className="font-black text-indigo-400 text-lg">#{order.queue}</span>
+                        <span className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block">Queue</span>
+                        <span className="font-black text-indigo-600 text-lg">#{order.queue}</span>
                       </div>
                     </div>
 
                     <ul className="space-y-2 mb-6">
                       {order.items.map((item, idx) => (
-                        <li key={idx} className="text-sm font-medium text-zinc-300 flex gap-2">
-                          <span className="text-zinc-600">{item.quantity}x</span> {item.name}
+                        <li key={idx} className="text-sm font-medium text-slate-600 flex gap-2">
+                          <span className="text-slate-400">{item.quantity}x</span> {item.name}
                         </li>
                       ))}
                     </ul>
@@ -66,9 +66,9 @@ export default function AdminKanban({ orders, advanceStatus }) {
                     <button
                       onClick={() => advanceStatus(order.id, order.status)}
                       className={`w-full py-3 rounded-xl font-bold flex justify-center items-center gap-2 transition-all active:scale-95 ${
-                        col.id === 'received' ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30' :
-                        col.id === 'preparing' ? 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30' :
-                        'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white'
+                        col.id === 'received' ? 'bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 font-bold' :
+                        col.id === 'preparing' ? 'bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 font-bold' :
+                        'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 font-bold'
                       }`}
                     >
                       {col.id === 'received' ? 'Start Preparing' :

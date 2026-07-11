@@ -9,6 +9,7 @@ const ROLE_META = {
   faculty:       { label: 'Faculty',       color: '#14b8a6', bg: 'rgba(20,184,166,0.12)'  },
   canteen_admin: { label: 'Canteen Admin', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)'  },
   xerox_admin:   { label: 'Print Admin',   color: '#0891b2', bg: 'rgba(8,145,178,0.12)'   },
+  venue_admin:   { label: 'Venue Admin',   color: '#7c3aed', bg: 'rgba(124,58,237,0.12)'  },
 };
 
 // ── Demo credential quick-fill accounts ──────────────────────────────────────
@@ -17,13 +18,15 @@ const DEMO_ACCOUNTS = [
   { role: 'faculty',       email: 'faculty@unihub.com', password: 'faculty123'  },
   { role: 'canteen_admin', email: 'canteen@unihub.com', password: 'canteen123'  },
   { role: 'xerox_admin',   email: 'xerox@unihub.com',   password: 'xerox123'    },
+  { role: 'venue_admin',   email: 'venue@unihub.com',   password: 'venue123'    },
 ];
 
 // ── Role redirect routing matrix ─────────────────────────────────────────────
 // role 'student'       → '/'              (main campus dashboard)
-// role 'faculty'       → '/bookings'      (booking utilities)
+// role 'faculty'       → '/'              (booking utilities)
 // role 'canteen_admin' → '/canteen/admin' (queue control panel)
 // role 'xerox_admin'   → '/print/admin'   (operator metrics)
+// role 'venue_admin'   → '/venue/admin'   (spatial allocation control board)
 
 // ── Shared input styles ───────────────────────────────────────────────────────
 const inputBase = {

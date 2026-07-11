@@ -169,10 +169,10 @@ export function useAuth() {
  */
 export function getDefaultRouteForRole(role) {
   switch (role) {
-    case 'faculty':       return '/';
-    case 'canteen_admin': return '/canteen/admin';
+    case 'faculty':        return '/';
     case 'xerox_admin':   return '/print/admin';
-    case 'student':
+    case 'canteen_admin': return '/canteen/admin';
+    case 'venue_admin':   return '/venue/admin';
     default:              return '/';
   }
 }

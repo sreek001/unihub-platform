@@ -6,7 +6,7 @@
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
-    CREATE TYPE user_role AS ENUM ('student', 'faculty', 'canteen_admin', 'xerox_admin');
+    CREATE TYPE user_role AS ENUM ('student', 'faculty', 'canteen_admin', 'xerox_admin', 'venue_admin');
   END IF;
 END
 $$;
@@ -31,6 +31,7 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS role user_role DEFAULT 'student';
 --   faculty      → password: faculty123
 --   canteen_admin→ password: canteen123
 --   xerox_admin  → password: xerox123
+--   venue_admin  → password: venue123
 -- =====================================================
 INSERT INTO users (name, email, password_hash, role)
 VALUES
@@ -57,5 +58,12 @@ VALUES
     'xerox@unihub.com',
     '$2b$10$umoJIDnTJuF7EhJiQTcck.H4UpXDYVs/acXszihpW2MBXM8QBl1sC',
     'xerox_admin'
+  ),
+  (
+    'Venue Administrator',
+    'venue@unihub.com',
+    '$2b$10$y0nnjrOcSLCuaMhzkrfwTeog9dXp4uXFzTC3fQNrWhKUUMlGih6PS',
+    'venue_admin'
   )
 ON CONFLICT (email) DO NOTHING;
+
