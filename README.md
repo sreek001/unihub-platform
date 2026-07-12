@@ -335,19 +335,7 @@ unihub-platform-main/
 | `POST` | `/api/lostfound` | Lost & Found | Post new lost/found listing |
 | `GET` | `/api/academics/textbooks` | Academics | Full textbook marketplace catalogue |
 | `POST` | `/api/academics/textbooks` | Academics | Create new textbook listing |
-| `POST` | `/api/academics/handover` | Academics | Submit purchase handover request |
-
----
-
-### Hardware Acceleration & Edge Runtime Note
-
-The UniHub localization runtime and multi-modal data processing pipeline is benchmarked and optimized for execution on local hardware setups equipped with **NVIDIA RTX 4060** GPUs. The GPU acceleration context is leveraged for:
-
-- High-frequency data sonification model processing.
-- Multi-modal parameter batch evaluation at the edge.
-- Real-time canvas compositing — GPU-layer promotion is enforced via `will-change: transform` and `willChange: 'transform, opacity'` applied to all animated card and canvas elements, instructing the browser's compositor to promote these elements to independent GPU compositing contexts.
-
----
+| `POST` | `/api/academics/handover` | Academics | Submit purchase handover request 
 
 
 ## 💻 Local Setup & System Runtime
