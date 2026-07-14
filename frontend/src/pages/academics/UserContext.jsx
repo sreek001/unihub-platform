@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import React, { createContext, useContext, useState, useEffect } from 'react';
 import API_BASE_URL from '../config/api';  // ← move here
 const UserContext = createContext(undefined);
 
