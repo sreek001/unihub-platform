@@ -41,22 +41,22 @@ import StackedCircularFooter from './components/StackedCircularFooter.jsx';
 
 // ── Role badge colour map ─────────────────────────────────────────────────────
 const ROLE_STYLE = {
-  student:       { color: '#6366f1', bg: 'rgba(99,102,241,0.12)',  label: 'Student'       },
-  faculty:       { color: '#14b8a6', bg: 'rgba(20,184,166,0.12)',  label: 'Faculty'       },
-  canteen_admin: { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)',  label: 'Canteen Admin' },
-  xerox_admin:   { color: '#0891b2', bg: 'rgba(8,145,178,0.12)',   label: 'Print Admin'   },
-  venue_admin:   { color: '#7c3aed', bg: 'rgba(124,58,237,0.12)',  label: 'Venue Admin'   },
+  student: { color: '#6366f1', bg: 'rgba(99,102,241,0.12)', label: 'Student' },
+  faculty: { color: '#14b8a6', bg: 'rgba(20,184,166,0.12)', label: 'Faculty' },
+  canteen_admin: { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', label: 'Canteen Admin' },
+  xerox_admin: { color: '#0891b2', bg: 'rgba(8,145,178,0.12)', label: 'Print Admin' },
+  venue_admin: { color: '#7c3aed', bg: 'rgba(124,58,237,0.12)', label: 'Venue Admin' },
 };
 
 // ── Primary navigation items with per-role visibility ───────────────────────
 // allowedRoles: null = visible to everyone in AppLayout
 // allowedRoles: ['student','faculty'] = restricted
 const NAV_ITEMS = [
-  { to: '/academics/marketplace', label: 'Academics',   icon: GraduationCap, color: '#1d4ed8', allowedRoles: ['student', 'faculty'] },
-  { to: '/bookings',              label: 'Bookings',     icon: CalendarDays,  color: '#14b8a6', allowedRoles: ['student', 'faculty'] },
-  { to: '/lost-found',            label: 'Lost & Found', icon: Inbox,         color: '#2563eb', allowedRoles: ['student', 'faculty'] },
-  { to: '/canteen',               label: 'Canteen',      icon: Utensils,      color: '#d97706', allowedRoles: ['student', 'faculty'] },
-  { to: '/print',                 label: 'Print',        icon: Printer,       color: '#0891b2', allowedRoles: ['student', 'faculty'] },
+  { to: '/academics/marketplace', label: 'Academics', icon: GraduationCap, color: '#1d4ed8', allowedRoles: ['student', 'faculty'] },
+  { to: '/bookings', label: 'Bookings', icon: CalendarDays, color: '#14b8a6', allowedRoles: ['student', 'faculty'] },
+  { to: '/lost-found', label: 'Lost & Found', icon: Inbox, color: '#2563eb', allowedRoles: ['student', 'faculty'] },
+  { to: '/canteen', label: 'Canteen', icon: Utensils, color: '#d97706', allowedRoles: ['student', 'faculty'] },
+  { to: '/print', label: 'Print', icon: Printer, color: '#0891b2', allowedRoles: ['student', 'faculty'] },
 ];
 
 // ── User chip in navbar ───────────────────────────────────────────────────────
@@ -71,17 +71,17 @@ function NavUserChip() {
         to="/login"
         id="nav-login-link"
         style={{
-          display:        'flex',
-          alignItems:     'center',
-          gap:             6,
-          padding:        '7px 14px',
-          borderRadius:    10,
-          background:     'linear-gradient(135deg,#4f46e5,#0d9488)',
-          color:          '#fff',
-          fontWeight:      700,
-          fontSize:        13,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '7px 14px',
+          borderRadius: 10,
+          background: 'linear-gradient(135deg,#4f46e5,#0d9488)',
+          color: '#fff',
+          fontWeight: 700,
+          fontSize: 13,
           textDecoration: 'none',
-          boxShadow:      '0 0 16px rgba(99,102,241,0.25)',
+          boxShadow: '0 0 16px rgba(99,102,241,0.25)',
         }}
       >
         Sign In
@@ -89,8 +89,8 @@ function NavUserChip() {
     );
   }
 
-  const meta     = ROLE_STYLE[user.role] || ROLE_STYLE.student;
-  const initials = user.name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+  const meta = ROLE_STYLE[user.role] || ROLE_STYLE.student;
+  const initials = (user?.name || '').split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
   const handleLogout = () => {
     setOpen(false);
@@ -105,31 +105,31 @@ function NavUserChip() {
         data-magnetic
         onClick={() => setOpen((v) => !v)}
         style={{
-          display:    'flex',
+          display: 'flex',
           alignItems: 'center',
-          gap:         8,
-          padding:    '6px 10px 6px 6px',
+          gap: 8,
+          padding: '6px 10px 6px 6px',
           borderRadius: 12,
           background: 'rgba(255,255,255,0.06)',
-          border:     '1px solid rgba(15,76,129,0.12)',
-          cursor:     'pointer',
+          border: '1px solid rgba(15,76,129,0.12)',
+          cursor: 'pointer',
           transition: 'all 0.15s',
         }}
       >
         {/* Avatar */}
         <div
           style={{
-            width:       30,
-            height:      30,
+            width: 30,
+            height: 30,
             borderRadius: 8,
-            background:  `linear-gradient(135deg, ${meta.color}80, ${meta.color}40)`,
-            border:      `1px solid ${meta.color}40`,
-            display:     'flex',
-            alignItems:  'center',
+            background: `linear-gradient(135deg, ${meta.color}80, ${meta.color}40)`,
+            border: `1px solid ${meta.color}40`,
+            display: 'flex',
+            alignItems: 'center',
             justifyContent: 'center',
-            fontSize:     12,
-            fontWeight:   800,
-            color:        meta.color,
+            fontSize: 12,
+            fontWeight: 800,
+            color: meta.color,
           }}
         >
           {initials}
@@ -137,18 +137,18 @@ function NavUserChip() {
         {/* Name + role badge */}
         <div style={{ textAlign: 'left' }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', lineHeight: 1.2 }}>
-            {user.name.split(' ')[0]}
+            {user?.name?.split(' ')[0] || ''}
           </div>
           <div
             style={{
-              fontSize:    10,
-              fontWeight:  600,
-              color:       meta.color,
-              background:  meta.bg,
-              padding:    '1px 6px',
+              fontSize: 10,
+              fontWeight: 600,
+              color: meta.color,
+              background: meta.bg,
+              padding: '1px 6px',
               borderRadius: 4,
-              display:    'inline-block',
-              lineHeight:  1.6,
+              display: 'inline-block',
+              lineHeight: 1.6,
             }}
           >
             {meta.label}
@@ -157,9 +157,9 @@ function NavUserChip() {
         <ChevronDown
           size={14}
           style={{
-            color:     '#94a3b8',
+            color: '#94a3b8',
             marginLeft: 2,
-            transform:  open ? 'rotate(180deg)' : 'rotate(0deg)',
+            transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
             transition: 'transform 0.2s',
           }}
         />
@@ -175,18 +175,18 @@ function NavUserChip() {
           />
           <div
             style={{
-              position:            'absolute',
-              top:                 'calc(100% + 8px)',
-              right:                0,
-              zIndex:               50,
-              background:          'rgba(255,255,255,0.95)',
-              backdropFilter:      'blur(20px)',
+              position: 'absolute',
+              top: 'calc(100% + 8px)',
+              right: 0,
+              zIndex: 50,
+              background: 'rgba(255,255,255,0.95)',
+              backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
-              border:              '1px solid rgba(15,76,129,0.1)',
-              borderRadius:         14,
-              padding:              8,
-              minWidth:             180,
-              boxShadow:           '0 16px 48px rgba(0,0,0,0.12)',
+              border: '1px solid rgba(15,76,129,0.1)',
+              borderRadius: 14,
+              padding: 8,
+              minWidth: 180,
+              boxShadow: '0 16px 48px rgba(0,0,0,0.12)',
             }}
           >
             <div style={{ padding: '8px 12px 12px', borderBottom: '1px solid rgba(15,76,129,0.07)' }}>
@@ -197,19 +197,19 @@ function NavUserChip() {
               id="nav-logout-btn"
               onClick={handleLogout}
               style={{
-                display:    'flex',
+                display: 'flex',
                 alignItems: 'center',
-                gap:         8,
-                width:      '100%',
-                padding:    '10px 12px',
-                marginTop:   4,
+                gap: 8,
+                width: '100%',
+                padding: '10px 12px',
+                marginTop: 4,
                 borderRadius: 9,
-                border:     'none',
+                border: 'none',
                 background: 'transparent',
-                cursor:     'pointer',
-                color:      '#ef4444',
-                fontWeight:  600,
-                fontSize:    13,
+                cursor: 'pointer',
+                color: '#ef4444',
+                fontWeight: 600,
+                fontSize: 13,
                 transition: 'background 0.15s',
               }}
               onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; }}
@@ -247,81 +247,81 @@ function AppLayout() {
         className="min-h-screen flex flex-col font-sans relative z-10"
         style={{ background: 'transparent', color: '#0f172a' }}
       >
-      {/* Sticky glassmorphic navbar */}
-      <nav
-        className="sticky top-0 z-50 px-6 py-4"
-        style={{
-          background:    'rgba(255,255,255,0.60)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          borderBottom:  '1px solid rgba(255,255,255,0.60)',
-          boxShadow:     '0 8px 30px rgba(0,0,0,0.04)',
-        }}
-      >
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        {/* Sticky glassmorphic navbar */}
+        <nav
+          className="sticky top-0 z-50 px-6 py-4"
+          style={{
+            background: 'rgba(255,255,255,0.60)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            borderBottom: '1px solid rgba(255,255,255,0.60)',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.04)',
+          }}
+        >
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
 
-          {/* Logo */}
-          <Link
-            to="/"
-            data-magnetic
-            className="flex items-center gap-3 text-xl font-black"
-            style={{ textDecoration: 'none' }}
-          >
-            <div
-              style={{
-                width:       34,
-                height:      34,
-                borderRadius: 10,
-                background:  'linear-gradient(135deg,#1d4ed8,#14b8a6)',
-                display:     'flex',
-                alignItems:  'center',
-                justifyContent: 'center',
-              }}
+            {/* Logo */}
+            <Link
+              to="/"
+              data-magnetic
+              className="flex items-center gap-3 text-xl font-black"
+              style={{ textDecoration: 'none' }}
             >
-              <GraduationCap style={{ color: '#fff', width: 18, height: 18 }} />
-            </div>
-            <span
-              style={{
-                backgroundImage:      'linear-gradient(90deg,#1d4ed8,#0f766e)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor:  'transparent',
-              }}
-            >
-              UniHub
-            </span>
-          </Link>
-
-          {/* Nav links — filtered by role */}
-          <div className="flex items-center gap-1">
-            {visibleNavItems.map(({ to, label, icon: Icon, color }) => (
-              <Link
-                key={to}
-                to={to}
-                data-magnetic
-                className="flex items-center gap-2 px-3 py-2 rounded-xl"
-                style={{ textDecoration: 'none' }}
+              <div
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 10,
+                  background: 'linear-gradient(135deg,#1d4ed8,#14b8a6)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
-                <Icon style={{ width: 15, height: 15, color }} />
-                <span style={{ color: '#475569', fontWeight: 600, fontSize: 14 }}>{label}</span>
-              </Link>
-            ))}
+                <GraduationCap style={{ color: '#fff', width: 18, height: 18 }} />
+              </div>
+              <span
+                style={{
+                  backgroundImage: 'linear-gradient(90deg,#1d4ed8,#0f766e)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                UniHub
+              </span>
+            </Link>
+
+            {/* Nav links — filtered by role */}
+            <div className="flex items-center gap-1">
+              {visibleNavItems.map(({ to, label, icon: Icon, color }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  data-magnetic
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Icon style={{ width: 15, height: 15, color }} />
+                  <span style={{ color: '#475569', fontWeight: 600, fontSize: 14 }}>{label}</span>
+                </Link>
+              ))}
+            </div>
+
+            {/* Auth chip */}
+            <NavUserChip />
           </div>
+        </nav>
 
-          {/* Auth chip */}
-          <NavUserChip />
-        </div>
-      </nav>
+        <main className="flex-grow">
+          <Outlet />
+        </main>
 
-      <main className="flex-grow">
-        <Outlet />
-      </main>
-
-      <footer
-        className="text-center py-5"
-        style={{ borderTop: '1px solid rgba(15,76,129,.06)', color: '#94a3b8', fontSize: 13 }}
-      >
-        © {new Date().getFullYear()} UniHub Campus Platform
-      </footer>
+        <footer
+          className="text-center py-5"
+          style={{ borderTop: '1px solid rgba(15,76,129,.06)', color: '#94a3b8', fontSize: 13 }}
+        >
+          © {new Date().getFullYear()} UniHub Campus Platform
+        </footer>
       </div>
     </InfiniteGridBackground>
   );
@@ -470,9 +470,9 @@ export default function App() {
               {/* Academics — nested sub-routes */}
               <Route path="/academics" element={<AcademicsLayout />}>
                 <Route path="marketplace" element={<Marketplace />} />
-                <Route path="vault"       element={<Vault />}       />
-                <Route path="inventory"   element={<Inventory />}   />
-                <Route path="settings"    element={<Settings />}    />
+                <Route path="vault" element={<Vault />} />
+                <Route path="inventory" element={<Inventory />} />
+                <Route path="settings" element={<Settings />} />
               </Route>
             </Route>
 
