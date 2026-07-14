@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import API_BASE_URL from '../../config/api';
+
 const UserContext = createContext(undefined);
 
 export function UserProvider({ children }) {
@@ -10,7 +11,7 @@ export function UserProvider({ children }) {
   useEffect(() => {
     async function loadUsers() {
       try {
-
+        const res = await fetch(`${API_BASE_URL}/api/academics/students`);
         if (res.ok) {
           const data = await res.json();
           setUsers(data);
@@ -22,7 +23,6 @@ export function UserProvider({ children }) {
         }
       } catch (err) {
         console.error('Failed to load users from backend, using fallbacks', err);
-        // Fallback mock students matching your new Supabase database seed exactly
         const mockData = [
           { id: 'anannya-20', name: 'Anannya sunny', branch: 'Computer Science', currentSemester: 6 },
           { id: 'sreehari-456', name: 'Sreehari', branch: 'Ai and datascience', currentSemester: 4 },
