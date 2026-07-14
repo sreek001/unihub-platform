@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import API_BASE_URL from '../config/api';  // ← move here
 const UserContext = createContext(undefined);
 
 export function UserProvider({ children }) {
@@ -10,8 +11,7 @@ export function UserProvider({ children }) {
   useEffect(() => {
     async function loadUsers() {
       try {
-        import API_BASE_URL from '../config/api';
-        const res = await fetch(`${API_BASE_URL}/api/academics/students`);
+
         if (res.ok) {
           const data = await res.json();
           setUsers(data);
