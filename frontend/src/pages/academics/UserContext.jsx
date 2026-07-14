@@ -10,7 +10,8 @@ export function UserProvider({ children }) {
   useEffect(() => {
     async function loadUsers() {
       try {
-        const res = await fetch('http://localhost:4000/api/academics/students');
+        import API_BASE_URL from '../config/api';
+        const res = await fetch(`${API_BASE_URL}/api/academics/students`);
         if (res.ok) {
           const data = await res.json();
           setUsers(data);
