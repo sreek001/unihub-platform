@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import API_BASE_URL from '../config/api';  // ← move here
+import API_BASE_URL from '../../config/api';
 const UserContext = createContext(undefined);
 
 export function UserProvider({ children }) {
