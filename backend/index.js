@@ -5,10 +5,10 @@ const db = require('./src/db');
 
 const app = express();
 
-// 🌟 DYNAMIC CORS CONFIGURATION (Fixes the Vercel block)
+// ─── DYNAMIC CORS ARCHITECTURE ──────────────────────────────────────────────
 const allowedOrigins = [
-  'http://localhost:5173', // Local frontend development
-  'https://unihub-platform.vercel.app', // Production Vercel domain
+  'http://localhost:5173',                  // Local frontend server
+  'https://unihub-platform.vercel.app',    // Production Vercel domain
   'https://unihub-platform-qbs0deejw-ksreehari84m-3947s-projects.vercel.app' // Vercel Preview
 ];
 
@@ -30,6 +30,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
 
+// ─── DATABASE INITIALIZATION ────────────────────────────────────────────────
 async function initializeDatabase() {
   console.log("Setting up Auth schema (users table + roles)...");
   try {
@@ -48,12 +49,14 @@ async function initializeDatabase() {
   }
 }
 
+// ─── CORE API SYSTEM HANDSHAKES ─────────────────────────────────────────────
+
 // Global API Status Route
 app.get('/api/status', (req, res) => {
   res.json({ status: 'healthy', database: 'connected' });
 });
 
-// Profile Verification Handshake (Returns fallback user context tracking elements)
+// Profile Verification Handshake
 app.get('/api/auth/me', (req, res) => {
   res.json({
     success: true,
@@ -66,44 +69,7 @@ app.get('/api/auth/me', (req, res) => {
   });
 });
 
-// 🌟 STUB FIXED: Added Canteen API endpoints to stop frontend 404/Refused crashes
-app.get('/api/canteen/menu', (req, res) => {
-  res.json([
-    { id: 'item-1', name: 'Masala Dosa', price: 40, category: 'breakfast', available: true },
-    { id: 'item-2', name: 'Veg Meals', price: 60, category: 'lunch', available: true },
-    { id: 'item-3', name: 'Samosa', price: 15, category: 'snacks', available: true },
-    { id: 'item-4', name: 'Coffee', price: 15, category: 'beverages', available: true }
-  ]);
-});
-
-app.get('/api/canteen/orders', (req, res) => {
-  res.json([]);
-});
-
-// 🌟 STUB FIXED: Added Print API history tracker endpoint to prevent JSON parse failures
-app.get('/api/print/history', (req, res) => {
-  res.json([]);
-});
-
-// 🌟 STUB FIXED: Added Academics catalog textbooks route
-app.get('/api/academics/textbooks', (req, res) => {
-  res.json([
-    { id: 'book-1', title: 'Introduction to Graph Theory', author: 'Douglas B. West', sem: 4 },
-    { id: 'book-2', title: 'Data Science & AI Baselines', author: 'Engineering Press', sem: 4 }
-  ]);
-});
-
-// 🌟 UPDATED: Academics Data Route (Includes the requested Karthik profile schema)
-app.get('/api/academics/students', (req, res) => {
-  res.json([
-    { id: 'anannya-20', name: 'Anannya Sunny', branch: 'Computer Science', currentSemester: 6 },
-    { id: 'sreehari-456', name: 'Sreehari K', branch: 'Ai and datascience', currentSemester: 4 },
-    { id: 'astrea-789', name: 'Astrea Rose Antony', branch: 'Electrical Engineering', currentSemester: 2 },
-    { id: 'Karthik -789', name: 'Karthik sajan', branch: 'Electrical Engineering', currentSemester: 2 }
-  ]);
-});
-
-// 🌟 FIXED: Dynamic Login Controller Route (Maps role parameters correctly to fix Admin dashboard entry redirects)
+// Dynamic Login Gateway Matrix
 app.post('/api/auth/login', (req, res) => {
   const { email } = req.body;
 
@@ -136,7 +102,87 @@ app.post('/api/auth/login', (req, res) => {
   });
 });
 
+// ─── ACADEMICS HUB MODULE ───────────────────────────────────────────────────
+
+// Verified Student Records Array
+app.get('/api/academics/students', (req, res) => {
+  res.json([
+    { id: 'anannya-20', name: 'Anannya Sunny', branch: 'Computer Science', currentSemester: 6 },
+    { id: 'sreehari-456', name: 'Sreehari K', branch: 'Ai and datascience', currentSemester: 4 },
+    { id: 'astrea-789', name: 'Astrea Rose Antony', branch: 'Electrical Engineering', currentSemester: 2 },
+    { id: 'Karthik -789', name: 'Karthik sajan', branch: 'Electrical Engineering', currentSemester: 2 }
+  ]);
+});
+
+// 📚 RESTORED: Full Textbooks Database Catalog
+app.get('/api/academics/textbooks', (req, res) => {
+  res.json([
+    {
+      id: 'book-1',
+      title: 'Introduction to Graph Theory',
+      author: 'Douglas B. West',
+      subject: 'Mathematics (Graph Theory)',
+      sem: 4,
+      price: 350,
+      condition: 'Like New',
+      owner: 'Sreehari K'
+    },
+    {
+      id: 'book-2',
+      title: 'Computer Vision: Algorithms and Applications',
+      author: 'Richard Szeliski',
+      subject: 'Artificial Intelligence',
+      sem: 4,
+      price: 500,
+      condition: 'Good',
+      owner: 'Anannya Sunny'
+    },
+    {
+      id: 'book-3',
+      title: 'Programming Arduino: Getting Started with Sketches',
+      author: 'Simon Monk',
+      subject: 'Robotics & Automation',
+      sem: 2,
+      price: 220,
+      condition: 'Marked text',
+      owner: 'Karthik Sajan'
+    },
+    {
+      id: 'book-4',
+      title: 'Database System Concepts',
+      author: 'Abraham Silberschatz',
+      subject: 'Database Management',
+      sem: 4,
+      price: 400,
+      condition: 'Excellent',
+      owner: 'Astrea Rose'
+    }
+  ]);
+});
+
+// ─── CANTEEN PLATFORM AUTOMATION MODULE ─────────────────────────────────────
+
+app.get('/api/canteen/menu', (req, res) => {
+  res.json([
+    { id: 'item-1', name: 'Masala Dosa', price: 40, category: 'breakfast', available: true },
+    { id: 'item-2', name: 'Veg Meals', price: 60, category: 'lunch', available: true },
+    { id: 'item-3', name: 'Samosa', price: 15, category: 'snacks', available: true },
+    { id: 'item-4', name: 'Coffee', price: 15, category: 'beverages', available: true }
+  ]);
+});
+
+app.get('/api/canteen/orders', (req, res) => {
+  res.json([]);
+});
+
+// ─── PRINT & STATIONERY QUEUE MODULE ────────────────────────────────────────
+
+app.get('/api/print/history', (req, res) => {
+  res.json([]);
+});
+
+// ─── LIFECYCLE LISTENERS ────────────────────────────────────────────────────
 app.listen(PORT, async () => {
   await initializeDatabase();
-  console.log(`🚀 Server safely processing metrics on http://localhost:${PORT}`);
+  console.log(`🚀 Full-Stack Engine online at http://localhost:${PORT}`);
 });
