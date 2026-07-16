@@ -5,11 +5,11 @@ const db = require('./src/db');
 
 const app = express();
 
-// DYNAMIC CORS CONFIGURATION
+// 🌟 DYNAMIC CORS CONFIGURATION (Fixes the Vercel block)
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://unihub-platform.vercel.app',
-  'https://unihub-platform-qbs0deejw-ksreehari84m-3947s-projects.vercel.app'
+  'http://localhost:5173', // Local frontend development
+  'https://unihub-platform.vercel.app', // Production Vercel domain
+  'https://unihub-platform-qbs0deejw-ksreehari84m-3947s-projects.vercel.app' // Vercel Preview
 ];
 
 app.use(cors({
@@ -53,7 +53,7 @@ app.get('/api/status', (req, res) => {
   res.json({ status: 'healthy', database: 'connected' });
 });
 
-// Profile Verification Handshake
+// Profile Verification Handshake (Returns fallback user context tracking elements)
 app.get('/api/auth/me', (req, res) => {
   res.json({
     success: true,
@@ -66,20 +66,47 @@ app.get('/api/auth/me', (req, res) => {
   });
 });
 
-// Academics Data Route
+// 🌟 STUB FIXED: Added Canteen API endpoints to stop frontend 404/Refused crashes
+app.get('/api/canteen/menu', (req, res) => {
+  res.json([
+    { id: 'item-1', name: 'Masala Dosa', price: 40, category: 'breakfast', available: true },
+    { id: 'item-2', name: 'Veg Meals', price: 60, category: 'lunch', available: true },
+    { id: 'item-3', name: 'Samosa', price: 15, category: 'snacks', available: true },
+    { id: 'item-4', name: 'Coffee', price: 15, category: 'beverages', available: true }
+  ]);
+});
+
+app.get('/api/canteen/orders', (req, res) => {
+  res.json([]);
+});
+
+// 🌟 STUB FIXED: Added Print API history tracker endpoint to prevent JSON parse failures
+app.get('/api/print/history', (req, res) => {
+  res.json([]);
+});
+
+// 🌟 STUB FIXED: Added Academics catalog textbooks route
+app.get('/api/academics/textbooks', (req, res) => {
+  res.json([
+    { id: 'book-1', title: 'Introduction to Graph Theory', author: 'Douglas B. West', sem: 4 },
+    { id: 'book-2', title: 'Data Science & AI Baselines', author: 'Engineering Press', sem: 4 }
+  ]);
+});
+
+// 🌟 UPDATED: Academics Data Route (Includes the requested Karthik profile schema)
 app.get('/api/academics/students', (req, res) => {
   res.json([
     { id: 'anannya-20', name: 'Anannya Sunny', branch: 'Computer Science', currentSemester: 6 },
     { id: 'sreehari-456', name: 'Sreehari K', branch: 'Ai and datascience', currentSemester: 4 },
-    { id: 'astrea-789', name: 'Astrea Rose Antony', branch: 'Electrical Engineering', currentSemester: 2 }
+    { id: 'astrea-789', name: 'Astrea Rose Antony', branch: 'Electrical Engineering', currentSemester: 2 },
+    { id: 'Karthik -789', name: 'Karthik sajan', branch: 'Electrical Engineering', currentSemester: 2 }
   ]);
 });
 
-// 🌟 FIXED: Dynamic Login Controller Route (Assigns correct role marker tags matching incoming emails)
+// 🌟 FIXED: Dynamic Login Controller Route (Maps role parameters correctly to fix Admin dashboard entry redirects)
 app.post('/api/auth/login', (req, res) => {
   const { email } = req.body;
 
-  // Parse role based on demo email structure definitions
   let userRole = 'student';
   let userName = 'Sreehari K';
 
