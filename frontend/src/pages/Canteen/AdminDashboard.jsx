@@ -6,16 +6,20 @@ import "./CanteenDashboard.css";
 import { useAuth } from "../../context/AuthContext";
 import { OriginButton } from "@/components/ui/origin-button";
 
+// 🌟 FIXED: Import our global base URL mapping configuration
+import API_BASE_URL from '../../config/api';
+
 import AdminKanban from "./components/admin/AdminKanban";
 import AdminSidebar from "./components/admin/AdminSidebar";
 import AddItemModal from "./components/admin/AddItemModal";
+
 export default function AdminDashboard() {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = () => {
-    logout();           // clears localStorage token + resets auth state
-    navigate('/login'); // redirect to login screen
+    logout();
+    navigate('/login');
   };
 
   const [menuItems, setMenuItems] = useState([]);
@@ -23,106 +27,74 @@ export default function AdminDashboard() {
   const [showAddModal, setShowAddModal] = useState(false);
   const previousOrderCount = useRef(0);
 
-  const notificationSound = useRef(
-    new Audio("/sounds/new-order.mp3")
-  );
-  useEffect(() => {
+  const notificationSound = useRef(new Audio("/sounds/new-order.mp3"));
 
+  useEffect(() => {
     fetchMenu();
     fetchOrders();
 
     const interval = setInterval(() => {
-
       fetchMenu();
       fetchOrders();
-
     }, 3000);
 
     return () => clearInterval(interval);
-
   }, []);
+
   useEffect(() => {
-
     if (previousOrderCount.current === 0) {
-
       previousOrderCount.current = orders.length;
-
       return;
-
     }
 
     if (orders.length > previousOrderCount.current) {
-
       notificationSound.current.currentTime = 0;
-
       notificationSound.current.play().catch(err => {
-
         console.log("Sound blocked:", err);
-
       });
-
     }
 
     previousOrderCount.current = orders.length;
-
   }, [orders]);
+
   // ===============================
   // FETCH MENU
   // ===============================
-
   const fetchMenu = async () => {
-
     try {
-
-      const response = await fetch(
-        "http://localhost:4000/api/canteen/menu"
-      );
-
+      // 🌟 FIXED: Routed paths contextual to the global variable config
+      const response = await fetch(`${API_BASE_URL}/api/canteen/menu`);
       const data = await response.json();
 
-      if (data.success) {
-
-        const menu = data.menu.map(item => ({
+      if (data.success || Array.isArray(data)) {
+        const rawMenu = data.menu || data;
+        const menu = Array.isArray(rawMenu) ? rawMenu.map(item => ({
           ...item,
-          prepTime: item.prep_time
-        }));
+          prepTime: item.prep_time || 10
+        })) : [];
 
         setMenuItems(menu);
-
       }
-
     } catch (err) {
-
       console.error(err);
-
     }
-
   };
 
   // ===============================
   // FETCH ORDERS
   // ===============================
-
   const fetchOrders = async () => {
-
     try {
-
-      const response = await fetch(
-        "http://localhost:4000/api/canteen/orders"
-      );
-
+      // 🌟 FIXED: Shifted endpoint string out of local hardcoding
+      const response = await fetch(`${API_BASE_URL}/api/canteen/orders`);
       const data = await response.json();
 
-      if (data.success) {
-
-        const formattedOrders = data.orders.map(order => ({
-
+      if (data.success || Array.isArray(data)) {
+        const rawOrders = data.orders || data;
+        const formattedOrders = Array.isArray(rawOrders) ? rawOrders.map(order => ({
           id: order.id,
-
           queue: order.token_number,
-
           status:
-
             order.status === "PENDING"
               ? "received"
               : order.status === "PREPARING"
@@ -130,180 +102,114 @@ export default function AdminDashboard() {
                 : order.status === "READY"
                   ? "ready"
                   : "completed",
-
-          time: new Date(order.created_at).toLocaleTimeString([], {
-
+          time: new Date(order.created_at || Date.now()).toLocaleTimeString([], {
             hour: "2-digit",
-
             minute: "2-digit"
-
           }),
-
-          items: order.items
-
-        }));
+          items: order.items || []
+        })) : [];
 
         setOrders(formattedOrders);
-
       }
-
     } catch (err) {
-
       console.error(err);
-
     }
-
   };
+
   // ===============================
   // UPDATE ORDER STATUS
   // ===============================
-
   const advanceStatus = async (orderId, currentStatus) => {
-
     let nextStatus;
-
     if (currentStatus === "received") {
-
       nextStatus = "PREPARING";
-
     } else if (currentStatus === "preparing") {
-
       nextStatus = "READY";
-
     } else {
-
       nextStatus = "DELIVERED";
-
     }
 
     try {
-
+      // 🌟 FIXED: Updated fetch call template routing parameters
       const response = await fetch(
-
-        `http://localhost:4000/api/canteen/order/${orderId}/status`,
-
+        `${API_BASE_URL}/api/canteen/order/${orderId}/status`,
         {
-
           method: "PATCH",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body: JSON.stringify({
-            status: nextStatus
-          })
-
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: nextStatus })
         }
-
       );
 
       const data = await response.json();
-
       if (data.success) {
-
         fetchOrders();
-
       } else {
-
-        alert(data.message);
-
+        alert(data.message || "Failed to alter status code.");
       }
-
     } catch (err) {
-
       console.error(err);
-
     }
-
   };
 
   // ===============================
   // TOGGLE STOCK
   // ===============================
-
   const toggleAvailability = async (item) => {
-
     try {
-
       const newAvailability = !item.available;
-
+      // 🌟 FIXED: Directed availability checks straight to production API URL layers
       const response = await fetch(
-        `http://localhost:4000/api/canteen/menu/${item.id}/availability`,
+        `${API_BASE_URL}/api/canteen/menu/${item.id}/availability`,
         {
           method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            available: newAvailability,
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ available: newAvailability })
         }
       );
 
       const data = await response.json();
-
       if (data.success) {
-
         setMenuItems(prev =>
           prev.map(menu =>
-            menu.id === item.id
-              ? { ...menu, available: newAvailability }
-              : menu
+            menu.id === item.id ? { ...menu, available: newAvailability } : menu
           )
         );
-
       }
-
     } catch (err) {
-
       console.error(err);
-
     }
-
   };
+
+  // ===============================
+  // ADD MENU ITEM
+  // ===============================
   const addMenuItem = async (item) => {
-
     try {
-
+      // 🌟 FIXED: Shifted manual target routing out to production strings
       const response = await fetch(
-        "http://localhost:4000/api/canteen/menu",
+        `${API_BASE_URL}/api/canteen/menu`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(item),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item)
         }
       );
 
       const data = await response.json();
-
       if (data.success) {
-
         setShowAddModal(false);
-
         fetchMenu();
-
       } else {
-
-        alert(data.message);
-
+        alert(data.message || "Could not add item template.");
       }
-
     } catch (err) {
-
       console.error(err);
-
       alert("Unable to add menu item.");
-
     }
-
   };
+
   return (
     <div className="h-screen bg-transparent text-slate-900 flex font-sans overflow-hidden">
-
-      {/* MAIN KANBAN AREA */}
       <div className="flex-1 flex flex-col p-6 md:p-8 h-full">
         <motion.header
           initial={{ opacity: 0, y: -20 }}
@@ -323,14 +229,12 @@ export default function AdminDashboard() {
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="font-bold text-sm tracking-wide text-slate-700">SYSTEM LIVE</span>
             </div>
-            {/* ── Sign Out Button ── */}
             <OriginButton
               id="canteen-admin-signout"
               onClick={handleSignOut}
               title="Sign out of admin panel"
               className="border-[0.5px] border-red-500/25 bg-red-500/5 text-red-500 hover:bg-red-500/10 h-10 px-4 rounded-xl"
             >
-              <LogOut size={15} />
               Sign Out
             </OriginButton>
           </div>
@@ -341,19 +245,10 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* RIGHT SIDEBAR: MENU TOGGLES */}
       <div className="w-80 border-l border-slate-200/50 bg-white/60 backdrop-blur-xl shadow-lg">
-        <AdminSidebar
-          menuItems={menuItems}
-          toggleAvailability={toggleAvailability}
-          openAddModal={() => setShowAddModal(true)}
-        />
+        <AdminSidebar menuItems={menuItems} toggleAvailability={toggleAvailability} openAddModal={() => setShowAddModal(true)} />
       </div>
-      <AddItemModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onAdd={addMenuItem}
-      />
+      <AddItemModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} onAdd={addMenuItem} />
     </div>
   );
 }

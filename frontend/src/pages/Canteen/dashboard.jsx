@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Utensils, Clock, ChefHat } from 'lucide-react';
 import './CanteenDashboard.css';
 
+// 🌟 FIXED: Import our global base URL mapping configuration
+import API_BASE_URL from '../../config/api';
+
 // Import our cleanly separated components
 import MenuGrid from './components/MenuGrid';
 import LiveTracker from './components/LiveTracker';
@@ -20,17 +23,22 @@ export default function CanteenDashboard() {
 
   const fetchMenu = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/canteen/menu');
+      // 🌟 FIXED: Refactored hardcoded localhost to follow dynamic production parameters
+      const response = await fetch(`${API_BASE_URL}/api/canteen/menu`);
       const data = await response.json();
-      const formattedMenu = data.menu.map(item => ({
-  id: item.id,
-  name: item.name,
-  price: Number(item.price),
-  prepTime: item.prep_time,
-  available: item.available,
-  icon: Utensils,
-  color: "#1d4ed8",
-}));
+
+      // Defensively parse backend payload to maintain interface stability
+      const menuArray = data.menu || data;
+      const formattedMenu = Array.isArray(menuArray) ? menuArray.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: Number(item.price),
+        prepTime: item.prep_time || 10,
+        available: item.available,
+        icon: Utensils,
+        color: "#1d4ed8",
+      })) : [];
+
       setMenuItems(formattedMenu);
     } catch (error) {
       console.error('Error fetching menu:', error);
@@ -40,68 +48,43 @@ export default function CanteenDashboard() {
   };
 
   useEffect(() => {
+    fetchMenu();
+    const interval = setInterval(fetchMenu, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
-  fetchMenu();
-
-  const interval = setInterval(fetchMenu, 3000);
-
-  return () => clearInterval(interval);
-
-}, []);
   const fetchActiveOrder = async () => {
+    if (!activeOrder?.orderId) return;
+    try {
+      // 🌟 FIXED: Routed through verified production URL properties
+      const response = await fetch(`${API_BASE_URL}/api/canteen/order/${activeOrder.orderId}`);
+      const data = await response.json();
+      console.log("Live Order:", data?.order?.status || data?.status);
 
-  if (!activeOrder?.orderId) return;
-
-  try {
-
-    const response = await fetch(
-      `http://localhost:4000/api/canteen/order/${activeOrder.orderId}`
-    );
-
-    const data = await response.json();
-console.log("Live Order:", data.order.status);
-    if (data.success) {
-
-      setActiveOrder(prev => ({
-
-  ...prev,
-
-  id: data.order.token_number,
-
-  token_number: data.order.token_number,
-
-  items: data.order.items,
-
-  total: Number(data.order.total_amount),
-
-  status: data.order.status,
-
-  queue: data.order.queuePosition ?? prev.queue,
-
-  eta: data.order.estimatedTime ?? prev.eta
-
-}));
-
+      if (data && (data.success || data.order)) {
+        const targetOrder = data.order || data;
+        setActiveOrder(prev => ({
+          ...prev,
+          id: targetOrder.token_number || prev.id,
+          token_number: targetOrder.token_number || prev.token_number,
+          items: targetOrder.items || prev.items,
+          total: Number(targetOrder.total_amount || prev.total),
+          status: targetOrder.status || prev.status,
+          queue: targetOrder.queuePosition ?? prev.queue,
+          eta: targetOrder.estimatedTime ?? prev.eta
+        }));
+      }
+    } catch (err) {
+      console.error(err);
     }
+  };
 
-  } catch (err) {
-
-    console.error(err);
-
-  }
-
-};
-useEffect(() => {
-
-  if (!activeOrder?.orderId) return;
-
-  fetchActiveOrder();
-
-  const interval = setInterval(fetchActiveOrder, 3000);
-
-  return () => clearInterval(interval);
-
-}, [activeOrder?.orderId]);
+  useEffect(() => {
+    if (!activeOrder?.orderId) return;
+    fetchActiveOrder();
+    const interval = setInterval(fetchActiveOrder, 3000);
+    return () => clearInterval(interval);
+  }, [activeOrder?.orderId]);
 
   // ─── STATE LOGIC ───
   const updateCart = (item, delta) => {
@@ -123,7 +106,8 @@ useEffect(() => {
   const placeOrder = async () => {
     if (cart.length === 0) return;
     try {
-      const response = await fetch('http://localhost:4000/api/canteen/order', {
+      // 🌟 FIXED: Redirected tracking metrics endpoint to production cluster
+      const response = await fetch(`${API_BASE_URL}/api/canteen/order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -138,17 +122,14 @@ useEffect(() => {
       console.log(data);
 
       if (!data.success) {
-
-  alert(data.message);
-
-  fetchMenu();
-
-  return;
-}
+        alert(data.message || 'Unable to finalize transaction records.');
+        fetchMenu();
+        return;
+      }
 
       const maxPrep = Math.max(...cart.map(i => i.prepTime));
       setActiveOrder({
-         orderId: data.order.id,
+        orderId: data.order.id,
         token_number: data.order.token_number,
         id: data.order.token_number,
         items: [...cart],
@@ -173,30 +154,10 @@ useEffect(() => {
   ];
 
   return (
-    <div
-      className="min-h-screen font-sans"
-      style={{
-        background: 'transparent',
-        color: '#0f172a',
-      }}
-    >
-      <div
-        className="max-w-7xl mx-auto px-6 py-8 md:px-10 md:py-10"
-        style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 32 }}
-      >
-        {/* ── Main grid — content + sidebar ── */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr',
-            gap: 32,
-          }}
-          className="lg:grid-cols-[1fr_360px]"
-        >
-          {/* LEFT COLUMN: Main Area */}
+    <div className="min-h-screen font-sans" style={{ background: 'transparent', color: '#0f172a' }}>
+      <div className="max-w-7xl mx-auto px-6 py-8 md:px-10 md:py-10" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 32 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 32 }} className="lg:grid-cols-[1fr_360px]">
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-
-            {/* ── Page intro (replaces heavy dark header) ── */}
             <motion.div
               initial={{ opacity: 0, y: -14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -212,18 +173,7 @@ useEffect(() => {
               }}
             >
               <div>
-                <h1
-                  style={{
-                    margin: 0,
-                    fontSize: '1.75rem',
-                    fontWeight: 800,
-                    color: '#0f172a',
-                    letterSpacing: '-0.025em',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 10,
-                  }}
-                >
+                <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.025em', display: 'flex', alignItems: 'center', gap: 10 }}>
                   <ChefHat style={{ width: 26, height: 26, color: '#d97706' }} />
                   Live Canteen
                 </h1>
@@ -232,39 +182,12 @@ useEffect(() => {
                 </p>
               </div>
 
-              {/* Live badge */}
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  padding: '5px 14px',
-                  borderRadius: 9999,
-                  background: 'rgba(212,175,55,0.08)',
-                  border: '1px solid rgba(212,175,55,0.2)',
-                  fontSize: '0.7rem',
-                  fontWeight: 800,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  color: '#92400e',
-                }}
-              >
-                <span
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: '50%',
-                    background: '#d97706',
-                    boxShadow: '0 0 0 3px rgba(217,119,6,0.2)',
-                    animation: 'pulse 2s infinite',
-                    display: 'inline-block',
-                  }}
-                />
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 14px', borderRadius: 9999, background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#92400e' }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#d97706', boxShadow: '0 0 0 3px rgba(217,119,6,0.2)', animation: 'pulse 2s infinite', display: 'inline-block' }} />
                 Kitchen Live
               </span>
             </motion.div>
 
-            {/* ── Tab switcher — light glass ── */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -313,14 +236,7 @@ useEffect(() => {
                     {isActive && (
                       <motion.div
                         layoutId="canteenTabBubble"
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          background: 'rgba(29,78,216,0.07)',
-                          border: '1px solid rgba(29,78,216,0.14)',
-                          borderRadius: 12,
-                          zIndex: -1,
-                        }}
+                        style={{ position: 'absolute', inset: 0, background: 'rgba(29,78,216,0.07)', border: '1px solid rgba(29,78,216,0.14)', borderRadius: 12, zIndex: -1 }}
                         transition={fluidSpring}
                       />
                     )}
@@ -331,28 +247,16 @@ useEffect(() => {
               })}
             </motion.div>
 
-            {/* DYNAMIC CONTENT SWITCHING */}
             <AnimatePresence mode="wait">
               {activeTab === 'menu' ? (
-                <MenuGrid
-                  key="menu"
-                  menuItems={menuItems}
-                  cart={cart}
-                  updateCart={updateCart}
-                />
+                <MenuGrid key="menu" menuItems={menuItems} cart={cart} updateCart={updateCart} />
               ) : (
                 <LiveTracker key="tracker" activeOrder={activeOrder} />
               )}
             </AnimatePresence>
           </div>
 
-          {/* RIGHT COLUMN: Cart Sidebar */}
-          <CartSidebar
-            cart={cart}
-            cartTotal={cartTotal}
-            updateCart={updateCart}
-            placeOrder={placeOrder}
-          />
+          <CartSidebar cart={cart} cartTotal={cartTotal} updateCart={updateCart} placeOrder={placeOrder} />
         </div>
       </div>
     </div>
