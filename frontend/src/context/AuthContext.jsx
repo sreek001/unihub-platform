@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 // API base URL — overridable via VITE_API_URL in .env
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://unihub-platform-production.up.railway.app';
 
 // Centralised localStorage key used consistently everywhere in the app
 const TOKEN_KEY = 'unihub_token';
@@ -23,8 +23,8 @@ const AuthContext = createContext(undefined);
  *   authHeader  — { Authorization: 'Bearer ...' } | {} convenience spread object
  */
 export function AuthProvider({ children }) {
-  const [user,    setUser]    = useState(null);
-  const [token,   setToken]   = useState(null);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true); // true until startup check completes
 
   // ── On mount: rehydrate session from localStorage ─────────────────────────
@@ -48,10 +48,10 @@ export function AuthProvider({ children }) {
         if (data.success && data.user) {
           setToken(storedToken);
           setUser({
-            id:    data.user.id,
-            name:  data.user.name,
+            id: data.user.id,
+            name: data.user.name,
             email: data.user.email,
-            role:  data.user.role,
+            role: data.user.role,
           });
         } else {
           // Server responded but token is stale / revoked
@@ -76,9 +76,9 @@ export function AuthProvider({ children }) {
    */
   const login = useCallback(async (email, password) => {
     const res = await fetch(`${API_BASE}/api/auth/login`, {
-      method:  'POST',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password }),
     });
 
     const data = await res.json();
@@ -103,9 +103,9 @@ export function AuthProvider({ children }) {
    */
   const register = useCallback(async (name, email, password, role = 'student') => {
     const res = await fetch(`${API_BASE}/api/auth/register`, {
-      method:  'POST',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ name, email, password, role }),
+      body: JSON.stringify({ name, email, password, role }),
     });
 
     const data = await res.json();
@@ -169,10 +169,10 @@ export function useAuth() {
  */
 export function getDefaultRouteForRole(role) {
   switch (role) {
-    case 'faculty':        return '/';
-    case 'xerox_admin':   return '/print/admin';
+    case 'faculty': return '/';
+    case 'xerox_admin': return '/print/admin';
     case 'canteen_admin': return '/canteen/admin';
-    case 'venue_admin':   return '/venue/admin';
-    default:              return '/';
+    case 'venue_admin': return '/venue/admin';
+    default: return '/';
   }
 }
