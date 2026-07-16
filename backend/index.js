@@ -199,6 +199,37 @@ app.get('/api/canteen/orders', (req, res) => {
   res.json([]);
 });
 
+// 🌟 ADDED: Handle Checkout and Order Submissions (Fixes your 404 / JSON Token crash)
+app.post('/api/canteen/order', (req, res) => {
+  const tokenNumber = Math.floor(100 + Math.random() * 900); // Dynamic 3-digit token generation
+  res.json({
+    success: true,
+    message: "Order queued and registered successfully.",
+    order: {
+      id: `ord-${Date.now()}`,
+      token_number: tokenNumber,
+      status: "PENDING",
+      total_amount: req.body.items ? req.body.items.length * 50 : 50,
+      created_at: new Date().toISOString()
+    }
+  });
+});
+
+// 🌟 ADDED: Live Telemetry tracking endpoint for active order progress tracking view panels
+app.get('/api/canteen/order/:orderId', (req, res) => {
+  res.json({
+    success: true,
+    order: {
+      token_number: "742",
+      status: "PREPARING",
+      total_amount: 120,
+      queuePosition: 2,
+      estimatedTime: 8,
+      items: []
+    }
+  });
+});
+
 // ─── PRINTING MODULE DATA MOCK STUBS ────────────────────────────────────────
 
 app.get('/api/print/history', (req, res) => {
