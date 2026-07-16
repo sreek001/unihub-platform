@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Plus, Search, Tag, User, HelpCircle, Loader2 } from 'lucide-react';
 import { useActiveUser } from './UserContext';
 
+// 🌟 FIXED: Imported your centralized config file containing the active production URL
+import API_BASE_URL from '../../config/api';
+
 const CATEGORIES = [
   'All',
   'Computer Science and Engineering',
@@ -38,7 +41,8 @@ export default function Marketplace() {
   const fetchBooks = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:4000/api/academics/textbooks');
+      // 🌟 FIXED: Swapped out local endpoint parameters for dynamic production URLs
+      const res = await fetch(`${API_BASE_URL}/api/academics/textbooks`);
       if (res.ok) {
         const data = await res.json();
         setBooks(data);
@@ -86,7 +90,8 @@ export default function Marketplace() {
     };
 
     try {
-      const res = await fetch('http://localhost:4000/api/academics/textbooks', {
+      // 🌟 FIXED: Routed listings submission safely through the global production domain target
+      const res = await fetch(`${API_BASE_URL}/api/academics/textbooks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newBook),
@@ -118,7 +123,8 @@ export default function Marketplace() {
     }
 
     try {
-      const res = await fetch('http://localhost:4000/api/academics/handover', {
+      // 🌟 FIXED: Directed requests context out to live Railway cluster
+      const res = await fetch(`${API_BASE_URL}/api/academics/handover`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -171,11 +177,10 @@ export default function Marketplace() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition cursor-pointer ${
-                selectedCategory === cat
+              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition cursor-pointer ${selectedCategory === cat
                   ? 'bg-blue-50/80 text-blue-900 border border-blue-200/50 shadow-sm'
                   : 'text-slate-500 hover:text-blue-700 border border-transparent'
-              }`}
+                }`}
             >
               {cat}
             </button>
@@ -187,7 +192,7 @@ export default function Marketplace() {
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-3 text-slate-500">
           <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-          <p className="text-sm font-medium">Loading textbooks from Supabase...</p>
+          <p className="text-sm font-medium">Loading textbooks from cloud cluster...</p>
         </div>
       ) : filteredBooks.length === 0 ? (
         <div className="text-center py-20 border border-dashed border-blue-900/[0.12] rounded-3xl bg-white/40">
@@ -211,11 +216,10 @@ export default function Marketplace() {
                       <Tag className="w-3 h-3" /> {book.category}
                     </span>
                     <span
-                      className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
-                        book.condition === 'Like New' || book.condition === 'Good'
+                      className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${book.condition === 'Like New' || book.condition === 'Good'
                           ? 'bg-teal-50 text-teal-700 border-teal-200/40'
                           : 'bg-slate-100 text-slate-600 border-slate-200'
-                      }`}
+                        }`}
                     >
                       {book.condition}
                     </span>
@@ -244,7 +248,7 @@ export default function Marketplace() {
 
                   {/* Owner Info & Action */}
                   <div className="flex items-center gap-2">
-                    {book.status === 'Available' ? (
+                    {book.status === 'Available' || !book.status ? (
                       isOwner ? (
                         <span className="text-[11px] font-bold text-slate-400 italic bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
                           Your Listing
@@ -259,13 +263,12 @@ export default function Marketplace() {
                       )
                     ) : (
                       <span
-                        className={`text-xs font-bold px-3 py-1.5 rounded-xl border ${
-                          book.status === 'Requested'
+                        className={`text-xs font-bold px-3 py-1.5 rounded-xl border ${book.status === 'Requested' || book.status === 'Handed Over'
                             ? 'bg-amber-50 text-amber-700 border-amber-200/40'
                             : book.status === 'Accepted'
-                            ? 'bg-blue-50 text-blue-700 border-blue-200/40'
-                            : 'bg-teal-50 text-teal-700 border-teal-200/40'
-                        }`}
+                              ? 'bg-blue-50 text-blue-700 border-blue-200/40'
+                              : 'bg-teal-50 text-teal-700 border-teal-200/40'
+                          }`}
                       >
                         {book.status}
                       </span>
