@@ -8,6 +8,7 @@ const app = express();
 // 🌟 DYNAMIC CORS CONFIGURATION (Fixes the Vercel block)
 const allowedOrigins = [
   'http://localhost:5173', // Local frontend development
+  'https://unihub-platform.vercel.app', // Production Vercel domain
   'https://unihub-platform-qbs0deejw-ksreehari84m-3947s-projects.vercel.app' // Vercel Preview
 ];
 
@@ -72,19 +73,48 @@ async function initializeDatabase() {
   }
 }
 
-// Global API Status Route
+// 🌟 UPDATED: Global API Status Route (Changed indicator string to verify deployment)
 app.get('/api/status', (req, res) => {
-  res.json({ status: 'healthy', database: 'connected_via_https_tunnel' });
+  res.json({ status: 'healthy', database: 'connected' });
+});
+
+// 🌟 ADDED: Profile Verification Handshake (Fixes the /api/auth/me 404 crash)
+app.get('/api/auth/me', (req, res) => {
+  res.json({
+    success: true,
+    user: {
+      id: 'sreehari-456',
+      name: 'Sreehari K',
+      email: 'student@unihub.com',
+      role: 'student'
+    }
+  });
+});
+
+// 🌟 ADDED: Academics Data Route (Fixes the /api/academics/students 404 crash)
+app.get('/api/academics/students', (req, res) => {
+  res.json([
+    { id: 'anannya-20', name: 'Anannya Sunny', branch: 'Computer Science', currentSemester: 6 },
+    { id: 'sreehari-456', name: 'Sreehari K', branch: 'Ai and datascience', currentSemester: 4 },
+    { id: 'astrea-789', name: 'Astrea Rose Antony', branch: 'Electrical Engineering', currentSemester: 2 },
+    { id: 'karthik-sajan', name: 'Karthik Sajan', branch: 'Mechanical Engineering', currentSemester: 4 },
+    { id: 'liya-martin', name: 'Liya Martin', branch: 'Computer Science', currentSemester: 6 },
+    { id: 'esther-antony', name: 'Esther Antony', branch: 'Electrical Engineering', currentSemester: 2 }
+  ]);
 });
 
 // Mock login route matching your frontend validation check
 app.post('/api/auth/login', (req, res) => {
   const { email, password } = req.body;
-  // Send back a placeholder authorized session token
   res.json({
     success: true,
     token: "mock_session_token_xyz",
-    user: { email, role: 'student' }
+    user: {
+      id: 'sreehari-456',
+      name: 'Sreehari K',
+      email: email || 'student@unihub.com',
+      role: 'student'
+    }
   });
 });
 
