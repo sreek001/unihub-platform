@@ -32,7 +32,9 @@ export default function Vault() {
       const res = await fetch(`${API_BASE_URL}/api/academics/vault`);
       if (res.ok) {
         const data = await res.json();
-        setResources(data);
+        // Defensive mapping for raw arrays or wrapped object data structures
+        const parsedResources = Array.isArray(data) ? data : (data.vault || data.documents || []);
+        setResources(parsedResources);
       }
     } catch (err) {
       console.error('Failed to fetch resources', err);
@@ -45,14 +47,24 @@ export default function Vault() {
     fetchResources();
   }, []);
 
-  // Filtered resources
-  const filteredResources = resources.filter((res) => {
+  // 🌟 ULTIMATE CRASH-PROOF VAULT FILTER MATRIX
+  const filteredResources = (Array.isArray(resources) ? resources : []).filter((res) => {
+    if (!res) return false;
+
+    // Force strict conversion to string with implicit fallbacks to bypass undefined matches
+    const titleText = String(res.title || res.name || '').toLowerCase();
+    const subjectText = String(res.subject || '').toLowerCase();
+    const uploaderText = String(res.uploaderName || 'Anonymous').toLowerCase();
+    const currentSearchQuery = String(searchQuery || '').toLowerCase();
+
     const matchesSearch =
-      res.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      res.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      res.uploaderName.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = selectedType === 'All' || res.type === selectedType;
-    const matchesSemester = selectedSemester === 'All' || String(res.semester) === selectedSemester;
+      titleText.includes(currentSearchQuery) ||
+      subjectText.includes(currentSearchQuery) ||
+      uploaderText.includes(currentSearchQuery);
+
+    const matchesType = selectedType === 'All' || String(res.type || '').toLowerCase() === selectedType.toLowerCase();
+    const matchesSemester = selectedSemester === 'All' || String(res.semester || '') === selectedSemester;
+
     return matchesSearch && matchesType && matchesSemester;
   });
 
@@ -84,7 +96,7 @@ export default function Vault() {
       }
 
       const uploadData = await uploadRes.json();
-      const uploadedFileUrl = uploadData.url;
+      const uploadedFileUrl = uploadData.fileUrl || uploadData.url;
 
       // 2. Submit document metadata with the uploaded file URL
       const newResource = {
@@ -95,6 +107,7 @@ export default function Vault() {
         semester: parseInt(semester, 10),
         link: uploadedFileUrl,
         uploaderId: activeUser.id,
+        uploaderName: activeUser.name || 'Student Profile',
       };
 
       const res = await fetch(`${API_BASE_URL}/api/academics/vault`, {
@@ -151,7 +164,7 @@ export default function Vault() {
             className="w-full bg-white/80 border border-slate-300/80 text-slate-900 focus:ring-2 focus:ring-indigo-500/50 backdrop-blur-md rounded-xl pl-10 pr-4 py-2.5 text-sm placeholder-slate-400 outline-none transition shadow-sm"
           />
         </div>
-        
+
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-4 border-t border-slate-100">
           {/* Type filters */}
           <div>
@@ -161,11 +174,10 @@ export default function Vault() {
                 <button
                   key={t}
                   onClick={() => setSelectedType(t)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition cursor-pointer ${
-                    selectedType === t
+                  className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition cursor-pointer ${selectedType === t
                       ? 'bg-blue-50/85 text-blue-900 border border-blue-200/50 shadow-sm'
                       : 'bg-white text-slate-500 hover:text-blue-600 border border-blue-900/[0.06]'
-                  }`}
+                    }`}
                 >
                   {t}
                 </button>
@@ -181,11 +193,10 @@ export default function Vault() {
                 <button
                   key={sem}
                   onClick={() => setSelectedSemester(sem)}
-                  className={`w-8 h-8 rounded-xl text-xs font-bold flex items-center justify-center transition cursor-pointer ${
-                    selectedSemester === sem
+                  className={`w-8 h-8 rounded-xl text-xs font-bold flex items-center justify-center transition cursor-pointer ${selectedSemester === sem
                       ? 'bg-blue-50/85 text-blue-900 border border-blue-200/50 shadow-sm'
                       : 'bg-white text-slate-500 hover:text-blue-600 border border-blue-900/[0.06]'
-                  }`}
+                    }`}
                 >
                   {sem}
                 </button>
@@ -199,7 +210,7 @@ export default function Vault() {
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-3 text-slate-500">
           <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-          <p className="text-sm font-medium">Loading digital resources from Supabase...</p>
+          <p className="text-sm font-medium">Loading digital resources from cloud cluster...</p>
         </div>
       ) : filteredResources.length === 0 ? (
         <div className="text-center py-20 border border-dashed border-blue-900/[0.12] rounded-3xl bg-white/40">
@@ -218,19 +229,19 @@ export default function Vault() {
                 {/* Type and Semester */}
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-wider">
-                    <FileText className="w-3.5 h-3.5" /> {res.type}
+                    <FileText className="w-3.5 h-3.5" /> {res.type || 'Document'}
                   </span>
                   <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-200">
-                    Sem {res.semester}
+                    Sem {res.semester || 'N/A'}
                   </span>
                 </div>
 
                 {/* Title & Subject */}
                 <div>
                   <h3 className="text-base font-bold text-slate-800 group-hover:text-blue-900 transition duration-300">
-                    {res.title}
+                    {res.title || res.name || 'Untitled Document'}
                   </h3>
-                  <p className="text-xs text-blue-600 font-semibold mt-0.5">{res.subject}</p>
+                  <p className="text-xs text-blue-600 font-semibold mt-0.5">{res.subject || 'General'}</p>
                 </div>
               </div>
 
@@ -238,8 +249,8 @@ export default function Vault() {
               <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
                   <User className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="truncate max-w-[120px]" title={res.uploaderName}>
-                    {res.uploaderName}
+                  <span className="truncate max-w-[120px]" title={res.uploaderName || 'Faculty'}>
+                    {res.uploaderName || 'Faculty'}
                   </span>
                 </div>
                 <a
