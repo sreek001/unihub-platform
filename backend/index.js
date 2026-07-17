@@ -226,11 +226,24 @@ let canteenMenu = [
   { id: '4', name: 'Cold Coffee', price: 35.00, category: 'beverages', description: 'Chilled coffee beverage', available: true }
 ];
 
-// 🌟 FIXED: Memory-persistent order tracking matrix array
 let canteenOrders = [];
 
 app.get('/api/canteen/menu', (req, res) => {
   res.json(canteenMenu);
+});
+
+// 🌟 ADDED: Handle POST creation of new canteen dishes to prevent add 404 crashes
+app.post('/api/canteen/menu', (req, res) => {
+  const newItem = {
+    id: req.body.id || String(Date.now()),
+    name: req.body.name || 'New Item',
+    price: parseFloat(req.body.price) || 0.00,
+    category: req.body.category || 'snacks',
+    description: req.body.description || '',
+    available: req.body.available !== undefined ? req.body.available : true
+  };
+  canteenMenu.push(newItem);
+  res.json({ success: true, item: newItem });
 });
 
 app.patch('/api/canteen/menu/:id/availability', (req, res) => {
@@ -242,12 +255,10 @@ app.patch('/api/canteen/menu/:id/availability', (req, res) => {
   res.json({ success: true, message: "Item availability successfully sync-updated." });
 });
 
-// 🌟 FIXED: Returns the live, persistent tracking queue to the Admin dashboard
 app.get('/api/canteen/orders', (req, res) => {
   res.json(canteenOrders);
 });
 
-// 🌟 FIXED: Appends new checkout entries directly into the tracking queue
 app.post('/api/canteen/order', (req, res) => {
   const tokenNumber = Math.floor(100 + Math.random() * 900);
   const items = req.body.items || [];
@@ -270,13 +281,13 @@ app.post('/api/canteen/order', (req, res) => {
   });
 });
 
-// 🌟 ADDED: Status handler enabling the Admin Kanban board to advance order states
-app.put('/api/canteen/order/:orderId', (req, res) => {
+// 🌟 FIXED: Unified PUT endpoint path wrapper to support BOTH layout structures flawlessly
+app.put(['/api/canteen/order/:orderId', '/api/canteen/order/:orderId/status'], (req, res) => {
   const { orderId } = req.params;
   const { status } = req.body;
 
   canteenOrders = canteenOrders.map(order =>
-    order.id === orderId ? { ...order, status: status.toUpperCase() } : order
+    order.id === orderId ? { ...order, status: String(status).toUpperCase() } : order
   );
 
   res.json({ success: true, message: "Canteen order status progressed cleanly." });
