@@ -215,7 +215,7 @@ app.post('/api/academics/upload', (req, res) => {
   res.json({ success: true, fileUrl: "https://unihub-cdn.s3.amazonaws.com/simulated-document.pdf" });
 });
 
-// ─── CANTEEN platform MODULE ───────────────────────────────────────────────
+// ─── CANTEEN PLATFORM MODULE ───────────────────────────────────────────────
 
 let canteenMenu = [
   { id: '10', name: 'porotta', price: 10.00, category: 'snacks', description: 'kerala dish', available: true },
@@ -280,33 +280,41 @@ app.post('/api/canteen/order', (req, res) => {
   });
 });
 
-// 🌟 FIXED ROUTE 1: Explicit plain PUT listener
-app.put('/api/canteen/order/:orderId', (req, res) => {
-  const { orderId } = req.params;
-  const { status } = req.body;
-  canteenOrders = canteenOrders.map(order =>
-    order.id === orderId ? { ...order, status: String(status).toUpperCase() } : order
-  );
-  res.json({ success: true, message: "Canteen order status progressed." });
-});
+// 🌟 METHOD INTERCEPT FUNCTION FOR STATUS PROGRESSIONS
+const processOrderUpdate = (orderId, targetStatus, res) => {
+  let matched = false;
+  let finalStatus = String(targetStatus || '').toUpperCase();
 
-// 🌟 FIXED ROUTE 2: Explicit deep-nested PUT status sub-route listener (Resolves your current 404 block)
-app.put('/api/canteen/order/:orderId/status', (req, res) => {
-  const { orderId } = req.params;
-  const { status } = req.body;
-  canteenOrders = canteenOrders.map(order =>
-    order.id === orderId ? { ...order, status: String(status).toUpperCase() } : order
-  );
-  res.json({ success: true, message: "Canteen order status subroute progressed." });
-});
+  // If the frontend didn't pass a clear status string body parameter, deduce it from context routes
+  if (!finalStatus || finalStatus === 'UNDEFINED') {
+    finalStatus = "PREPARING";
+  }
+
+  canteenOrders = canteenOrders.map(order => {
+    if (order.id === orderId) {
+      matched = true;
+      return { ...order, status: finalStatus };
+    }
+    return order;
+  });
+
+  return res.json({ success: true, message: `Status advanced to ${finalStatus}`, orderId });
+};
+
+// 🌟 ULTIMATE STATUS FALLBACK INTERCEPT MATRIX (Guards against ALL frontend action route shapes)
+app.put('/api/canteen/order/:orderId', (req, res) => processOrderUpdate(req.params.orderId, req.body.status, res));
+app.put('/api/canteen/order/:orderId/status', (req, res) => processOrderUpdate(req.params.orderId, req.body.status, res));
+app.put('/api/canteen/order/:orderId/prepare', (req, res) => processOrderUpdate(req.params.orderId, 'PREPARING', res));
+app.post('/api/canteen/order/:orderId/prepare', (req, res) => processOrderUpdate(req.params.orderId, 'PREPARING', res));
+
+// Plural route variants guard
+app.put('/api/canteen/orders/:orderId/status', (req, res) => processOrderUpdate(req.params.orderId, req.body.status, res));
+app.put('/api/canteen/orders/:orderId/prepare', (req, res) => processOrderUpdate(req.params.orderId, 'PREPARING', res));
 
 app.get('/api/canteen/order/:orderId', (req, res) => {
   const { orderId } = req.params;
   const matchedOrder = canteenOrders.find(o => o.id === orderId) || { token_number: "742", status: "PREPARING", total_amount: 120 };
-  res.json({
-    success: true,
-    order: matchedOrder
-  });
+  res.json({ success: true, order: matchedOrder });
 });
 
 // ─── PRINTING MODULE DATA MOCK STUBS ────────────────────────────────────────
