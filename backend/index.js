@@ -263,7 +263,7 @@ app.post('/api/canteen/order', (req, res) => {
   const items = req.body.items || [];
 
   const newOrder = {
-    id: `ord-${Date.now()}`,
+    id: req.body.id || `ord-${Date.now()}`,
     token_number: tokenNumber,
     status: "PENDING",
     total_amount: req.body.total_amount || (items.length * 45) || 50,
@@ -280,34 +280,40 @@ app.post('/api/canteen/order', (req, res) => {
   });
 });
 
-// 🌟 METHOD INTERCEPT FUNCTION FOR STATUS PROGRESSIONS
-const processOrderUpdate = (orderId, targetStatus, res) => {
-  let matched = false;
-  let finalStatus = String(targetStatus || '').toUpperCase();
+// 🌟 CRASH-PROOF STATE STEPPER ENGINE
+const processOrderUpdate = (orderId, passedStatus, res) => {
+  let targetStatus = String(passedStatus || '').toUpperCase();
 
-  // If the frontend didn't pass a clear status string body parameter, deduce it from context routes
-  if (!finalStatus || finalStatus === 'UNDEFINED') {
-    finalStatus = "PREPARING";
+  // Explicit fallback logic if the component parameter is blank/undefined:
+  // Dynamically checks what state the ticket is currently in and steps it forward!
+  const targetOrder = canteenOrders.find(o => o.id === orderId);
+  if (targetOrder && (!targetStatus || targetStatus === 'UNDEFINED' || targetStatus === '')) {
+    if (targetOrder.status === 'PENDING') targetStatus = 'PREPARING';
+    else if (targetOrder.status === 'PREPARING') targetStatus = 'COMPLETED';
+    else targetStatus = 'COMPLETED';
+  }
+
+  // Fallback default state safety catch
+  if (!targetStatus || targetStatus === 'UNDEFINED' || targetStatus === '') {
+    targetStatus = 'PREPARING';
   }
 
   canteenOrders = canteenOrders.map(order => {
     if (order.id === orderId) {
-      matched = true;
-      return { ...order, status: finalStatus };
+      return { ...order, status: targetStatus };
     }
     return order;
   });
 
-  return res.json({ success: true, message: `Status advanced to ${finalStatus}`, orderId });
+  return res.json({ success: true, message: `Status advanced to ${targetStatus}`, orderId });
 };
 
-// 🌟 ULTIMATE STATUS FALLBACK INTERCEPT MATRIX (Guards against ALL frontend action route shapes)
+// 🌟 UNIFIED ENDPOINT BINDINGS
 app.put('/api/canteen/order/:orderId', (req, res) => processOrderUpdate(req.params.orderId, req.body.status, res));
 app.put('/api/canteen/order/:orderId/status', (req, res) => processOrderUpdate(req.params.orderId, req.body.status, res));
 app.put('/api/canteen/order/:orderId/prepare', (req, res) => processOrderUpdate(req.params.orderId, 'PREPARING', res));
 app.post('/api/canteen/order/:orderId/prepare', (req, res) => processOrderUpdate(req.params.orderId, 'PREPARING', res));
 
-// Plural route variants guard
 app.put('/api/canteen/orders/:orderId/status', (req, res) => processOrderUpdate(req.params.orderId, req.body.status, res));
 app.put('/api/canteen/orders/:orderId/prepare', (req, res) => processOrderUpdate(req.params.orderId, 'PREPARING', res));
 
