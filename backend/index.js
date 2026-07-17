@@ -22,7 +22,7 @@ app.use(cors({
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Authorizes PATCH checks cleanly
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -42,7 +42,7 @@ async function initializeDatabase() {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `);
-    console.log("📦 Database check: 'print_jobs' table is ready (PostgreSQL cloud matrix).");
+    console.log("📦 Database check: 'print_jobs' table is ready.");
     console.log("✅ Database initialization completed successfully!");
   } catch (err) {
     console.error("❌ SQL Migration failed globally:", err.message);
@@ -51,12 +51,10 @@ async function initializeDatabase() {
 
 // ─── PLATFORM SYSTEM HANDSHAKES ─────────────────────────────────────────────
 
-// Global API Status Validation Target
 app.get('/api/status', (req, res) => {
   res.json({ status: 'healthy', database: 'connected' });
 });
 
-// Profile Rehydration Handshake Check
 app.get('/api/auth/me', (req, res) => {
   res.json({
     success: true,
@@ -69,10 +67,8 @@ app.get('/api/auth/me', (req, res) => {
   });
 });
 
-// Dynamic Role Redirection Routing Matrix
 app.post('/api/auth/login', (req, res) => {
   const { email } = req.body;
-
   let userRole = 'student';
   let userName = 'Sreehari K';
 
@@ -93,12 +89,7 @@ app.post('/api/auth/login', (req, res) => {
   res.json({
     success: true,
     token: "mock_session_token_xyz",
-    user: {
-      id: `user-${userRole}`,
-      name: userName,
-      email: email || 'student@unihub.com',
-      role: userRole
-    }
+    user: { id: `user-${userRole}`, name: userName, email: email || 'student@unihub.com', role: userRole }
   });
 });
 
@@ -113,50 +104,48 @@ app.get('/api/academics/students', (req, res) => {
   ]);
 });
 
-// Moved text records to a mutable live memory catalog store to support new listings
+// 🌟 FIXED: Unified schema rules so that every object explicitly lists BOTH subject and category keys 
+// with guaranteed fallback strings to permanently drop out undefined .toLowerCase() bugs
 let textbooksCatalog = [
-  { id: 'book-1', title: 'DBMS', author: 'GUIDE', category: 'AI and Data Science Engineering', sem: 4, price: 0, condition: 'Good', description: 'Comprehensive KTU core guidelines and transaction analysis notebooks.', status: 'Available' },
-  { id: 'book-2', title: 'University Physics', author: 'Hugh D. Young', category: 'Basic Science & Humanities', sem: 1, price: 150, condition: 'Like New', description: 'Volume 1 master reference textbook matching standard first-year specifications.', status: 'Available' },
-  { id: 'book-3', title: 'Calculus: Early Transcedentals', author: 'James Stewart', category: 'Basic Science & Humanities', sem: 1, price: 80, condition: 'Fair', description: 'Essential math reference matrix used extensively for optimization architectures.', status: 'Available' },
-  { id: 'book-4', title: 'Digital Electronics Lab Record', author: 'KTU Syllabus', category: 'Electrical and Electronics Engineering', sem: 3, price: 50, condition: 'Like New', description: 'Fully mapped and organized digital gates circuit records and validation maps.', status: 'Available' },
-  { id: 'book-5', title: 'Engineering Graphics Drawing Sheets', author: 'First Year CSE', category: 'Mechanical Engineering', sem: 1, price: 0, condition: 'Good', description: 'A3 isometric projections layout sheet pack.', status: 'Accepted' },
-  { id: 'book-6', title: 'Introduction to Algorithms (CLRS)', author: 'Thomas H. Cormen', category: 'Computer Science and Engineering', sem: 4, price: 120, condition: 'Good', description: 'Standard algorithmic complexity parsing guide.', status: 'Handed Over' }
+  { id: 'book-1', title: 'DBMS', author: 'GUIDE', subject: 'AI and Data Science Engineering', category: 'AI and Data Science Engineering', sem: 4, price: 0, condition: 'Good', description: 'Comprehensive KTU core guidelines and transaction analysis notebooks.', status: 'Available' },
+  { id: 'book-2', title: 'University Physics', author: 'Hugh D. Young', subject: 'Basic Science & Humanities', category: 'Basic Science & Humanities', sem: 1, price: 150, condition: 'Like New', description: 'Volume 1 master reference textbook matching standard first-year specifications.', status: 'Available' },
+  { id: 'book-3', title: 'Calculus: Early Transcedentals', author: 'James Stewart', subject: 'Basic Science & Humanities', category: 'Basic Science & Humanities', sem: 1, price: 80, condition: 'Fair', description: 'Essential math reference matrix used extensively for optimization architectures.', status: 'Available' },
+  { id: 'book-4', title: 'Digital Electronics Lab Record', author: 'KTU Syllabus', subject: 'Electrical and Electronics Engineering', category: 'Electrical and Electronics Engineering', sem: 3, price: 50, condition: 'Like New', description: 'Fully mapped and organized digital gates circuit records and validation maps.', status: 'Available' },
+  { id: 'book-5', title: 'Engineering Graphics Drawing Sheets', author: 'First Year CSE', subject: 'Mechanical Engineering', category: 'Mechanical Engineering', sem: 1, price: 0, condition: 'Good', description: 'A3 isometric projections layout sheet pack.', status: 'Accepted' },
+  { id: 'book-6', title: 'Introduction to Algorithms (CLRS)', author: 'Thomas H. Cormen', subject: 'Computer Science and Engineering', category: 'Computer Science and Engineering', sem: 4, price: 120, condition: 'Good', description: 'Standard algorithmic complexity parsing guide.', status: 'Handed Over' }
 ];
 
-// Tracking array to manage logged handover entities contextually 
 let handoverRequests = [];
 
-// Textbooks Catalog matching the Marketplace dashboard sheets perfectly
 app.get('/api/academics/textbooks', (req, res) => {
   res.json(textbooksCatalog);
 });
 
 // Handle List New Book Listing Form Submissions
 app.post('/api/academics/textbooks', (req, res) => {
+  // 🌟 FIXED: Added strict string fallbacks (|| '') to prevent user listings with blank fields from breaking the UI filters
   const newBook = {
     id: req.body.id || `book-${Date.now()}`,
-    title: req.body.title,
-    author: req.body.author,
+    title: req.body.title || 'Untitled Book',
+    author: req.body.author || 'Unknown Author',
     category: req.body.category || 'Computer Science and Engineering',
+    subject: req.body.category || 'Computer Science and Engineering',
     price: parseInt(req.body.price, 10) || 0,
     condition: req.body.condition || 'Good',
     description: req.body.description || '',
-    ownerId: req.body.ownerId,
+    ownerId: req.body.ownerId || 'unknown-student',
     status: 'Available'
   };
   textbooksCatalog.unshift(newBook);
   res.json({ success: true, book: newBook });
 });
 
-// GET Handover Router to handle status verification queries
 app.get('/api/academics/handover', (req, res) => {
   res.json(handoverRequests);
 });
 
-// Consolidated Peer-to-Peer Request Handover Router to track internal memory states
 app.post('/api/academics/handover', (req, res) => {
   const targetId = req.body.textbookId || req.body.id;
-
   textbooksCatalog = textbooksCatalog.map(book =>
     book.id === targetId ? { ...book, status: 'Requested' } : book
   );
@@ -172,11 +161,9 @@ app.post('/api/academics/handover', (req, res) => {
       created_at: new Date().toISOString()
     });
   }
-
   res.json({ success: true, message: "Handover request logged successfully." });
 });
 
-// 🌟 ADDED: GET /api/academics/vault (Fixes the Vault 404 & length property undefined crash)
 app.get('/api/academics/vault', (req, res) => {
   res.json([
     { id: 'doc-1', name: 'Graph Theory Lecture Notes - S4.pdf', type: 'PDF', size: '4.2 MB', uploadedAt: '2026-04-12' },
@@ -184,7 +171,6 @@ app.get('/api/academics/vault', (req, res) => {
   ]);
 });
 
-// Document Upload Simulation Router (Resolves the 404 Upload crash)
 app.post('/api/academics/upload', (req, res) => {
   res.json({ success: true, fileUrl: "https://unihub-cdn.s3.amazonaws.com/simulated-document.pdf" });
 });
@@ -200,12 +186,10 @@ let canteenMenu = [
   { id: '4', name: 'Cold Coffee', price: 35.00, category: 'beverages', description: 'Chilled coffee beverage', available: true }
 ];
 
-// Maps exact matching records from karthiksss911's live relational tables
 app.get('/api/canteen/menu', (req, res) => {
   res.json(canteenMenu);
 });
 
-// Patch availability handler to allow active kitchen display toggles to alter storage state
 app.patch('/api/canteen/menu/:id/availability', (req, res) => {
   const { id } = req.params;
   const { available } = req.body;
@@ -219,9 +203,8 @@ app.get('/api/canteen/orders', (req, res) => {
   res.json([]);
 });
 
-// Handle Checkout and Order Submissions (Fixes your 404 / JSON Token crash)
 app.post('/api/canteen/order', (req, res) => {
-  const tokenNumber = Math.floor(100 + Math.random() * 900); // Dynamic 3-digit token generation
+  const tokenNumber = Math.floor(100 + Math.random() * 900);
   res.json({
     success: true,
     message: "Order queued and registered successfully.",
@@ -235,18 +218,10 @@ app.post('/api/canteen/order', (req, res) => {
   });
 });
 
-// Live Telemetry tracking endpoint for active order progress tracking view panels
 app.get('/api/canteen/order/:orderId', (req, res) => {
   res.json({
     success: true,
-    order: {
-      token_number: "742",
-      status: "PREPARING",
-      total_amount: 120,
-      queuePosition: 2,
-      estimatedTime: 8,
-      items: []
-    }
+    order: { token_number: "742", status: "PREPARING", total_amount: 120, queuePosition: 2, estimatedTime: 8, items: [] }
   });
 });
 
