@@ -22,7 +22,7 @@ app.use(cors({
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Authorizes PATCH checks cleanly
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -113,7 +113,7 @@ app.get('/api/academics/students', (req, res) => {
   ]);
 });
 
-// 🌟 FIXED: Moved text records to a mutable live memory catalog store to support new listings
+// Moved text records to a mutable live memory catalog store to support new listings
 let textbooksCatalog = [
   { id: 'book-1', title: 'DBMS', author: 'GUIDE', category: 'AI and Data Science Engineering', sem: 4, price: 0, condition: 'Good', description: 'Comprehensive KTU core guidelines and transaction analysis notebooks.', status: 'Available' },
   { id: 'book-2', title: 'University Physics', author: 'Hugh D. Young', category: 'Basic Science & Humanities', sem: 1, price: 150, condition: 'Like New', description: 'Volume 1 master reference textbook matching standard first-year specifications.', status: 'Available' },
@@ -123,10 +123,10 @@ let textbooksCatalog = [
   { id: 'book-6', title: 'Introduction to Algorithms (CLRS)', author: 'Thomas H. Cormen', category: 'Computer Science and Engineering', sem: 4, price: 120, condition: 'Good', description: 'Standard algorithmic complexity parsing guide.', status: 'Handed Over' }
 ];
 
-// 🌟 ADDED: Tracking array to manage logged handover entities contextually 
+// Tracking array to manage logged handover entities contextually 
 let handoverRequests = [];
 
-// 📚 RESTORED: Textbooks Catalog matching the Marketplace dashboard sheets perfectly
+// Textbooks Catalog matching the Marketplace dashboard sheets perfectly
 app.get('/api/academics/textbooks', (req, res) => {
   res.json(textbooksCatalog);
 });
@@ -148,12 +148,12 @@ app.post('/api/academics/textbooks', (req, res) => {
   res.json({ success: true, book: newBook });
 });
 
-// 🌟 ADDED: GET Handover Router to handle status verification queries
+// GET Handover Router to handle status verification queries
 app.get('/api/academics/handover', (req, res) => {
   res.json(handoverRequests);
 });
 
-// 🌟 FIXED: Consolidated Peer-to-Peer Request Handover Router to track internal memory states
+// Consolidated Peer-to-Peer Request Handover Router to track internal memory states
 app.post('/api/academics/handover', (req, res) => {
   const targetId = req.body.textbookId || req.body.id;
 
@@ -176,7 +176,15 @@ app.post('/api/academics/handover', (req, res) => {
   res.json({ success: true, message: "Handover request logged successfully." });
 });
 
-// 🌟 ADDED: Document Upload Simulation Router (Resolves the 404 Upload crash)
+// 🌟 ADDED: GET /api/academics/vault (Fixes the Vault 404 & length property undefined crash)
+app.get('/api/academics/vault', (req, res) => {
+  res.json([
+    { id: 'doc-1', name: 'Graph Theory Lecture Notes - S4.pdf', type: 'PDF', size: '4.2 MB', uploadedAt: '2026-04-12' },
+    { id: 'doc-2', name: 'Data Structures Question Bank.pdf', type: 'PDF', size: '2.8 MB', uploadedAt: '2026-05-01' }
+  ]);
+});
+
+// Document Upload Simulation Router (Resolves the 404 Upload crash)
 app.post('/api/academics/upload', (req, res) => {
   res.json({ success: true, fileUrl: "https://unihub-cdn.s3.amazonaws.com/simulated-document.pdf" });
 });
@@ -192,12 +200,12 @@ let canteenMenu = [
   { id: '4', name: 'Cold Coffee', price: 35.00, category: 'beverages', description: 'Chilled coffee beverage', available: true }
 ];
 
-// 🍕 PERFECTLY SYNCED: Maps exact matching records from karthiksss911's live relational tables
+// Maps exact matching records from karthiksss911's live relational tables
 app.get('/api/canteen/menu', (req, res) => {
   res.json(canteenMenu);
 });
 
-// 🌟 ADDED: Patch availability handler to allow active kitchen display toggles to alter storage state
+// Patch availability handler to allow active kitchen display toggles to alter storage state
 app.patch('/api/canteen/menu/:id/availability', (req, res) => {
   const { id } = req.params;
   const { available } = req.body;
@@ -211,7 +219,7 @@ app.get('/api/canteen/orders', (req, res) => {
   res.json([]);
 });
 
-// 🌟 ADDED: Handle Checkout and Order Submissions (Fixes your 404 / JSON Token crash)
+// Handle Checkout and Order Submissions (Fixes your 404 / JSON Token crash)
 app.post('/api/canteen/order', (req, res) => {
   const tokenNumber = Math.floor(100 + Math.random() * 900); // Dynamic 3-digit token generation
   res.json({
@@ -227,7 +235,7 @@ app.post('/api/canteen/order', (req, res) => {
   });
 });
 
-// 🌟 ADDED: Live Telemetry tracking endpoint for active order progress tracking view panels
+// Live Telemetry tracking endpoint for active order progress tracking view panels
 app.get('/api/canteen/order/:orderId', (req, res) => {
   res.json({
     success: true,
