@@ -215,7 +215,7 @@ app.post('/api/academics/upload', (req, res) => {
   res.json({ success: true, fileUrl: "https://unihub-cdn.s3.amazonaws.com/simulated-document.pdf" });
 });
 
-// ─── CANTEEN PLATFORM MODULE (EXACT SUPABASE DATA MATCH) ───────────────────
+// ─── CANTEEN platform MODULE ───────────────────────────────────────────────
 
 let canteenMenu = [
   { id: '10', name: 'porotta', price: 10.00, category: 'snacks', description: 'kerala dish', available: true },
@@ -232,7 +232,6 @@ app.get('/api/canteen/menu', (req, res) => {
   res.json(canteenMenu);
 });
 
-// 🌟 ADDED: Handle POST creation of new canteen dishes to prevent add 404 crashes
 app.post('/api/canteen/menu', (req, res) => {
   const newItem = {
     id: req.body.id || String(Date.now()),
@@ -281,16 +280,24 @@ app.post('/api/canteen/order', (req, res) => {
   });
 });
 
-// 🌟 FIXED: Unified PUT endpoint path wrapper to support BOTH layout structures flawlessly
-app.put(['/api/canteen/order/:orderId', '/api/canteen/order/:orderId/status'], (req, res) => {
+// 🌟 FIXED ROUTE 1: Explicit plain PUT listener
+app.put('/api/canteen/order/:orderId', (req, res) => {
   const { orderId } = req.params;
   const { status } = req.body;
-
   canteenOrders = canteenOrders.map(order =>
     order.id === orderId ? { ...order, status: String(status).toUpperCase() } : order
   );
+  res.json({ success: true, message: "Canteen order status progressed." });
+});
 
-  res.json({ success: true, message: "Canteen order status progressed cleanly." });
+// 🌟 FIXED ROUTE 2: Explicit deep-nested PUT status sub-route listener (Resolves your current 404 block)
+app.put('/api/canteen/order/:orderId/status', (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+  canteenOrders = canteenOrders.map(order =>
+    order.id === orderId ? { ...order, status: String(status).toUpperCase() } : order
+  );
+  res.json({ success: true, message: "Canteen order status subroute progressed." });
 });
 
 app.get('/api/canteen/order/:orderId', (req, res) => {
