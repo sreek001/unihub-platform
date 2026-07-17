@@ -42,7 +42,7 @@ async function initializeDatabase() {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `);
-    console.log("📦 Database check: 'print_jobs' table is ready.");
+    console.log("📦 Database check: 'print_jobs' table is ready (PostgreSQL cloud matrix).");
     console.log("✅ Database initialization completed successfully!");
   } catch (err) {
     console.error("❌ SQL Migration failed globally:", err.message);
@@ -89,39 +89,33 @@ app.post('/api/auth/login', (req, res) => {
   res.json({
     success: true,
     token: "mock_session_token_xyz",
-    user: { id: `user-${userRole}`, name: userName, email: email || 'student@unihub.com', role: userRole }
+    user: {
+      id: `user-${userRole}`,
+      name: userName,
+      email: email || 'student@unihub.com',
+      role: userRole
+    }
   });
 });
 
 // ─── ACADEMICS HUB ENDPOINTS ────────────────────────────────────────────────
 
-let studentsList = [
-  { id: 'anannya-20', name: 'Anannya Sunny', branch: 'Computer Science', currentSemester: 6 },
-  { id: 'sreehari-456', name: 'Sreehari K', branch: 'Ai and datascience', currentSemester: 4 },
-  { id: 'astrea-789', name: 'Astrea Rose Antony', branch: 'Electrical Engineering', currentSemester: 2 },
-  { id: 'Karthik -789', name: 'Karthik sajan', branch: 'Electrical Engineering', currentSemester: 2 }
-];
-
 app.get('/api/academics/students', (req, res) => {
-  res.json(studentsList);
-});
-
-// 🌟 ADDED: Handle PUT operations to update student profile data context (Fixes your 404 student PUT crash)
-app.put('/api/academics/students/:id', (req, res) => {
-  const { id } = req.params;
-  studentsList = studentsList.map(student =>
-    student.id === id ? { ...student, ...req.body } : student
-  );
-  res.json({ success: true, message: "Student profile metrics cleanly updated." });
+  res.json([
+    { id: 'anannya-20', name: 'Anannya Sunny', branch: 'Computer Science', currentSemester: 6 },
+    { id: 'sreehari-456', name: 'Sreehari K', branch: 'Ai and datascience', currentSemester: 4 },
+    { id: 'astrea-789', name: 'Astrea Rose Antony', branch: 'Electrical Engineering', currentSemester: 2 },
+    { id: 'Karthik -789', name: 'Karthik sajan', branch: 'Electrical Engineering', currentSemester: 2 }
+  ]);
 });
 
 let textbooksCatalog = [
-  { id: 'book-1', title: 'DBMS', author: 'GUIDE', subject: 'AI and Data Science Engineering', category: 'AI and Data Science Engineering', sem: 4, price: 0, condition: 'Good', description: 'Comprehensive KTU core guidelines and transaction analysis notebooks.', status: 'Available' },
-  { id: 'book-2', title: 'University Physics', author: 'Hugh D. Young', subject: 'Basic Science & Humanities', category: 'Basic Science & Humanities', sem: 1, price: 150, condition: 'Like New', description: 'Volume 1 master reference textbook matching standard first-year specifications.', status: 'Available' },
-  { id: 'book-3', title: 'Calculus: Early Transcedentals', author: 'James Stewart', subject: 'Basic Science & Humanities', category: 'Basic Science & Humanities', sem: 1, price: 80, condition: 'Fair', description: 'Essential math reference matrix used extensively for optimization architectures.', status: 'Available' },
-  { id: 'book-4', title: 'Digital Electronics Lab Record', author: 'KTU Syllabus', subject: 'Electrical and Electronics Engineering', category: 'Electrical and Electronics Engineering', sem: 3, price: 50, condition: 'Like New', description: 'Fully mapped and organized digital gates circuit records and validation maps.', status: 'Available' },
-  { id: 'book-5', title: 'Engineering Graphics Drawing Sheets', author: 'First Year CSE', subject: 'Mechanical Engineering', category: 'Mechanical Engineering', sem: 1, price: 0, condition: 'Good', description: 'A3 isometric projections layout sheet pack.', status: 'Accepted' },
-  { id: 'book-6', title: 'Introduction to Algorithms (CLRS)', author: 'Thomas H. Cormen', subject: 'Computer Science and Engineering', category: 'Computer Science and Engineering', sem: 4, price: 120, condition: 'Good', description: 'Standard algorithmic complexity parsing guide.', status: 'Handed Over' }
+  { id: 'book-1', title: 'DBMS', author: 'GUIDE', category: 'AI and Data Science Engineering', sem: 4, price: 0, condition: 'Good', description: 'Comprehensive KTU core guidelines and transaction analysis notebooks.', status: 'Available' },
+  { id: 'book-2', title: 'University Physics', author: 'Hugh D. Young', category: 'Basic Science & Humanities', sem: 1, price: 150, condition: 'Like New', description: 'Volume 1 master reference textbook matching standard first-year specifications.', status: 'Available' },
+  { id: 'book-3', title: 'Calculus: Early Transcedentals', author: 'James Stewart', category: 'Basic Science & Humanities', sem: 1, price: 80, condition: 'Fair', description: 'Essential math reference matrix used extensively for optimization architectures.', status: 'Available' },
+  { id: 'book-4', title: 'Digital Electronics Lab Record', author: 'KTU Syllabus', category: 'Electrical and Electronics Engineering', sem: 3, price: 50, condition: 'Like New', description: 'Fully mapped and organized digital gates circuit records and validation maps.', status: 'Available' },
+  { id: 'book-5', title: 'Engineering Graphics Drawing Sheets', author: 'First Year CSE', category: 'Mechanical Engineering', sem: 1, price: 0, condition: 'Good', description: 'A3 isometric projections layout sheet pack.', status: 'Accepted' },
+  { id: 'book-6', title: 'Introduction to Algorithms (CLRS)', author: 'Thomas H. Cormen', category: 'Computer Science and Engineering', sem: 4, price: 120, condition: 'Good', description: 'Standard algorithmic complexity parsing guide.', status: 'Handed Over' }
 ];
 
 let handoverRequests = [];
@@ -191,7 +185,6 @@ app.post('/api/academics/handover', (req, res) => {
   res.json(responsePayload);
 });
 
-// 🌟 ADDED: Handle PUT Request updates to manage handovers (Fixes your inventory status confirmation 404 block)
 app.put('/api/academics/handover/:requestId', (req, res) => {
   const { requestId } = req.params;
   const { status } = req.body;
@@ -199,8 +192,6 @@ app.put('/api/academics/handover/:requestId', (req, res) => {
   handoverRequests = handoverRequests.map(reqItem => {
     if (reqItem.id === requestId) {
       const updatedItem = { ...reqItem, status: status || 'Accepted' };
-
-      // Mirror status mapping down directly to catalog item properties
       textbooksCatalog = textbooksCatalog.map(book =>
         book.id === reqItem.textbookId ? { ...book, status: status === 'Completed' ? 'Handed Over' : status } : book
       );
@@ -224,7 +215,7 @@ app.post('/api/academics/upload', (req, res) => {
   res.json({ success: true, fileUrl: "https://unihub-cdn.s3.amazonaws.com/simulated-document.pdf" });
 });
 
-// ─── CANTEEN platform MODULE (EXACT SUPABASE DATA MATCH) ───────────────────
+// ─── CANTEEN PLATFORM MODULE (EXACT SUPABASE DATA MATCH) ───────────────────
 
 let canteenMenu = [
   { id: '10', name: 'porotta', price: 10.00, category: 'snacks', description: 'kerala dish', available: true },
@@ -234,6 +225,9 @@ let canteenMenu = [
   { id: '6', name: 'Fried Rice', price: 60.00, category: 'lunch', description: 'Delicious', available: true },
   { id: '4', name: 'Cold Coffee', price: 35.00, category: 'beverages', description: 'Chilled coffee beverage', available: true }
 ];
+
+// 🌟 FIXED: Memory-persistent order tracking matrix array
+let canteenOrders = [];
 
 app.get('/api/canteen/menu', (req, res) => {
   res.json(canteenMenu);
@@ -248,29 +242,52 @@ app.patch('/api/canteen/menu/:id/availability', (req, res) => {
   res.json({ success: true, message: "Item availability successfully sync-updated." });
 });
 
+// 🌟 FIXED: Returns the live, persistent tracking queue to the Admin dashboard
 app.get('/api/canteen/orders', (req, res) => {
-  res.json([]);
+  res.json(canteenOrders);
 });
 
+// 🌟 FIXED: Appends new checkout entries directly into the tracking queue
 app.post('/api/canteen/order', (req, res) => {
   const tokenNumber = Math.floor(100 + Math.random() * 900);
+  const items = req.body.items || [];
+
+  const newOrder = {
+    id: `ord-${Date.now()}`,
+    token_number: tokenNumber,
+    status: "PENDING",
+    total_amount: req.body.total_amount || (items.length * 45) || 50,
+    items: items,
+    created_at: new Date().toISOString()
+  };
+
+  canteenOrders.unshift(newOrder);
+
   res.json({
     success: true,
     message: "Order queued and registered successfully.",
-    order: {
-      id: `ord-${Date.now()}`,
-      token_number: tokenNumber,
-      status: "PENDING",
-      total_amount: req.body.items ? req.body.items.length * 50 : 50,
-      created_at: new Date().toISOString()
-    }
+    order: newOrder
   });
 });
 
+// 🌟 ADDED: Status handler enabling the Admin Kanban board to advance order states
+app.put('/api/canteen/order/:orderId', (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+
+  canteenOrders = canteenOrders.map(order =>
+    order.id === orderId ? { ...order, status: status.toUpperCase() } : order
+  );
+
+  res.json({ success: true, message: "Canteen order status progressed cleanly." });
+});
+
 app.get('/api/canteen/order/:orderId', (req, res) => {
+  const { orderId } = req.params;
+  const matchedOrder = canteenOrders.find(o => o.id === orderId) || { token_number: "742", status: "PREPARING", total_amount: 120 };
   res.json({
     success: true,
-    order: { token_number: "742", status: "PREPARING", total_amount: 120, queuePosition: 2, estimatedTime: 8, items: [] }
+    order: matchedOrder
   });
 });
 
