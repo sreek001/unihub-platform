@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Plus, Search, Tag, User, HelpCircle, Loader2 } from 'lucide-react';
 import { useActiveUser } from './UserContext';
 
-// 🌟 FIXED: Imported your centralized config file containing the active production URL
+// Centralized config file containing the active production URL
 import API_BASE_URL from '../../config/api';
 
 const CATEGORIES = [
@@ -41,11 +41,12 @@ export default function Marketplace() {
   const fetchBooks = async () => {
     setLoading(true);
     try {
-      // 🌟 FIXED: Swapped out local endpoint parameters for dynamic production URLs
       const res = await fetch(`${API_BASE_URL}/api/academics/textbooks`);
       if (res.ok) {
         const data = await res.json();
-        setBooks(data);
+        // Defensive handling for wrapped objects or raw array responses
+        const parsedBooks = Array.isArray(data) ? data : (data.textbooks || data.books || []);
+        setBooks(parsedBooks);
       }
     } catch (err) {
       console.error('Failed to fetch textbooks', err);
@@ -58,13 +59,25 @@ export default function Marketplace() {
     fetchBooks();
   }, []);
 
-  // Filtered books
-  const filteredBooks = books.filter((book) => {
+  // 🌟 ULTIMATE DEFENSIVE SEARCH FILTER MATRIX (Fixes the toLowerCase crash permanently)
+  const filteredBooks = (Array.isArray(books) ? books : []).filter((book) => {
+    if (!book) return false;
+
+    // Convert everything to string safely and fall back to empty string if undefined/null
+    const titleText = String(book.title || '').toLowerCase();
+    const authorText = String(book.author || '').toLowerCase();
+    const descriptionText = String(book.description || '').toLowerCase();
+    const currentSearchQuery = String(searchQuery || '').toLowerCase();
+
     const matchesSearch =
-      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (book.description && book.description.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesCategory = selectedCategory === 'All' || book.category === selectedCategory;
+      titleText.includes(currentSearchQuery) ||
+      authorText.includes(currentSearchQuery) ||
+      descriptionText.includes(currentSearchQuery);
+
+    // Support schema structures matching both 'category' or 'subject' property bindings
+    const bookCategory = book.category || book.subject || '';
+    const matchesCategory = selectedCategory === 'All' || bookCategory === selectedCategory;
+
     return matchesSearch && matchesCategory;
   });
 
@@ -83,14 +96,13 @@ export default function Marketplace() {
       title,
       author,
       description,
-      price: parseInt(price, 10),
+      price: parseInt(price, 10) || 0,
       condition,
       category,
       ownerId: activeUser.id,
     };
 
     try {
-      // 🌟 FIXED: Routed listings submission safely through the global production domain target
       const res = await fetch(`${API_BASE_URL}/api/academics/textbooks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -123,7 +135,6 @@ export default function Marketplace() {
     }
 
     try {
-      // 🌟 FIXED: Directed requests context out to live Railway cluster
       const res = await fetch(`${API_BASE_URL}/api/academics/handover`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -204,6 +215,7 @@ export default function Marketplace() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredBooks.map((book) => {
             const isOwner = activeUser && book.ownerId === activeUser.id;
+            const bookCategory = book.category || book.subject || 'General';
             return (
               <div
                 key={book.id}
@@ -212,8 +224,8 @@ export default function Marketplace() {
                 <div className="space-y-4">
                   {/* Category and Condition */}
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-bold uppercase tracking-wider">
-                      <Tag className="w-3 h-3" /> {book.category}
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-bold uppercase tracking-wider line-clamp-1 max-w-[180px]">
+                      <Tag className="w-3 h-3 flex-shrink-0" /> {bookCategory}
                     </span>
                     <span
                       className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${book.condition === 'Like New' || book.condition === 'Good'
@@ -221,16 +233,16 @@ export default function Marketplace() {
                           : 'bg-slate-100 text-slate-600 border-slate-200'
                         }`}
                     >
-                      {book.condition}
+                      {book.condition || 'Good'}
                     </span>
                   </div>
 
                   {/* Title and Author */}
                   <div>
-                    <h3 className="text-base font-bold text-slate-800 group-hover:text-blue-900 transition duration-300">
-                      {book.title}
+                    <h3 className="text-base font-bold text-slate-800 group-hover:text-blue-900 transition duration-300 line-clamp-1">
+                      {book.title || 'Untitled Book'}
                     </h3>
-                    <p className="text-xs text-slate-400 font-semibold mt-0.5">by {book.author}</p>
+                    <p className="text-xs text-slate-400 font-semibold mt-0.5">by {book.author || 'Unknown'}</p>
                   </div>
 
                   {/* Description */}
@@ -243,7 +255,7 @@ export default function Marketplace() {
                   {/* Price */}
                   <div>
                     <span className="text-[10px] text-slate-400 block uppercase font-bold tracking-wider">Price</span>
-                    <span className="text-lg font-bold text-blue-900">₹{book.price}</span>
+                    <span className="text-lg font-bold text-blue-900">₹{book.price || 0}</span>
                   </div>
 
                   {/* Owner Info & Action */}
