@@ -311,6 +311,21 @@ const processOrderUpdate = (orderId, passedStatus, res) => {
 // 🌟 UNIFIED ENDPOINT BINDINGS
 app.put('/api/canteen/order/:orderId', (req, res) => processOrderUpdate(req.params.orderId, req.body.status, res));
 app.put('/api/canteen/order/:orderId/status', (req, res) => processOrderUpdate(req.params.orderId, req.body.status, res));
+app.patch('/api/canteen/order/:orderId', (req, res) =>
+  processOrderUpdate(req.params.orderId, req.body.status, res)
+);
+
+app.patch('/api/canteen/order/:orderId/status', (req, res) =>
+  processOrderUpdate(req.params.orderId, req.body.status, res)
+);
+
+app.patch('/api/canteen/order/:orderId/prepare', (req, res) =>
+  processOrderUpdate(req.params.orderId, 'PREPARING', res)
+);
+
+app.patch('/api/canteen/orders/:orderId/status', (req, res) =>
+  processOrderUpdate(req.params.orderId, req.body.status, res)
+);
 app.put('/api/canteen/order/:orderId/prepare', (req, res) => processOrderUpdate(req.params.orderId, 'PREPARING', res));
 app.post('/api/canteen/order/:orderId/prepare', (req, res) => processOrderUpdate(req.params.orderId, 'PREPARING', res));
 
