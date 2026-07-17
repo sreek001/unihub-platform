@@ -5,7 +5,7 @@ const db = require('./src/db');
 
 const app = express();
 
-// ─── DYNAMIC CORS CONFIGURATION (Now authorizes PATCH requests safely) ───
+// ─── DYNAMIC CORS CONFIGURATION (Enforces Deployed Vercel Domain Clearances) ───
 const allowedOrigins = [
   'http://localhost:5173',                  // Local frontend vite dev cluster
   'https://unihub-platform.vercel.app',    // Production Vercel domain
@@ -22,7 +22,7 @@ app.use(cors({
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // 🌟 FIXED: Added PATCH to stop preflight blocks
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -123,6 +123,9 @@ let textbooksCatalog = [
   { id: 'book-6', title: 'Introduction to Algorithms (CLRS)', author: 'Thomas H. Cormen', category: 'Computer Science and Engineering', sem: 4, price: 120, condition: 'Good', description: 'Standard algorithmic complexity parsing guide.', status: 'Handed Over' }
 ];
 
+// 🌟 ADDED: Tracking array to manage logged handover entities contextually 
+let handoverRequests = [];
+
 // 📚 RESTORED: Textbooks Catalog matching the Marketplace dashboard sheets perfectly
 app.get('/api/academics/textbooks', (req, res) => {
   res.json(textbooksCatalog);
@@ -145,12 +148,31 @@ app.post('/api/academics/textbooks', (req, res) => {
   res.json({ success: true, book: newBook });
 });
 
-// 🌟 ADDED: Peer-to-Peer Request Handover Router (Resolves the 404 Handover crash)
+// 🌟 ADDED: GET Handover Router to handle status verification queries
+app.get('/api/academics/handover', (req, res) => {
+  res.json(handoverRequests);
+});
+
+// 🌟 FIXED: Consolidated Peer-to-Peer Request Handover Router to track internal memory states
 app.post('/api/academics/handover', (req, res) => {
   const targetId = req.body.textbookId || req.body.id;
+
   textbooksCatalog = textbooksCatalog.map(book =>
     book.id === targetId ? { ...book, status: 'Requested' } : book
   );
+
+  const matchedBook = textbooksCatalog.find(b => b.id === targetId);
+  if (matchedBook) {
+    handoverRequests.unshift({
+      id: `req-${Date.now()}`,
+      textbookId: targetId,
+      title: matchedBook.title,
+      buyerId: req.body.buyerId || 'student-anon',
+      status: 'Requested',
+      created_at: new Date().toISOString()
+    });
+  }
+
   res.json({ success: true, message: "Handover request logged successfully." });
 });
 
