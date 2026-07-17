@@ -5,7 +5,7 @@ const db = require('./src/db');
 
 const app = express();
 
-// ─── DYNAMIC CORS CONFIGURATION (Enforces Deployed Vercel Domain Clearances) ───
+// ─── DYNAMIC CORS CONFIGURATION (Now authorizes PATCH requests safely) ───
 const allowedOrigins = [
   'http://localhost:5173',                  // Local frontend vite dev cluster
   'https://unihub-platform.vercel.app',    // Production Vercel domain
@@ -22,7 +22,7 @@ app.use(cors({
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // 🌟 FIXED: Added PATCH to stop preflight blocks
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -113,86 +113,76 @@ app.get('/api/academics/students', (req, res) => {
   ]);
 });
 
+// 🌟 FIXED: Moved text records to a mutable live memory catalog store to support new listings
+let textbooksCatalog = [
+  { id: 'book-1', title: 'DBMS', author: 'GUIDE', category: 'AI and Data Science Engineering', sem: 4, price: 0, condition: 'Good', description: 'Comprehensive KTU core guidelines and transaction analysis notebooks.', status: 'Available' },
+  { id: 'book-2', title: 'University Physics', author: 'Hugh D. Young', category: 'Basic Science & Humanities', sem: 1, price: 150, condition: 'Like New', description: 'Volume 1 master reference textbook matching standard first-year specifications.', status: 'Available' },
+  { id: 'book-3', title: 'Calculus: Early Transcedentals', author: 'James Stewart', category: 'Basic Science & Humanities', sem: 1, price: 80, condition: 'Fair', description: 'Essential math reference matrix used extensively for optimization architectures.', status: 'Available' },
+  { id: 'book-4', title: 'Digital Electronics Lab Record', author: 'KTU Syllabus', category: 'Electrical and Electronics Engineering', sem: 3, price: 50, condition: 'Like New', description: 'Fully mapped and organized digital gates circuit records and validation maps.', status: 'Available' },
+  { id: 'book-5', title: 'Engineering Graphics Drawing Sheets', author: 'First Year CSE', category: 'Mechanical Engineering', sem: 1, price: 0, condition: 'Good', description: 'A3 isometric projections layout sheet pack.', status: 'Accepted' },
+  { id: 'book-6', title: 'Introduction to Algorithms (CLRS)', author: 'Thomas H. Cormen', category: 'Computer Science and Engineering', sem: 4, price: 120, condition: 'Good', description: 'Standard algorithmic complexity parsing guide.', status: 'Handed Over' }
+];
+
 // 📚 RESTORED: Textbooks Catalog matching the Marketplace dashboard sheets perfectly
 app.get('/api/academics/textbooks', (req, res) => {
-  res.json([
-    {
-      id: 'book-1',
-      title: 'DBMS',
-      author: 'GUIDE',
-      subject: 'AI and Data Science Engineering',
-      sem: 4,
-      price: 0,
-      condition: 'Good',
-      description: 'Comprehensive KTU core guidelines and transaction analysis notebooks.'
-    },
-    {
-      id: 'book-2',
-      title: 'University Physics',
-      author: 'Hugh D. Young',
-      subject: 'Basic Science & Humanities',
-      sem: 1,
-      price: 150,
-      condition: 'Like New',
-      description: 'Volume 1 master reference textbook matching standard first-year specifications.'
-    },
-    {
-      id: 'book-3',
-      title: 'Calculus: Early Transcedentals',
-      author: 'James Stewart',
-      subject: 'Basic Science & Humanities',
-      sem: 1,
-      price: 80,
-      condition: 'Fair',
-      description: 'Essential math reference matrix used extensively for optimization architectures.'
-    },
-    {
-      id: 'book-4',
-      title: 'Digital Electronics Lab Record',
-      author: 'KTU Syllabus',
-      subject: 'Electrical and Electronics Engineering',
-      sem: 3,
-      price: 50,
-      condition: 'Like New',
-      description: 'Fully mapped and organized digital gates circuit records and validation maps.'
-    },
-    {
-      id: 'book-5',
-      title: 'Engineering Graphics Drawing Sheets',
-      author: 'First Year CSE',
-      subject: 'Mechanical Engineering',
-      sem: 1,
-      price: 0,
-      condition: 'Good',
-      description: 'A3 isometric projections layout sheet pack.',
-      status: 'Accepted'
-    },
-    {
-      id: 'book-6',
-      title: 'Introduction to Algorithms (CLRS)',
-      author: 'Thomas H. Cormen',
-      subject: 'Computer Science and Engineering',
-      sem: 4,
-      price: 120,
-      condition: 'Good',
-      description: 'Standard algorithmic complexity parsing guide.',
-      status: 'Handed Over'
-    }
-  ]);
+  res.json(textbooksCatalog);
+});
+
+// Handle List New Book Listing Form Submissions
+app.post('/api/academics/textbooks', (req, res) => {
+  const newBook = {
+    id: req.body.id || `book-${Date.now()}`,
+    title: req.body.title,
+    author: req.body.author,
+    category: req.body.category || 'Computer Science and Engineering',
+    price: parseInt(req.body.price, 10) || 0,
+    condition: req.body.condition || 'Good',
+    description: req.body.description || '',
+    ownerId: req.body.ownerId,
+    status: 'Available'
+  };
+  textbooksCatalog.unshift(newBook);
+  res.json({ success: true, book: newBook });
+});
+
+// 🌟 ADDED: Peer-to-Peer Request Handover Router (Resolves the 404 Handover crash)
+app.post('/api/academics/handover', (req, res) => {
+  const targetId = req.body.textbookId || req.body.id;
+  textbooksCatalog = textbooksCatalog.map(book =>
+    book.id === targetId ? { ...book, status: 'Requested' } : book
+  );
+  res.json({ success: true, message: "Handover request logged successfully." });
+});
+
+// 🌟 ADDED: Document Upload Simulation Router (Resolves the 404 Upload crash)
+app.post('/api/academics/upload', (req, res) => {
+  res.json({ success: true, fileUrl: "https://unihub-cdn.s3.amazonaws.com/simulated-document.pdf" });
 });
 
 // ─── CANTEEN platform MODULE (EXACT SUPABASE DATA MATCH) ───────────────────
 
+let canteenMenu = [
+  { id: '10', name: 'porotta', price: 10.00, category: 'snacks', description: 'kerala dish', available: true },
+  { id: '11', name: 'noodles', price: 50.00, category: 'snacks', description: 'chineese dish', available: true },
+  { id: '1', name: 'Veg Meal', price: 50.00, category: 'lunch', description: 'Rice, curry and side dishes', available: true },
+  { id: '3', name: 'Masala Dosa', price: 40.00, category: 'breakfast', description: 'South Indian breakfast item', available: true },
+  { id: '6', name: 'Fried Rice', price: 60.00, category: 'lunch', description: 'Delicious', available: true },
+  { id: '4', name: 'Cold Coffee', price: 35.00, category: 'beverages', description: 'Chilled coffee beverage', available: true }
+];
+
 // 🍕 PERFECTLY SYNCED: Maps exact matching records from karthiksss911's live relational tables
 app.get('/api/canteen/menu', (req, res) => {
-  res.json([
-    { id: '10', name: 'porotta', price: 10.00, category: 'snacks', description: 'kerala dish', available: true },
-    { id: '11', name: 'noodles', price: 50.00, category: 'snacks', description: 'chineese dish', available: true },
-    { id: '1', name: 'Veg Meal', price: 50.00, category: 'lunch', description: 'Rice, curry and side dishes', available: true },
-    { id: '3', name: 'Masala Dosa', price: 40.00, category: 'breakfast', description: 'South Indian breakfast item', available: true },
-    { id: '6', name: 'Fried Rice', price: 60.00, category: 'lunch', description: 'Delicious', available: true },
-    { id: '4', name: 'Cold Coffee', price: 35.00, category: 'beverages', description: 'Chilled coffee beverage', available: true }
-  ]);
+  res.json(canteenMenu);
+});
+
+// 🌟 ADDED: Patch availability handler to allow active kitchen display toggles to alter storage state
+app.patch('/api/canteen/menu/:id/availability', (req, res) => {
+  const { id } = req.params;
+  const { available } = req.body;
+  canteenMenu = canteenMenu.map(item =>
+    item.id === id ? { ...item, available } : item
+  );
+  res.json({ success: true, message: "Item availability successfully sync-updated." });
 });
 
 app.get('/api/canteen/orders', (req, res) => {
