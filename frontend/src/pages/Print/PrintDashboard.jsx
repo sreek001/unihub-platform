@@ -24,9 +24,9 @@ import {
   LogOut,
 } from "lucide-react";
 import "./PrintDashboard.css";
+import API_BASE_URL from "../../config/api";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
-const API = `${API_BASE}/api/print`;
+const API = `${API_BASE_URL}/api/print`;
 
 // Client-side PDF page counter (scans PDF structures for page objects)
 const countPdfPagesLocally = async (file) => {

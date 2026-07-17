@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Database, Plus, Search, FileText, Download, User, Loader2 } from 'lucide-react';
 import { useActiveUser } from './UserContext';
+import API_BASE_URL from '../../config/api';
 
 const TYPES = ['All', 'Notes', 'Lab Manual', 'Question Paper', 'Syllabus Book'];
 const SEMESTERS = ['All', '1', '2', '3', '4', '5', '6', '7', '8'];
@@ -28,7 +29,7 @@ export default function Vault() {
   const fetchResources = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:4000/api/academics/vault');
+      const res = await fetch(`${API_BASE_URL}/api/academics/vault`);
       if (res.ok) {
         const data = await res.json();
         setResources(data);
@@ -73,7 +74,7 @@ export default function Vault() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const uploadRes = await fetch('http://localhost:4000/api/academics/upload', {
+      const uploadRes = await fetch(`${API_BASE_URL}/api/academics/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -96,7 +97,7 @@ export default function Vault() {
         uploaderId: activeUser.id,
       };
 
-      const res = await fetch('http://localhost:4000/api/academics/vault', {
+      const res = await fetch(`${API_BASE_URL}/api/academics/vault`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newResource),

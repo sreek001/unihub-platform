@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Phone, Mail, MapPin, Search, Plus, X, CheckSquare, Calendar, Sparkles, Filter, Check, Trash2 } from 'lucide-react'
+import API_BASE_URL from '../../config/api';
 
 const initialLostFoundListings = [
   {
@@ -66,7 +67,7 @@ function LostFound() {
   // --- API Fetch ---
   useEffect(() => {
     // 1. Fetch posts
-    fetch('http://localhost:4000/api/lostfound/posts')
+    fetch(`${API_BASE_URL}/api/lostfound/posts`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -80,7 +81,7 @@ function LostFound() {
       })
 
     // 2. Fetch locations
-    fetch('http://localhost:4000/api/lostfound/locations')
+    fetch(`${API_BASE_URL}/api/lostfound/locations`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.locations.length > 0) {
@@ -174,7 +175,7 @@ function LostFound() {
     }
 
     if (apiOnline) {
-      fetch('http://localhost:4000/api/lostfound/posts', {
+      fetch(`${API_BASE_URL}/api/lostfound/posts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -183,7 +184,7 @@ function LostFound() {
       .then(data => {
         if (data.success) {
           // reload listings
-          fetch('http://localhost:4000/api/lostfound/posts')
+          fetch(`${API_BASE_URL}/api/lostfound/posts`)
             .then(res => res.json())
             .then(d => {
               if (d.success) setListings(d.posts)
@@ -247,7 +248,7 @@ function LostFound() {
     if (!claimProof.trim() || !claimEmail.trim()) return
 
     if (apiOnline) {
-      fetch(`http://localhost:4000/api/lostfound/posts/${activeClaimItem.id}/status`, {
+      fetch(`${API_BASE_URL}/api/lostfound/posts/${activeClaimItem.id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'Claim pending' })
@@ -256,7 +257,7 @@ function LostFound() {
       .then(data => {
         if (data.success) {
           // reload listings
-          fetch('http://localhost:4000/api/lostfound/posts')
+          fetch(`${API_BASE_URL}/api/lostfound/posts`)
             .then(res => res.json())
             .then(d => {
               if (d.success) setListings(d.posts)
@@ -297,7 +298,7 @@ function LostFound() {
 
   const handleDeleteListing = (id) => {
     if (apiOnline) {
-      fetch(`http://localhost:4000/api/lostfound/posts/${id}`, {
+      fetch(`${API_BASE_URL}/api/lostfound/posts/${id}`, {
         method: 'DELETE'
       })
       .then(res => res.json())

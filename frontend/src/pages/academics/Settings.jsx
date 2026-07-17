@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, User, Bell, Shield, Loader2 } from 'lucide-react';
 import { useActiveUser } from './UserContext';
+import API_BASE_URL from '../../config/api';
 
 export default function Settings() {
   const { activeUser, users, setActiveUser } = useActiveUser();
@@ -31,7 +32,7 @@ export default function Settings() {
     };
 
     try {
-      const res = await fetch(`http://localhost:4000/api/academics/students/${activeUser.id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/academics/students/${activeUser.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedProfile),

@@ -19,9 +19,10 @@ import {
   Zap,
 } from 'lucide-react';
 import './BookingDashboard.css';
+import API_BASE_URL from '../../config/api';
 
 // ─── API Base ───
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api/booking';
+const API = `${API_BASE_URL}/api/booking`;
 
 // ─── Demo user for development ───
 const DEMO_USER = { id: 1, name: 'SreeK.', role: 'Admin' };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FolderHeart, BookOpen, Inbox, Check, CheckCircle2, Clock, Trash2, Mail, Loader2 } from 'lucide-react';
 import { useActiveUser } from './UserContext';
+import API_BASE_URL from '../../config/api';
 
 export default function Inventory() {
   const { activeUser } = useActiveUser();
@@ -15,7 +16,7 @@ export default function Inventory() {
     setLoading(true);
     try {
       // 1. Fetch all textbooks
-      const booksRes = await fetch('http://localhost:4000/api/academics/textbooks');
+      const booksRes = await fetch(`${API_BASE_URL}/api/academics/textbooks`);
       if (booksRes.ok) {
         const allBooks = await booksRes.json();
         // Filter books owned by this user
@@ -23,7 +24,7 @@ export default function Inventory() {
       }
 
       // 2. Fetch handover requests for this user
-      const reqRes = await fetch(`http://localhost:4000/api/academics/handover?studentId=${activeUser.id}`);
+      const reqRes = await fetch(`${API_BASE_URL}/api/academics/handover?studentId=${activeUser.id}`);
       if (reqRes.ok) {
         const reqData = await reqRes.json();
         setRequests(reqData);
@@ -43,7 +44,7 @@ export default function Inventory() {
   const handleDeleteBook = async (bookId) => {
     if (!window.confirm('Are you sure you want to delete this listing?')) return;
     try {
-      const res = await fetch(`http://localhost:4000/api/academics/textbooks/${bookId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/academics/textbooks/${bookId}`, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -59,7 +60,7 @@ export default function Inventory() {
   // Handle update request status (Accept / Complete)
   const handleUpdateStatus = async (requestId, newStatus) => {
     try {
-      const res = await fetch(`http://localhost:4000/api/academics/handover/${requestId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/academics/handover/${requestId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
