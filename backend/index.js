@@ -95,16 +95,26 @@ app.post('/api/auth/login', (req, res) => {
 
 // ─── ACADEMICS HUB ENDPOINTS ────────────────────────────────────────────────
 
+let studentsList = [
+  { id: 'anannya-20', name: 'Anannya Sunny', branch: 'Computer Science', currentSemester: 6 },
+  { id: 'sreehari-456', name: 'Sreehari K', branch: 'Ai and datascience', currentSemester: 4 },
+  { id: 'astrea-789', name: 'Astrea Rose Antony', branch: 'Electrical Engineering', currentSemester: 2 },
+  { id: 'Karthik -789', name: 'Karthik sajan', branch: 'Electrical Engineering', currentSemester: 2 }
+];
+
 app.get('/api/academics/students', (req, res) => {
-  res.json([
-    { id: 'anannya-20', name: 'Anannya Sunny', branch: 'Computer Science', currentSemester: 6 },
-    { id: 'sreehari-456', name: 'Sreehari K', branch: 'Ai and datascience', currentSemester: 4 },
-    { id: 'astrea-789', name: 'Astrea Rose Antony', branch: 'Electrical Engineering', currentSemester: 2 },
-    { id: 'Karthik -789', name: 'Karthik sajan', branch: 'Electrical Engineering', currentSemester: 2 }
-  ]);
+  res.json(studentsList);
 });
 
-// Guaranteed layout matrix values with absolute fallbacks across all keys to support array maps cleanly
+// 🌟 ADDED: Handle PUT operations to update student profile data context (Fixes your 404 student PUT crash)
+app.put('/api/academics/students/:id', (req, res) => {
+  const { id } = req.params;
+  studentsList = studentsList.map(student =>
+    student.id === id ? { ...student, ...req.body } : student
+  );
+  res.json({ success: true, message: "Student profile metrics cleanly updated." });
+});
+
 let textbooksCatalog = [
   { id: 'book-1', title: 'DBMS', author: 'GUIDE', subject: 'AI and Data Science Engineering', category: 'AI and Data Science Engineering', sem: 4, price: 0, condition: 'Good', description: 'Comprehensive KTU core guidelines and transaction analysis notebooks.', status: 'Available' },
   { id: 'book-2', title: 'University Physics', author: 'Hugh D. Young', subject: 'Basic Science & Humanities', category: 'Basic Science & Humanities', sem: 1, price: 150, condition: 'Like New', description: 'Volume 1 master reference textbook matching standard first-year specifications.', status: 'Available' },
@@ -116,10 +126,7 @@ let textbooksCatalog = [
 
 let handoverRequests = [];
 
-// 🌟 HYBRID RESPONSE STACK: Automatically satisfies components trying to parse arrays directly OR through nested data properties
 app.get('/api/academics/textbooks', (req, res) => {
-  // We use Object.assign to make this object act as an array AND contain fields for .textbooks/.books. 
-  // This completely eliminates any possibility of undefined exceptions!
   const responsePayload = Object.assign([...textbooksCatalog], {
     textbooks: textbooksCatalog,
     books: textbooksCatalog,
@@ -128,7 +135,6 @@ app.get('/api/academics/textbooks', (req, res) => {
   res.json(responsePayload);
 });
 
-// Handle List New Book Listing Form Submissions
 app.post('/api/academics/textbooks', (req, res) => {
   const newBook = {
     id: req.body.id || `book-${Date.now()}`,
@@ -166,11 +172,13 @@ app.post('/api/academics/handover', (req, res) => {
   const matchedBook = textbooksCatalog.find(b => b.id === targetId);
   if (matchedBook) {
     handoverRequests.unshift({
-      id: `req-${Date.now()}`,
+      id: req.body.id || `req-${Date.now()}`,
       textbookId: targetId,
+      textbookTitle: matchedBook.title,
       title: matchedBook.title,
       buyerId: req.body.buyerId || 'student-anon',
-      status: 'Requested',
+      buyerName: 'Peer Student',
+      status: 'Pending',
       created_at: new Date().toISOString()
     });
   }
@@ -181,6 +189,27 @@ app.post('/api/academics/handover', (req, res) => {
     success: true
   });
   res.json(responsePayload);
+});
+
+// 🌟 ADDED: Handle PUT Request updates to manage handovers (Fixes your inventory status confirmation 404 block)
+app.put('/api/academics/handover/:requestId', (req, res) => {
+  const { requestId } = req.params;
+  const { status } = req.body;
+
+  handoverRequests = handoverRequests.map(reqItem => {
+    if (reqItem.id === requestId) {
+      const updatedItem = { ...reqItem, status: status || 'Accepted' };
+
+      // Mirror status mapping down directly to catalog item properties
+      textbooksCatalog = textbooksCatalog.map(book =>
+        book.id === reqItem.textbookId ? { ...book, status: status === 'Completed' ? 'Handed Over' : status } : book
+      );
+      return updatedItem;
+    }
+    return reqItem;
+  });
+
+  res.json({ success: true, message: "Handover progress parameters sync-updated successfully." });
 });
 
 app.get('/api/academics/vault', (req, res) => {
