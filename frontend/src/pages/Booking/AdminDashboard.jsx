@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../../config/api';
 
 export default function AdminDashboard() {
   const [pending, setPending] = useState([]);
@@ -6,7 +7,7 @@ export default function AdminDashboard() {
 
   const fetchPending = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/booking/pending');
+      const res = await fetch(`${API_BASE_URL}/api/booking/pending`);
       const data = await res.json();
       if (data.success) setPending(data.bookings);
     } catch (err) {
@@ -22,7 +23,7 @@ export default function AdminDashboard() {
 
   const handleAction = async (id, status) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/booking/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/booking/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })

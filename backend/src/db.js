@@ -1,17 +1,19 @@
 const { Pool } = require('pg');
 
+const connectionString = process.env.DATABASE_URL || "postgresql://postgres.wzojlmakqklkdwnbjafg:UniHubSecureDb2026!@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres";
+
 const pool = new Pool({
-  connectionString: "postgresql://postgres.uiauztyhabdmvcqxbfby:UdUPb8yUOAFzvebtM5gZJQ_yBNZRFJ7@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true",
-  ssl: {
-    rejectUnauthorized: false
-  },
-  connectionTimeoutMillis: 10000
+  connectionString,
+  ssl: connectionString.includes('supabase.com') ? { rejectUnauthorized: false } : false,
+  connectionTimeoutMillis: 3000
 });
 
+// Suppress unhandled errors on idle clients so they don't crash the server
 pool.on('error', (err) => {
-  console.error('[Canteen DB] Unexpected pg client pool error:', err.message);
+  console.warn('[Postgres Pool Warning]', err.message || err);
 });
 
-pool.Promise = global.Promise;
+pool.query = pool.query.bind(pool);
+pool.pool = pool;
 
-module.exports = pool;
+module.exports = pool;

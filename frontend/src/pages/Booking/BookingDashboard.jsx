@@ -19,14 +19,10 @@ import {
   Building2,
 } from 'lucide-react';
 import './BookingDashboard.css';
+import { API_BASE_URL } from '../../config/api';
 
-<<<<<<< HEAD
 // ─── API Base ───
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/booking';
-=======
-// ─── Live Cloud Production API Endpoint ───
-const API = 'https://unihub-platform.onrender.com/api/booking';
->>>>>>> e85e018 (fix: restore connection string model with strict timeout guardrails)
+const API = `${API_BASE_URL}/api/booking`;
 
 // ─── Demo token for development (remove in production) ───
 // Simulates a logged-in user when no real auth context exists yet.
@@ -40,15 +36,11 @@ function authHeaders() {
   return { Authorization: `Bearer ${DEMO_TOKEN}` };
 }
 
-<<<<<<< HEAD
 // ─── Helper: format date to YYYY-MM-DD ───
 function toDateStr(d) {
   return d.toISOString().slice(0, 10);
 }
-=======
-function fmtTime(t) {
-  if (!t || typeof t !== 'string' || !t.includes(':')) return '';
->>>>>>> e85e018 (fix: restore connection string model with strict timeout guardrails)
+
 
 // ─── Helper: format time "HH:MM:SS" → "HH:MM AM/PM" ───
 function fmtTime(t) {

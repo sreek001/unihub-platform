@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { query } = require('./db');
+const db = require('./db');
 
 /**
  * Initializes the database schemas and seeds initial values by executing
@@ -8,19 +8,16 @@ const { query } = require('./db');
  */
 async function initDatabase() {
   try {
-
-
-    console.log('Restructuring Lost & Found database using lostFound.sql...');
+    console.log('Checking database connection & executing migrations...');
     const lostFoundSql = fs.readFileSync(
       path.join(__dirname, 'modules/lostFound/lostFound.sql'),
       'utf8'
     );
-    await query(lostFoundSql);
-
-    console.log('Database initialization and seeding completed successfully!');
+    await db.query(lostFoundSql);
+    console.log('✅ Database initialization and seeding completed successfully!');
   } catch (err) {
-    console.error('Failed to run modular SQL migrations:', err.message);
-    throw err; // Let index.js catch it and trigger hybrid simulation warning
+    console.warn('⚠️  Postgres connection not available:', err.message || err);
+    console.warn('⚡ In-memory simulation fallback is active for all modules.');
   }
 }
 

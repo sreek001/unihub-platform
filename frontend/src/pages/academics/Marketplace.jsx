@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Plus, Search, Tag, User, HelpCircle, Loader2 } from 'lucide-react';
 import { useActiveUser } from './UserContext';
+import { API_BASE_URL } from '../../config/api';
 
 const CATEGORIES = [
   'All',
@@ -38,7 +39,7 @@ export default function Marketplace() {
   const fetchBooks = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:4000/api/academics/textbooks');
+      const res = await fetch(`${API_BASE_URL}/api/academics/textbooks`);
       if (res.ok) {
         const data = await res.json();
         setBooks(data);
@@ -86,7 +87,7 @@ export default function Marketplace() {
     };
 
     try {
-      const res = await fetch('http://localhost:4000/api/academics/textbooks', {
+      const res = await fetch(`${API_BASE_URL}/api/academics/textbooks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newBook),
@@ -118,7 +119,7 @@ export default function Marketplace() {
     }
 
     try {
-      const res = await fetch('http://localhost:4000/api/academics/handover', {
+      const res = await fetch(`${API_BASE_URL}/api/academics/handover`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

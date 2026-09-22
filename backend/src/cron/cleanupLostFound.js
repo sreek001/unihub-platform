@@ -1,10 +1,15 @@
 const { query } = require('../db')
 
 async function cleanupLostFoundPosts() {
-  const deleteQuery = `DELETE FROM lost_found_posts WHERE created_at < NOW() - INTERVAL '14 days';`
-  const result = await query(deleteQuery)
-  console.log(`[LostFound Cleanup] removed ${result.rowCount} expired postings at ${new Date().toISOString()}`)
-  return result.rowCount
+  try {
+    const deleteQuery = `DELETE FROM lost_found_posts WHERE created_at < NOW() - INTERVAL '14 days';`
+    const result = await query(deleteQuery)
+    console.log(`[LostFound Cleanup] removed ${result.rowCount} expired postings at ${new Date().toISOString()}`)
+    return result.rowCount
+  } catch (err) {
+    // Database may be offline; silently skip cleanup
+    return 0;
+  }
 }
 
 function scheduleLostFoundCleanup() {

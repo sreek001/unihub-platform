@@ -7,9 +7,7 @@ import './CanteenDashboard.css';
 import MenuGrid from './components/MenuGrid';
 import LiveTracker from './components/LiveTracker';
 import CartSidebar from './components/CartSidebar';
-
-
-
+import { API_BASE_URL } from '../../config/api';
 
 export default function CanteenDashboard() {
   const [activeTab, setActiveTab] = useState('menu'); 
@@ -18,14 +16,9 @@ export default function CanteenDashboard() {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   
-
 const fetchMenu = async () => {
-
   try {
-
-    const response = await fetch(
-      "http://localhost:4000/api/canteen/menu"
-    );
+    const response = await fetch(`${API_BASE_URL}/api/canteen/menu`);
 
     const data = await response.json();
 
@@ -82,7 +75,7 @@ const placeOrder = async () => {
   try {
 
     const response = await fetch(
-      "http://localhost:4000/api/canteen/order",
+      `${API_BASE_URL}/api/canteen/order`,
       {
         method: "POST",
         headers: {

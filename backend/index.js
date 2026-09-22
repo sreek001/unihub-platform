@@ -39,18 +39,26 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Something broke internally!' });
 });
 
-;(async () => {
+// Run initialization tasks safely
+(async () => {
   try {
     await initDatabase();
     await cleanupLostFoundPosts();
-    scheduleLostFoundCleanup();
+    if (!process.env.VERCEL) {
+      scheduleLostFoundCleanup();
+    }
   } catch (error) {
     console.warn('\n⚠️  Postgres database initialization failed!');
     console.warn('Backend will run in in-memory simulation mode.');
-    console.warn('Error details:', error.message || error);
   }
+})();
 
+// Start server when run directly (local / Render / VPS)
+if (require.main === module || !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🚀 Server safely processing metrics on http://localhost:${PORT}`);
   });
-})();
+}
+
+// Export app for Vercel serverless execution
+module.exports = app;
