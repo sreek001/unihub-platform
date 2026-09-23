@@ -18,8 +18,8 @@ import {
   Building2,
   Zap,
 } from 'lucide-react';
-import './BookingDashboard.css';
 import API_BASE_URL from '../../config/api';
+
 
 // ─── API Base ───
 const API = `${API_BASE_URL}/api/booking`;
@@ -42,6 +42,7 @@ const FALLBACK_VENUES = [
 function toDateStr(d) {
   return d.toISOString().slice(0, 10);
 }
+
 
 // ─── Time slot definitions matching the backend's mapSlotToTimes ───
 const TIME_SLOTS = [

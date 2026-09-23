@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import API_BASE_URL from '../../config/api';
 
-// 🌟 FIXED: Swapped out custom config import for dynamic environment loading + robust production fallback
-const API_URL = import.meta.env.VITE_API_URL || 'https://unihub-platform-production.up.railway.app';
+const API_URL = API_BASE_URL;
 
 const UserContext = createContext(undefined);
 

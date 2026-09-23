@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Plus, Search, Tag, User, HelpCircle, Loader2 } from 'lucide-react';
 import { useActiveUser } from './UserContext';
-
-// Centralized config file containing the active production URL
 import API_BASE_URL from '../../config/api';
+
 
 const CATEGORIES = [
   'All',

@@ -33,28 +33,34 @@ exports.getMenu = async (req, res) => {
 // ======================================
 
 exports.createOrder = async (req, res) => {
+  const { userId, items } = req.body;
 
-  const client = await db.pool.connect();
+  if (!items || !Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Please select at least one menu item."
+    });
+  }
+
+  let client = null;
+  try {
+    const pool = db.pool || db;
+    client = await pool.connect();
+    if (client && client.query) {
+      await client.query("BEGIN");
+    }
+  } catch (connErr) {
+    // Database offline; fallback to in-memory mode
+    client = null;
+  }
+
 
   try {
-
-    const { userId, items } = req.body;
-
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Please select at least one menu item."
-      });
-    }
-
-    await client.query("BEGIN");
-
     let totalAmount = 0;
     const validatedItems = [];
 
     // Validate every ordered item
     for (const item of items) {
-
       const menuItem = await CanteenModel.getMenuItemById(item.menuItemId);
 
       if (!menuItem) {
@@ -86,7 +92,6 @@ exports.createOrder = async (req, res) => {
 
     // Insert Order Items
     for (const item of validatedItems) {
-
       await CanteenModel.createOrderItem(
         client,
         order.id,
@@ -95,12 +100,24 @@ exports.createOrder = async (req, res) => {
         item.price
       );
 
+<<<<<<< HEAD
+      if (client) {
+        // Reduce stock in DB
+        await client.query(
+          `UPDATE menu_items SET stock = stock - $1 WHERE id = $2`,
+          [item.quantity, item.id]
+        );
+      }
+=======
       
       
 
+>>>>>>> origin/main
     }
 
-    await client.query("COMMIT");
+    if (client) {
+      await client.query("COMMIT");
+    }
 
     return res.status(201).json({
       success: true,
@@ -109,10 +126,11 @@ exports.createOrder = async (req, res) => {
     });
 
   } catch (err) {
+    if (client) {
+      try { await client.query("ROLLBACK"); } catch (rbErr) {}
+    }
 
-    await client.query("ROLLBACK");
-
-    console.error(err);
+    console.error('[Canteen createOrder error]:', err.message);
 
     return res.status(500).json({
       success: false,
@@ -120,11 +138,10 @@ exports.createOrder = async (req, res) => {
     });
 
   } finally {
-
-    client.release();
-
+    if (client) {
+      try { client.release(); } catch (relErr) {}
+    }
   }
-
 };
 // ======================================
 // GET ALL ORDERS

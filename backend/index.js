@@ -1,33 +1,22 @@
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-
-let db;
-try {
-  db = require('./src/db');
-} catch (e) {
-  console.warn("⚠️ Database module not loaded, continuing in memory mode.");
-}
+const db = require('./src/db');
 
 const app = express();
 
-// ─── DYNAMIC CORS CONFIGURATION ───
+// ─── DYNAMIC CORS CONFIGURATION (Enforces Deployed Vercel Domain Clearances) ───
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://unihub-platform.vercel.app',
-  'https://unihub-platform-qbs0deejw-ksreehari84m-3947s-projects.vercel.app',
-  'https://unihub-backend-ydek.onrender.com',
-  'https://unihub-frontend.onrender.com'
+  'http://localhost:5173',                  // Local frontend vite dev cluster
+  'https://unihub-platform.vercel.app',    // Production Vercel domain
+  'https://unihub-platform-qbs0deejw-ksreehari84m-3947s-projects.vercel.app' // Vercel Preview Pipeline
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    if (
-      allowedOrigins.indexOf(origin) !== -1 ||
-      origin.endsWith('.vercel.app') ||
-      origin.endsWith('.onrender.com')
-    ) {
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
       return callback(null, true);
     } else {
       return callback(new Error('Not allowed by CORS'));
@@ -39,39 +28,37 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+const bookingRoutes = require('./src/modules/booking/bookingRoutes');
+const lostFoundRoutes = require('./src/modules/lostFound/lostFoundRoutes');
+
+app.use('/api/booking', bookingRoutes);
+app.use('/api/venue', bookingRoutes);
+app.use('/api/lostfound', lostFoundRoutes);
 
 const PORT = process.env.PORT || 4000;
 
-// ─── NON-BLOCKING DATABASE MIGRATION WITH TIMEOUT ───
+// ─── DATABASE MIGRATION LOGIC LOOP ───────────────────────────────────────────
 async function initializeDatabase() {
-  if (!db || typeof db.query !== 'function') {
-    console.log("ℹ️ No SQL database instance available. Running in cloud-memory mode.");
-    return;
-  }
   console.log("Setting up Auth schema (users table + roles)...");
   try {
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Database connection timed out")), 3000)
-    );
-    await Promise.race([
-      db.query(`
-        CREATE TABLE IF NOT EXISTS print_jobs (
-          id SERIAL PRIMARY KEY,
-          filename TEXT NOT NULL,
-          status TEXT NOT NULL DEFAULT 'pending',
-          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-        );
-      `),
-      timeoutPromise
-    ]);
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS print_jobs (
+        id SERIAL PRIMARY KEY,
+        filename TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'pending',
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
     console.log("📦 Database check: 'print_jobs' table is ready (PostgreSQL cloud matrix).");
     console.log("✅ Database initialization completed successfully!");
   } catch (err) {
-    console.warn("⚠️ SQL Migration skipped/failed:", err.message);
+    console.error("❌ SQL Migration failed globally:", err.message);
   }
 }
 
-// ─── PLATFORM SYSTEM HANDSHAKES ───
+// ─── PLATFORM SYSTEM HANDSHAKES ─────────────────────────────────────────────
 
 app.get('/api/status', (req, res) => {
   res.json({ status: 'healthy', database: 'connected' });
@@ -120,34 +107,24 @@ app.post('/api/auth/login', (req, res) => {
   });
 });
 
-// ─── ACADEMICS HUB ENDPOINTS ───
-
-let studentsList = [
-  { id: 'anannya-20', name: 'Anannya Sunny', branch: 'Computer Science', currentSemester: 6, email: 'anannya@unihub.com', phone: '+91 94470 12345' },
-  { id: 'sreehari-456', name: 'Sreehari K', branch: 'Ai and datascience', currentSemester: 4, email: 'student@unihub.com', phone: '+91 98460 54321' },
-  { id: 'astrea-789', name: 'Astrea Rose Antony', branch: 'Electrical Engineering', currentSemester: 2, email: 'astrea@unihub.com', phone: '+91 95620 98765' },
-  { id: 'Karthik -789', name: 'Karthik sajan', branch: 'Electrical Engineering', currentSemester: 2, email: 'karthik@unihub.com', phone: '+91 97440 11223' }
-];
+// ─── ACADEMICS HUB ENDPOINTS ────────────────────────────────────────────────
 
 app.get('/api/academics/students', (req, res) => {
-  res.json(studentsList);
-});
-
-app.put('/api/academics/students/:id', (req, res) => {
-  const { id } = req.params;
-  studentsList = studentsList.map(student =>
-    student.id === id ? { ...student, ...req.body } : student
-  );
-  res.json({ success: true, message: "Student metrics mapped safely.", student: req.body });
+  res.json([
+    { id: 'anannya-20', name: 'Anannya Sunny', branch: 'Computer Science', currentSemester: 6 },
+    { id: 'sreehari-456', name: 'Sreehari K', branch: 'Ai and datascience', currentSemester: 4 },
+    { id: 'astrea-789', name: 'Astrea Rose Antony', branch: 'Electrical Engineering', currentSemester: 2 },
+    { id: 'Karthik -789', name: 'Karthik sajan', branch: 'Electrical Engineering', currentSemester: 2 }
+  ]);
 });
 
 let textbooksCatalog = [
-  { id: 'book-1', title: 'DBMS', author: 'GUIDE', subject: 'AI and Data Science Engineering', category: 'AI and Data Science Engineering', sem: 4, price: 0, condition: 'Good', description: 'Comprehensive KTU core guidelines and transaction analysis notebooks.', status: 'Available', ownerId: 'sreehari-456' },
-  { id: 'book-2', title: 'University Physics', author: 'Hugh D. Young', subject: 'Basic Science & Humanities', category: 'Basic Science & Humanities', sem: 1, price: 150, condition: 'Like New', description: 'Volume 1 master reference textbook matching standard first-year specifications.', status: 'Available', ownerId: 'anannya-20' },
-  { id: 'book-3', title: 'Calculus: Early Transcedentals', author: 'James Stewart', subject: 'Basic Science & Humanities', category: 'Basic Science & Humanities', sem: 1, price: 80, condition: 'Fair', description: 'Essential math reference matrix used extensively for optimization architectures.', status: 'Available', ownerId: 'astrea-789' },
-  { id: 'book-4', title: 'Digital Electronics Lab Record', author: 'KTU Syllabus', subject: 'Electrical and Electronics Engineering', category: 'Electrical and Electronics Engineering', sem: 3, price: 50, condition: 'Like New', description: 'Fully mapped and organized digital gates circuit records and validation maps.', status: 'Available', ownerId: 'Karthik -789' },
-  { id: 'book-5', title: 'Engineering Graphics Drawing Sheets', author: 'First Year CSE', subject: 'Mechanical Engineering', category: 'Mechanical Engineering', sem: 1, price: 0, condition: 'Good', description: 'A3 isometric projections layout sheet pack.', status: 'Accepted', ownerId: 'anannya-20' },
-  { id: 'book-6', title: 'Introduction to Algorithms (CLRS)', author: 'Thomas H. Cormen', subject: 'Computer Science and Engineering', category: 'Computer Science and Engineering', sem: 4, price: 120, condition: 'Good', description: 'Standard algorithmic complexity parsing guide.', status: 'Handed Over', ownerId: 'sreehari-456' }
+  { id: 'book-1', title: 'DBMS', author: 'GUIDE', category: 'AI and Data Science Engineering', sem: 4, price: 0, condition: 'Good', description: 'Comprehensive KTU core guidelines and transaction analysis notebooks.', status: 'Available' },
+  { id: 'book-2', title: 'University Physics', author: 'Hugh D. Young', category: 'Basic Science & Humanities', sem: 1, price: 150, condition: 'Like New', description: 'Volume 1 master reference textbook matching standard first-year specifications.', status: 'Available' },
+  { id: 'book-3', title: 'Calculus: Early Transcedentals', author: 'James Stewart', category: 'Basic Science & Humanities', sem: 1, price: 80, condition: 'Fair', description: 'Essential math reference matrix used extensively for optimization architectures.', status: 'Available' },
+  { id: 'book-4', title: 'Digital Electronics Lab Record', author: 'KTU Syllabus', category: 'Electrical and Electronics Engineering', sem: 3, price: 50, condition: 'Like New', description: 'Fully mapped and organized digital gates circuit records and validation maps.', status: 'Available' },
+  { id: 'book-5', title: 'Engineering Graphics Drawing Sheets', author: 'First Year CSE', category: 'Mechanical Engineering', sem: 1, price: 0, condition: 'Good', description: 'A3 isometric projections layout sheet pack.', status: 'Accepted' },
+  { id: 'book-6', title: 'Introduction to Algorithms (CLRS)', author: 'Thomas H. Cormen', category: 'Computer Science and Engineering', sem: 4, price: 120, condition: 'Good', description: 'Standard algorithmic complexity parsing guide.', status: 'Handed Over' }
 ];
 
 let handoverRequests = [];
@@ -191,29 +168,19 @@ app.get('/api/academics/handover', (req, res) => {
 
 app.post('/api/academics/handover', (req, res) => {
   const targetId = req.body.textbookId || req.body.id;
-  const buyerId = req.body.buyerId || 'student-anon';
-
   textbooksCatalog = textbooksCatalog.map(book =>
     book.id === targetId ? { ...book, status: 'Requested' } : book
   );
 
   const matchedBook = textbooksCatalog.find(b => b.id === targetId);
   if (matchedBook) {
-    const ownerProfile = studentsList.find(s => s.id === matchedBook.ownerId) || { name: 'Faculty Admin', email: 'support@unihub.com', phone: '+91 99999 88888' };
-    const buyerProfile = studentsList.find(s => s.id === buyerId) || { name: 'Peer Student' };
-
     handoverRequests.unshift({
       id: req.body.id || `req-${Date.now()}`,
       textbookId: targetId,
       textbookTitle: matchedBook.title,
       title: matchedBook.title,
-      textbookPrice: matchedBook.price,
-      buyerId: buyerId,
-      buyerName: buyerProfile.name,
-      ownerId: matchedBook.ownerId,
-      ownerName: ownerProfile.name,
-      ownerEmail: ownerProfile.email,
-      ownerPhone: ownerProfile.phone,
+      buyerId: req.body.buyerId || 'student-anon',
+      buyerName: 'Peer Student',
       status: 'Pending',
       created_at: new Date().toISOString()
     });
@@ -257,7 +224,7 @@ app.post('/api/academics/upload', (req, res) => {
   res.json({ success: true, fileUrl: "https://unihub-cdn.s3.amazonaws.com/simulated-document.pdf" });
 });
 
-// ─── CANTEEN PLATFORM MODULE ───
+// ─── CANTEEN PLATFORM MODULE ───────────────────────────────────────────────
 
 let canteenMenu = [
   { id: '10', name: 'porotta', price: 10.00, category: 'snacks', description: 'kerala dish', available: true },
@@ -322,9 +289,12 @@ app.post('/api/canteen/order', (req, res) => {
   });
 });
 
+// 🌟 CRASH-PROOF STATE STEPPER ENGINE
 const processOrderUpdate = (orderId, passedStatus, res) => {
   let targetStatus = String(passedStatus || '').toUpperCase();
 
+  // Explicit fallback logic if the component parameter is blank/undefined:
+  // Dynamically checks what state the ticket is currently in and steps it forward!
   const targetOrder = canteenOrders.find(o => o.id === orderId);
   if (targetOrder && (!targetStatus || targetStatus === 'UNDEFINED' || targetStatus === '')) {
     if (targetOrder.status === 'PENDING') targetStatus = 'PREPARING';
@@ -332,6 +302,7 @@ const processOrderUpdate = (orderId, passedStatus, res) => {
     else targetStatus = 'COMPLETED';
   }
 
+  // Fallback default state safety catch
   if (!targetStatus || targetStatus === 'UNDEFINED' || targetStatus === '') {
     targetStatus = 'PREPARING';
   }
@@ -346,8 +317,24 @@ const processOrderUpdate = (orderId, passedStatus, res) => {
   return res.json({ success: true, message: `Status advanced to ${targetStatus}`, orderId });
 };
 
+// 🌟 UNIFIED ENDPOINT BINDINGS
 app.put('/api/canteen/order/:orderId', (req, res) => processOrderUpdate(req.params.orderId, req.body.status, res));
 app.put('/api/canteen/order/:orderId/status', (req, res) => processOrderUpdate(req.params.orderId, req.body.status, res));
+app.patch('/api/canteen/order/:orderId', (req, res) =>
+  processOrderUpdate(req.params.orderId, req.body.status, res)
+);
+
+app.patch('/api/canteen/order/:orderId/status', (req, res) =>
+  processOrderUpdate(req.params.orderId, req.body.status, res)
+);
+
+app.patch('/api/canteen/order/:orderId/prepare', (req, res) =>
+  processOrderUpdate(req.params.orderId, 'PREPARING', res)
+);
+
+app.patch('/api/canteen/orders/:orderId/status', (req, res) =>
+  processOrderUpdate(req.params.orderId, req.body.status, res)
+);
 app.put('/api/canteen/order/:orderId/prepare', (req, res) => processOrderUpdate(req.params.orderId, 'PREPARING', res));
 app.post('/api/canteen/order/:orderId/prepare', (req, res) => processOrderUpdate(req.params.orderId, 'PREPARING', res));
 
@@ -366,8 +353,16 @@ app.get('/api/print/history', (req, res) => {
   res.json([]);
 });
 
-// ─── INSTANT SERVER BINDING ON 0.0.0.0 ───────────────────────────────────────
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Fully Synced Production Server operational on Port ${PORT}`);
-  initializeDatabase();
-});
+// ─── INITIALIZATION STACKS ──────────────────────────────────────────────────
+if (require.main === module) {
+  app.listen(PORT, async () => {
+    try {
+      await initializeDatabase();
+    } catch (e) {
+      console.warn('Database initialization warning:', e.message);
+    }
+    console.log(`🚀 Fully Synced Production Server operational on Port ${PORT}`);
+  });
+}
+
+module.exports = app;

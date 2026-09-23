@@ -1,3 +1,9 @@
-// 🌟 FIXED: Changes base URL connection parameters globally to hit the production API cluster
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://unihub-platform-production.up.railway.app';
+// 🌟 Centralized API Base URL Configuration
+export const API_BASE_URL = 
+  import.meta.env.VITE_API_URL || 
+  (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:4000'
+    : '');
+
 export default API_BASE_URL;
+
