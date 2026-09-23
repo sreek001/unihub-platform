@@ -66,32 +66,53 @@ function LostFound() {
 
   // --- API Fetch ---
   useEffect(() => {
+    let isMounted = true;
+
     // 1. Fetch posts
     fetch(`${API_BASE_URL}/api/lostfound/posts`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Lost & Found API error HTTP ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
-        if (data.success) {
-          setListings(data.posts)
-          setApiOnline(true)
+        if (!isMounted) return;
+        if (data && data.success) {
+          const postsArray = Array.isArray(data.posts) ? data.posts : Array.isArray(data) ? data : [];
+          if (postsArray.length > 0) {
+            setListings(postsArray);
+            localStorage.setItem('lost_found_listings', JSON.stringify(postsArray));
+          } else {
+            // If DB returned 0 posts, preserve existing fallback posts so UI is never empty
+            setListings(prev => (prev && prev.length > 0) ? prev : initialLostFoundListings);
+          }
+          setApiOnline(true);
         }
       })
       .catch(err => {
-        console.warn('Lost & Found API offline, running in simulation mode:', err)
-        setApiOnline(false)
-      })
+        if (!isMounted) return;
+        console.warn('Lost & Found API fetch error, preserving local items:', err);
+        setApiOnline(false);
+      });
 
     // 2. Fetch locations
     fetch(`${API_BASE_URL}/api/lostfound/locations`)
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : null)
       .then(data => {
-        if (data.success && data.locations.length > 0) {
-          setLocations(data.locations.map(l => l.name))
+        if (!isMounted || !data) return;
+        const locs = Array.isArray(data.locations) ? data.locations : Array.isArray(data) ? data : [];
+        if (locs.length > 0) {
+          const names = locs.map(l => typeof l === 'string' ? l : l.name).filter(Boolean);
+          if (names.length > 0) setLocations(names);
         }
       })
-      .catch(err => {
-        console.warn('Failed to fetch campus locations from API:', err)
-      })
-  }, [])
+      .catch(err => console.warn('Failed to fetch campus locations:', err));
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // --- Filtering & Searching State ---
   const [searchQuery, setSearchQuery] = useState('')
@@ -125,16 +146,46 @@ function LostFound() {
     return ['All', ...new Set(locations)]
   }, [locations])
 
-  // Filter listings based on criteria
+  // Filter listings safely based on criteria
   const filteredListings = useMemo(() => {
+    if (!Array.isArray(listings)) return []
+
     return listings.filter(item => {
+      if (!item) return false
+
+      const iName = String(item.itemName || item.item_name || item.name || '').toLowerCase()
+      const iDesc = String(item.description || '').toLowerCase()
+      const search = searchQuery.trim().toLowerCase()
+
       const matchesSearch = 
-        item.itemName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchQuery.toLowerCase())
+        !search ||
+        iName.includes(search) ||
+        iDesc.includes(search)
       
-      const matchesCategory = filterCategory === 'All' || item.category === filterCategory
-      const matchesLocation = filterLocation === 'All' || item.location === filterLocation
-      const matchesStatus = filterStatus === 'All' || item.status === filterStatus
+      const itemCategory = String(item.category || '').trim()
+      const matchesCategory = 
+        filterCategory === 'All' || 
+        filterCategory === 'all' || 
+        itemCategory.toLowerCase() === filterCategory.toLowerCase()
+
+      const itemLocation = String(item.location || '').trim()
+      const matchesLocation = 
+        filterLocation === 'All' || 
+        filterLocation === 'all' || 
+        itemLocation.toLowerCase() === filterLocation.toLowerCase()
+
+      const itemStatus = String(item.status || '').trim()
+      let matchesStatus = filterStatus === 'All' || filterStatus === 'all'
+      if (!matchesStatus) {
+        if (filterStatus === 'Available') {
+          matchesStatus = 
+            itemStatus.toLowerCase() === 'available' || 
+            itemStatus.toLowerCase() === 'open' || 
+            itemStatus.toLowerCase() === 'new'
+        } else {
+          matchesStatus = itemStatus.toLowerCase() === filterStatus.toLowerCase()
+        }
+      }
 
       return matchesSearch && matchesCategory && matchesLocation && matchesStatus
     })

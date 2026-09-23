@@ -10,7 +10,7 @@ let inMemoryLocations = [
   { id: 5, name: 'Campus Canteen' },
   { id: 6, name: 'Sports Complex' },
   { id: 7, name: 'Other Area' },
-]
+];
 
 let inMemoryPosts = [
   {
@@ -65,7 +65,46 @@ let inMemoryPosts = [
     status: 'Available',
     postedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
   },
-]
+];
+
+async function ensureSeedPostsInDb() {
+  try {
+    // 1. Ensure campus_locations exist
+    for (const loc of inMemoryLocations) {
+      await pool.query(
+        'INSERT INTO campus_locations (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING',
+        [loc.id, loc.name]
+      ).catch(() => {});
+    }
+
+    // 2. Seed initial posts into DB if table empty
+    for (const post of inMemoryPosts) {
+      const locRes = await pool.query('SELECT id FROM campus_locations WHERE name = $1 LIMIT 1', [post.location]);
+      const locId = locRes.rows.length > 0 ? locRes.rows[0].id : 1;
+
+      await pool.query(
+        `INSERT INTO lost_found_posts (id, category, item_name, description, location_id, contact_email, contact_phone, contact_info, image, status, posted_at, expires_at, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW() + INTERVAL '14 days', NOW())
+         ON CONFLICT (id) DO NOTHING`,
+        [
+          post.id,
+          post.category,
+          post.itemName,
+          post.description,
+          locId,
+          post.contactEmail,
+          post.contactPhone,
+          post.contactInfo,
+          post.image,
+          post.status,
+          post.postedAt,
+        ]
+      ).catch(() => {});
+    }
+  } catch (err) {
+    console.warn('[LostFound DB] Failed to seed initial posts:', err.message);
+  }
+}
 
 /**
  * GET /api/lostfound/locations
@@ -73,6 +112,9 @@ let inMemoryPosts = [
 async function getLocations(req, res) {
   try {
     const { rows } = await pool.query('SELECT id, name FROM campus_locations ORDER BY name');
+    if (!rows || rows.length === 0) {
+      return res.json({ success: true, locations: inMemoryLocations });
+    }
     return res.json({ success: true, locations: rows });
   } catch (err) {
     console.warn('[LostFound DB] query failed, using in-memory locations fallback:', err.message);
@@ -85,7 +127,7 @@ async function getLocations(req, res) {
  */
 async function getPosts(req, res) {
   try {
-    const { rows } = await pool.query(
+    let { rows } = await pool.query(
       `SELECT p.id, p.category, p.item_name AS "itemName", p.description, l.name AS location, 
               p.contact_email AS "contactEmail", p.contact_phone AS "contactPhone", 
               p.contact_info AS "contactInfo", p.image, p.status, p.posted_at AS "postedAt"
@@ -93,7 +135,22 @@ async function getPosts(req, res) {
          JOIN campus_locations l ON p.location_id = l.id
         ORDER BY p.posted_at DESC`
     );
-    return res.json({ success: true, posts: rows });
+
+    if (!rows || rows.length === 0) {
+      await ensureSeedPostsInDb();
+      const resDb = await pool.query(
+        `SELECT p.id, p.category, p.item_name AS "itemName", p.description, l.name AS location, 
+                p.contact_email AS "contactEmail", p.contact_phone AS "contactPhone", 
+                p.contact_info AS "contactInfo", p.image, p.status, p.posted_at AS "postedAt"
+           FROM lost_found_posts p
+           JOIN campus_locations l ON p.location_id = l.id
+          ORDER BY p.posted_at DESC`
+      );
+      rows = resDb.rows;
+    }
+
+    console.log('[LostFound API] records count:', (rows && rows.length) ? rows.length : inMemoryPosts.length);
+    return res.json({ success: true, posts: (rows && rows.length > 0) ? rows : inMemoryPosts });
   } catch (err) {
     console.warn('[LostFound DB] query failed, using in-memory posts fallback:', err.message);
     return res.json({ success: true, posts: inMemoryPosts });
@@ -109,35 +166,39 @@ async function createPost(req, res) {
     return res.status(400).json({ success: false, message: 'category, itemName, description, location, and contactEmail are required' });
   }
 
-  const client = await pool.connect();
   try {
-    await client.query('BEGIN');
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
 
-    // 1. Resolve or create location ID
-    let locationId;
-    const { rows: locRows } = await client.query('SELECT id FROM campus_locations WHERE name = $1 LIMIT 1', [location]);
-    if (locRows.length > 0) {
-      locationId = locRows[0].id;
-    } else {
-      const insertLoc = await client.query('INSERT INTO campus_locations(name) VALUES ($1) RETURNING id', [location]);
-      locationId = insertLoc.rows[0].id;
+      // 1. Resolve or create location ID
+      let locationId;
+      const { rows: locRows } = await client.query('SELECT id FROM campus_locations WHERE name = $1 LIMIT 1', [location]);
+      if (locRows.length > 0) {
+        locationId = locRows[0].id;
+      } else {
+        const insertLoc = await client.query('INSERT INTO campus_locations(name) VALUES ($1) RETURNING id', [location]);
+        locationId = insertLoc.rows[0].id;
+      }
+
+      // 2. Insert post
+      const { rows } = await client.query(
+        `INSERT INTO lost_found_posts(category, item_name, description, location_id, contact_email, contact_phone, contact_info, image, status, posted_at, expires_at, created_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'Available',NOW(),NOW() + INTERVAL '14 days',NOW())
+         RETURNING id`,
+        [category, itemName, description, locationId, contactEmail, contactPhone || null, contactInfo || null, image || null]
+      );
+
+      await client.query('COMMIT');
+      return res.status(201).json({ success: true, createdId: rows[0].id });
+    } catch (err) {
+      await client.query('ROLLBACK');
+      console.warn('[LostFound DB] insert transaction failed, using in-memory fallback:', err.message);
+    } finally {
+      client.release();
     }
-
-    // 2. Insert post (including image)
-    const { rows } = await client.query(
-      `INSERT INTO lost_found_posts(category, item_name, description, location_id, contact_email, contact_phone, contact_info, image, status, posted_at, expires_at, created_at)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'Available',NOW(),NOW() + INTERVAL '14 days',NOW())
-       RETURNING id`,
-      [category, itemName, description, locationId, contactEmail, contactPhone || null, contactInfo || null, image || null]
-    );
-
-    await client.query('COMMIT');
-    return res.status(201).json({ success: true, createdId: rows[0].id });
-  } catch (err) {
-    await client.query('ROLLBACK');
-    console.warn('[LostFound DB] insert transaction failed, using in-memory fallback:', err.message);
-  } finally {
-    client.release();
+  } catch (poolErr) {
+    console.warn('[LostFound DB] pool connection failed, using memory:', poolErr.message);
   }
 
   // Fallback to memory
@@ -161,7 +222,7 @@ async function createPost(req, res) {
     postedAt: new Date().toISOString()
   };
   inMemoryPosts.unshift(newPost);
-  res.status(201).json({ success: true, createdId: newPost.id });
+  return res.status(201).json({ success: true, createdId: newPost.id });
 }
 
 /**
