@@ -1,14 +1,16 @@
 /* ================================================================
    BookingDashboard.css
-   UniHub Booking — Responsive Light Theme
+   UniHub Booking — Modern Clean Dashboard Theme
    ================================================================ */
 
 .booking-root {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
   width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 28px 36px;
   position: relative;
-  overflow-x: hidden;
   background: transparent;
   color: #0f172a;
   box-sizing: border-box;
@@ -20,431 +22,606 @@
   box-sizing: border-box;
 }
 
-/* Background */
-.booking-root::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 70% 50% at 15% 10%,
-      rgba(15, 76, 129, 0.04) 0%,
-      transparent 60%),
-    radial-gradient(ellipse 60% 50% at 85% 80%,
-      rgba(20, 184, 166, 0.04) 0%,
-      transparent 60%),
-    radial-gradient(ellipse 40% 40% at 50% 50%,
-      rgba(212, 175, 55, 0.02) 0%,
-      transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.booking-root>* {
-  position: relative;
-  z-index: 1;
-}
-
 /* ================================================================
-   GLASS CARD
+   FACULTY ADMIN BANNER
    ================================================================ */
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 16px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-  transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.glass-card:hover {
-  border-color: rgba(20, 184, 166, 0.18);
-  box-shadow:
-    0 8px 32px rgba(15, 76, 129, 0.08),
-    0 0 24px rgba(20, 184, 166, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
-}
-
-/* ================================================================
-   ACCENT
-   ================================================================ */
-
-.accent-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(15, 76, 129, 0.4) 40%,
-      rgba(20, 184, 166, 0.4) 70%,
-      transparent 100%);
-  opacity: 0.8;
-  border-radius: 16px 16px 0 0;
-}
-
-/* ================================================================
-   VENUE LIST
-   ================================================================ */
-
-.venue-btn {
-  width: 100%;
-  text-align: left;
-  padding: 14px 16px;
-  border-radius: 12px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: #475569;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition:
-    color 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease;
-  font-family: 'Inter', sans-serif;
-}
-
-.venue-btn:hover {
-  color: #0f4c81;
-  background: rgba(15, 76, 129, 0.025);
-}
-
-.venue-btn.active {
-  color: #0f4c81;
-}
-
-.venue-glow {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg,
-      rgba(15, 76, 129, 0.08) 0%,
-      rgba(20, 184, 166, 0.06) 100%);
-  border: 1px solid rgba(15, 76, 129, 0.14);
-  border-radius: 12px;
-  box-shadow: 0 0 16px rgba(15, 76, 129, 0.06);
-}
-
-/* Venue badges */
-
-.venue-type-badge {
-  display: inline-flex;
+.faculty-banner {
+  display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.6rem;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.08), rgba(29, 78, 216, 0.06));
+  border: 1px solid rgba(20, 184, 166, 0.25);
+}
+
+.faculty-banner-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #14b8a6, #1d4ed8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.faculty-banner-title {
+  font-size: 0.82rem;
   font-weight: 700;
-  padding: 2px 8px;
+  color: #0f766e;
+}
+
+.faculty-banner-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+.faculty-badge {
+  margin-left: auto;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #0f766e;
+  background: rgba(20, 184, 166, 0.12);
+  padding: 4px 10px;
   border-radius: 6px;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(20, 184, 166, 0.2);
+}
+
+/* ================================================================
+   PAGE HEADER
+   ================================================================ */
+
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(15, 76, 129, 0.08);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.booking-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.booking-title-icon {
+  width: 28px;
+  height: 28px;
+  color: #14b8a6;
+}
+
+.booking-subtitle {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 4px 0 0 0;
+  font-weight: 500;
+}
+
+/* User Profile Badge */
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1d4ed8, #14b8a6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.user-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.user-role {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #14b8a6;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.venue-type-badge.seminar-hall {
-  background: rgba(15, 76, 129, 0.08);
-  color: #1d4ed8;
-  border: 1px solid rgba(15, 76, 129, 0.15);
+/* ================================================================
+   MAIN BOOKING GRID
+   ================================================================ */
+
+.booking-grid {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+  width: 100%;
 }
 
-.venue-type-badge.lab {
-  background: rgba(20, 184, 166, 0.08);
-  color: #0f766e;
-  border: 1px solid rgba(20, 184, 166, 0.2);
+.booking-grid > * {
+  min-width: 0;
 }
 
-.venue-type-badge.project-space {
-  background: rgba(212, 175, 55, 0.1);
-  color: #92400e;
-  border: 1px solid rgba(212, 175, 55, 0.2);
+/* ================================================================
+   LEFT PANEL — CAMPUS FACILITIES
+   ================================================================ */
+
+.facilities-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-/* Venue status */
+.card-header {
+  margin-bottom: 16px;
+}
 
-.venue-status-dot {
+.card-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.venue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Venue Buttons */
+.venue-card-btn {
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.venue-card-btn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.venue-card-btn.active {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.1);
+}
+
+.venue-card-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.venue-btn-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.venue-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.venue-btn-bottom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.venue-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.status-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   display: inline-block;
-  margin-right: 4px;
 }
 
-.venue-status-dot.open {
+.status-dot.open {
   background: #10b981;
-  box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
 }
 
-.venue-status-dot.maintenance {
-  background: #f43f5e;
-  box-shadow: 0 0 6px rgba(244, 63, 94, 0.4);
+.status-dot.maintenance {
+  background: #ef4444;
+}
+
+.venue-divider {
+  color: #cbd5e1;
+}
+
+.venue-meta,
+.venue-capacity {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.venue-capacity {
+  margin-left: auto;
+  font-weight: 600;
+}
+
+/* Venue Badges */
+.venue-type-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.venue-type-badge.seminar-hall {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.venue-type-badge.lab {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.venue-type-badge.project-space {
+  background: #fef3c7;
+  color: #b45309;
 }
 
 /* ================================================================
-   BOOKING GRID
+   RIGHT PANEL — MAIN CONTENT AREA
    ================================================================ */
 
-/*
-  The JSX defines:
-  grid-template-columns: 320px 1fr
-
-  These rules make sure the grid can actually shrink/grow
-  correctly inside the parent dashboard.
-*/
-
-.booking-grid {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  display: grid;
-  grid-template-columns: minmax(300px, 340px) minmax(0, 1fr);
-  gap: 32px;
-  align-items: start;
+.booking-main-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.booking-grid>* {
-  min-width: 0;
+/* Selected Venue Detail Card */
+.venue-detail-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-/* ================================================================
-   TIME SLOT AREA
-   ================================================================ */
-
-.booking-grid .slot-row {
-  width: 100%;
-  min-height: 68px;
-}
-
-/* ================================================================
-   SLOT ROW
-   ================================================================ */
-
-.slot-row {
-  padding: 18px 22px;
-  min-height: 68px;
-  border-radius: 14px;
-  border: 1px solid rgba(15, 76, 129, 0.07);
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
+.venue-detail-main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-
-  transition:
-    border-color 0.25s ease,
-    background 0.25s ease,
-    box-shadow 0.25s ease;
-
-  will-change: transform, opacity;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
-.slot-row:hover {
-  border-color: rgba(15, 76, 129, 0.12);
-  box-shadow: 0 2px 12px rgba(15, 76, 129, 0.06);
-}
-
-.slot-row.clickable {
-  cursor: pointer;
-}
-
-.slot-row.clickable:hover {
-  border-color: rgba(20, 184, 166, 0.35);
-  background: rgba(240, 253, 250, 0.7);
-  box-shadow: 0 4px 18px rgba(20, 184, 166, 0.08);
-}
-
-/* ================================================================
-   STATUS PILLS
-   ================================================================ */
-
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 5px 14px;
-  border-radius: 9999px;
-  white-space: nowrap;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.status-open {
-  background: rgba(255, 255, 255, 0.55);
-  color: #64748b;
-  border: 1px solid rgba(15, 76, 129, 0.1);
-}
-
-.status-reserved {
-  background: #1d4ed8;
-  color: #ffffff;
-  border: 1px solid transparent;
-  box-shadow: 0 2px 8px rgba(29, 78, 216, 0.2);
-}
-
-.status-pending {
-  background: #f0fdfa;
-  color: #0f766e;
-  border: 1px solid rgba(20, 184, 166, 0.3);
-  animation: pendingPulse 2s ease-in-out infinite;
-}
-
-@keyframes pendingPulse {
-
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.15);
-  }
-
-  50% {
-    box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.05);
-  }
-}
-
-/* ================================================================
-   BUTTONS
-   ================================================================ */
-
-.btn-primary {
-  width: 100%;
-  padding: 14px 20px;
-  border-radius: 12px;
-  border: none;
-  background: linear-gradient(135deg, #1d4ed8 0%, #0f766e 100%);
-  color: #fff;
-  font-size: 0.875rem;
-  font-weight: 700;
-  cursor: pointer;
-
+.venue-title-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  transition:
-    opacity 0.2s ease,
-    transform 0.1s ease;
-
-  box-shadow: 0 4px 20px rgba(15, 76, 129, 0.22);
-  font-family: 'Inter', sans-serif;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.btn-primary:hover {
-  opacity: 0.92;
-  box-shadow: 0 6px 28px rgba(15, 76, 129, 0.3);
+.venue-detail-name {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.02em;
 }
 
-.btn-primary:active {
-  transform: scale(0.98);
-}
-
-.btn-primary:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-.btn-secure {
-  padding: 7px 14px;
-  border-radius: 8px;
-  border: 1px solid rgba(20, 184, 166, 0.3);
-  background: rgba(240, 253, 250, 0.8);
-  color: #0f766e;
-  font-size: 0.72rem;
-  font-weight: 700;
-  cursor: pointer;
-
-  transition: all 0.2s ease;
-
-  font-family: 'Inter', sans-serif;
+.venue-status-chip {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 3px 10px;
+  border-radius: 9999px;
 }
 
-.btn-secure:hover {
-  background: rgba(20, 184, 166, 0.12);
-  border-color: rgba(20, 184, 166, 0.5);
-  box-shadow: 0 0 14px rgba(20, 184, 166, 0.12);
+.venue-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 8px;
 }
 
-.btn-approve {
-  padding: 6px 14px;
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+/* Detail Controls (Date picker + Request Slot) */
+.venue-detail-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.date-picker-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 6px 12px;
+}
+
+.date-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.date-input {
+  border: none;
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #0f172a;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  cursor: pointer;
+}
+
+.btn-request-slot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #1d4ed8, #14b8a6);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(29, 78, 216, 0.2);
+  font-family: 'Inter', sans-serif;
+  transition: opacity 0.2s ease;
+}
+
+.btn-request-slot:hover {
+  opacity: 0.92;
+}
+
+/* ================================================================
+   SLOTS SECTION & GRID
+   ================================================================ */
+
+.slots-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.slots-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.slots-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slots-header-title h3 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.live-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #0f766e;
+  background: rgba(20, 184, 166, 0.08);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  display: inline-flex;
+  align-items: center;
+}
+
+.live-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #14b8a6;
+  margin-right: 6px;
+}
+
+/* Time Slots Grid (2 Columns on Desktop) */
+.time-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.slots-loading-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* Individual Slot Card */
+.slot-card {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.slot-card.available {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  cursor: pointer;
+}
+
+.slot-card.available:hover {
+  border-color: #14b8a6;
+  background: #f0fdfa;
+  box-shadow: 0 4px 14px rgba(20, 184, 166, 0.08);
+}
+
+.slot-card.reserved {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  opacity: 0.75;
+}
+
+.slot-card.pending {
+  background: #f0fdfa;
+  border-color: rgba(20, 184, 166, 0.3);
+}
+
+.slot-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.slot-time {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Slot Status Pills */
+.slot-status-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.slot-status-pill.status-open {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.slot-status-pill.status-reserved {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.slot-status-pill.status-pending {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.btn-book-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
   border-radius: 8px;
   border: 1px solid rgba(20, 184, 166, 0.3);
-  background: rgba(240, 253, 250, 0.8);
+  background: #f0fdfa;
   color: #0f766e;
   font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s ease;
   font-family: 'Inter', sans-serif;
 }
 
-.btn-reject {
-  padding: 6px 14px;
-  border-radius: 8px;
-  border: 1px solid rgba(244, 63, 94, 0.25);
-  background: rgba(255, 241, 242, 0.8);
-  color: #e11d48;
-  font-size: 0.75rem;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
+.btn-book-slot:hover {
+  background: #14b8a6;
+  color: #ffffff;
+  border-color: #14b8a6;
 }
 
-/* ================================================================
-   FORMS
-   ================================================================ */
-
-.form-input {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(15, 76, 129, 0.12);
-  background: rgba(255, 255, 255, 0.85);
-  color: #0f172a;
-  font-size: 0.875rem;
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-  box-sizing: border-box;
-}
-
-.form-input:focus {
-  border-color: rgba(15, 76, 129, 0.45);
-  box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.08);
-}
-
-.form-input::placeholder {
+.slot-taken-label {
+  font-size: 0.72rem;
+  font-weight: 600;
   color: #94a3b8;
 }
 
-.form-input::-webkit-calendar-picker-indicator {
-  filter: none;
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.form-label {
-  display: block;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 6px;
-}
-
 /* ================================================================
-   MODAL
+   MODAL STYLING
    ================================================================ */
 
 .modal-backdrop {
@@ -454,137 +631,152 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 50;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 16px;
 }
 
 .modal-content {
-  background: rgba(255, 255, 255, 0.97);
-  border: 1px solid rgba(15, 76, 129, 0.1);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 20px;
-  padding: 28px;
+  padding: 24px 28px;
   width: 100%;
   max-width: 460px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 25px 60px rgba(15, 76, 129, 0.12);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
   color: #0f172a;
 }
 
-.modal-content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(15, 76, 129, 0.4),
-      rgba(20, 184, 166, 0.4),
-      transparent);
+.modal-header h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px;
 }
 
-/* ================================================================
-   LOADING / SKELETON
-   ================================================================ */
-
-.skeleton {
-  background: linear-gradient(90deg,
-      rgba(241, 245, 249, 0.8) 25%,
-      rgba(226, 232, 240, 0.9) 50%,
-      rgba(241, 245, 249, 0.8) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.8s ease-in-out infinite;
-  border-radius: 10px;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-.loading-text {
-  font-size: 0.8rem;
-  color: #94a3b8;
-  text-align: center;
-  padding: 16px 0;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-}
-
-/* ================================================================
-   LIVE BADGE
-   ================================================================ */
-
-.live-badge::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #14b8a6;
-  margin-right: 6px;
-  animation: pulse-dot 2s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-
-  0%,
-  100% {
-    opacity: 1;
-    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.5);
-  }
-
-  50% {
-    opacity: 0.6;
-    box-shadow: 0 0 0 5px rgba(20, 184, 166, 0);
-  }
-}
-
-/* ================================================================
-   SECTION TITLE
-   ================================================================ */
-
-.section-title {
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+.modal-header p {
+  font-size: 0.78rem;
   color: #64748b;
-  margin-bottom: 16px;
+  margin: 0 0 20px;
 }
 
-/* ================================================================
-   EMPTY STATE
-   ================================================================ */
-
-.empty-state {
+.form-stack {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 20px;
-  color: #94a3b8;
-  text-align: center;
+  gap: 14px;
 }
 
-.empty-state svg {
-  margin-bottom: 12px;
-  opacity: 0.35;
+.form-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 5px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.85rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+}
+
+.form-read-only {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.form-read-only.flex-align {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.priority-badge {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #0f766e;
+  background: #ccfbf1;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.form-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-error-banner {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.btn-modal-cancel {
+  padding: 9px 18px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-modal-cancel:hover {
+  color: #0f172a;
+}
+
+.btn-modal-submit {
+  padding: 9px 22px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #1d4ed8, #14b8a6);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 14px rgba(29, 78, 216, 0.2);
 }
 
 /* ================================================================
-   TOAST
+   TOAST NOTIFICATION
    ================================================================ */
 
 .toast-success {
@@ -592,134 +784,78 @@
   top: 24px;
   right: 24px;
   z-index: 100;
-
-  padding: 14px 20px;
+  padding: 12px 18px;
   border-radius: 12px;
-
-  background: rgba(240, 253, 250, 0.95);
-  border: 1px solid rgba(20, 184, 166, 0.3);
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
   color: #0f766e;
-
   font-size: 0.82rem;
-  font-weight: 600;
-
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 8px;
-
-  box-shadow: 0 8px 32px rgba(20, 184, 166, 0.12);
-  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
 /* ================================================================
-   RESPONSIVE
+   RESPONSIVE BREAKPOINTS
    ================================================================ */
 
-/* Large desktop */
-@media (min-width: 1400px) {
-  .booking-grid {
-    grid-template-columns: 350px minmax(0, 1fr);
-    gap: 36px;
+@media (max-width: 1024px) {
+  .booking-root {
+    padding: 20px 20px;
   }
 
-  .slot-row {
-    min-height: 72px;
-    padding: 19px 24px;
-  }
-}
-
-/* Tablet */
-@media (max-width: 1100px) {
   .booking-grid {
-    grid-template-columns: 280px minmax(0, 1fr);
+    grid-template-columns: 260px minmax(0, 1fr);
     gap: 20px;
   }
-
-  .slot-row {
-    padding: 16px;
-  }
-
-  .btn-secure {
-    padding: 6px 10px;
-  }
 }
 
-/* Mobile / narrow screen */
 @media (max-width: 768px) {
+  .booking-root {
+    padding: 16px 14px;
+  }
+
   .booking-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;
     gap: 20px;
   }
 
-  .slot-row {
+  .time-slots-grid,
+  .slots-loading-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .venue-detail-main {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
   }
 
-  .slot-row>div:last-child {
+  .venue-detail-controls {
     width: 100%;
-    justify-content: flex-start;
-  }
-
-  .btn-secure {
-    margin-left: auto;
-  }
-
-  .modal-content {
-    max-height: calc(100vh - 32px);
-    overflow-y: auto;
+    justify-content: space-between;
   }
 }
 
-/* Very small phones */
-@media (max-width: 480px) {
-  .slot-row {
-    padding: 14px;
-  }
-
-  .status-pill {
-    font-size: 0.65rem;
-    padding: 4px 10px;
-  }
-
-  .btn-secure {
-    font-size: 0.65rem;
-    padding: 6px 9px;
-  }
+/* Skeleton Loading */
+.skeleton {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
 }
 
-/* ================================================================
-   SCROLLBAR
-   ================================================================ */
-
-.booking-root ::-webkit-scrollbar {
-  width: 6px;
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-.booking-root ::-webkit-scrollbar-track {
-  background: transparent;
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
-
-.booking-root ::-webkit-scrollbar-thumb {
-  background: rgba(15, 76, 129, 0.15);
-  border-radius: 3px;
-}
-
-.booking-root ::-webkit-scrollbar-thumb:hover {
-  background: rgba(15, 76, 129, 0.3);
-}
-
-/* ================================================================
-   SPIN
-   ================================================================ */
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

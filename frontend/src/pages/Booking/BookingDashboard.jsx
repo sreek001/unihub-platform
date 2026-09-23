@@ -13,13 +13,12 @@ import {
   Users,
   Sparkles,
   CalendarDays,
-  LayoutGrid,
   Loader2,
   Building2,
   Zap,
 } from 'lucide-react';
 import API_BASE_URL from '../../config/api';
-
+import './BookingDashboard.css';
 
 // ─── API Base ───
 const API = `${API_BASE_URL}/api/booking`;
@@ -38,26 +37,22 @@ const FALLBACK_VENUES = [
   { id: 7, name: 'Innovation Hub', location: 'Library Building — 4th', capacity: 60, type: 'Project Space', status: 'Maintenance' },
 ];
 
-// ─── Helper: format date to YYYY-MM-DD ───
 function toDateStr(d) {
   return d.toISOString().slice(0, 10);
 }
 
-
-// ─── Time slot definitions matching the backend's mapSlotToTimes ───
 const TIME_SLOTS = [
-  { label: '08:00 to 09:00', display: '8:00 AM to 9:00 AM' },
-  { label: '09:00 to 10:00', display: '9:00 AM to 10:00 AM' },
-  { label: '10:00 to 11:00', display: '10:00 AM to 11:00 AM' },
-  { label: '11:00 to 12:00', display: '11:00 AM to 12:00 PM' },
-  { label: '12:00 to 13:00', display: '12:00 PM to 1:00 PM' },
-  { label: '13:00 to 14:00', display: '1:00 PM to 2:00 PM' },
-  { label: '14:00 to 15:00', display: '2:00 PM to 3:00 PM' },
-  { label: '15:00 to 16:00', display: '3:00 PM to 4:00 PM' },
-  { label: '16:00 to 17:00', display: '4:00 PM to 5:00 PM' },
+  { label: '08:00 to 09:00', display: '08:00 AM – 09:00 AM' },
+  { label: '09:00 to 10:00', display: '09:00 AM – 10:00 AM' },
+  { label: '10:00 to 11:00', display: '10:00 AM – 11:00 AM' },
+  { label: '11:00 to 12:00', display: '11:00 AM – 12:00 PM' },
+  { label: '12:00 to 13:00', display: '12:00 PM – 01:00 PM' },
+  { label: '13:00 to 14:00', display: '01:00 PM – 02:00 PM' },
+  { label: '14:00 to 15:00', display: '02:00 PM – 03:00 PM' },
+  { label: '15:00 to 16:00', display: '03:00 PM – 04:00 PM' },
+  { label: '16:00 to 17:00', display: '04:00 PM – 05:00 PM' },
 ];
 
-// ─── Get venue type badge class ───
 function getTypeBadgeClass(type) {
   if (!type) return 'seminar-hall';
   const t = type.toLowerCase();
@@ -66,22 +61,21 @@ function getTypeBadgeClass(type) {
   return 'seminar-hall';
 }
 
-// ─── Framer Motion Variants ───
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.06, delayChildren: 0.04 },
+    transition: { staggerChildren: 0.04, delayChildren: 0.02 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 16, scale: 0.97 },
+  hidden: { opacity: 0, y: 10, scale: 0.98 },
   show: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: 'spring', stiffness: 130, damping: 17 },
+    transition: { type: 'spring', stiffness: 200, damping: 20 },
   },
 };
 
@@ -92,29 +86,27 @@ const modalOverlayVariants = {
 };
 
 const modalContentVariants = {
-  hidden: { scale: 0.92, y: 24, opacity: 0 },
+  hidden: { scale: 0.94, y: 16, opacity: 0 },
   visible: {
     scale: 1,
     y: 0,
     opacity: 1,
-    transition: { type: 'spring', stiffness: 200, damping: 22 },
+    transition: { type: 'spring', stiffness: 220, damping: 24 },
   },
   exit: {
-    scale: 0.92,
-    y: 24,
+    scale: 0.94,
+    y: 16,
     opacity: 0,
-    transition: { duration: 0.2 },
+    transition: { duration: 0.15 },
   },
 };
 
 export default function BookingDashboard({ adminView = false }) {
-  // ── Auth context ──
   const { user: authUser } = useAuth();
   const navigate = useNavigate();
-  // Resolve the active user: prefer real auth, fall back to demo for offline dev
   const user = authUser || DEMO_USER;
   const isFacultyAdmin = user.role === 'faculty' || adminView;
-  // ── State ──
+
   const [venues, setVenues] = useState([]);
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [selectedDate, setSelectedDate] = useState(toDateStr(new Date()));
@@ -123,18 +115,15 @@ export default function BookingDashboard({ adminView = false }) {
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [activeTab, setActiveTab] = useState('grid');
   const [error, setError] = useState(null);
   const [toast, setToast] = useState(null);
 
-  // ── Form state (seeded from real authenticated user) ──
   const [form, setForm] = useState({
     event_name: '',
     time_slot: TIME_SLOTS[0].label,
     user_name: user.name,
     user_role: user.role,
   });
-
 
   function showToast(message) {
     setToast(message);
@@ -190,15 +179,6 @@ export default function BookingDashboard({ adminView = false }) {
     }
   }
 
-  function handleTabChange(tab) {
-    // RBAC Intercept: Faculty clicking 'booking' tab goes to the admin venue sub-route
-    if (user?.role === 'faculty' && tab === 'booking') {
-      navigate('/dashboard/booking-admin');
-      return;
-    }
-    setActiveTab(tab);
-  }
-
   function handleClickToSecure(slotLabel) {
     setForm({
       ...form,
@@ -248,53 +228,24 @@ export default function BookingDashboard({ adminView = false }) {
   }
 
   return (
-    <div className="booking-root" style={{ padding: '32px 24px', maxWidth: 1280, margin: '0 auto' }}>
-
-      {/* ── Faculty Admin Mode Banner ── */}
+    <div className="booking-root">
+      {/* ── Faculty Admin Banner (if faculty) ── */}
       {isFacultyAdmin && (
-        <div
-          id="faculty-admin-banner"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-            marginBottom: 24,
-            padding: '12px 20px',
-            borderRadius: 12,
-            background: 'linear-gradient(135deg, rgba(20,184,166,0.10), rgba(29,78,216,0.08))',
-            border: '1px solid rgba(20,184,166,0.25)',
-            boxShadow: '0 2px 16px rgba(20,184,166,0.07)',
-          }}
-        >
-          <div style={{
-            width: 32, height: 32, borderRadius: 8,
-            background: 'linear-gradient(135deg, #14b8a6, #1d4ed8)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(20,184,166,0.35)',
-            flexShrink: 0,
-          }}>
+        <div id="faculty-admin-banner" className="faculty-banner">
+          <div className="faculty-banner-icon">
             <CalendarDays style={{ width: 16, height: 16, color: '#fff' }} />
           </div>
           <div>
-            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#0f766e', letterSpacing: '0.01em' }}>
-              Faculty Venue Booking Admin
-            </div>
-            <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 1 }}>
-              You have priority access to all campus venue slots. Bookings submitted here are flagged as Faculty reservations.
+            <div className="faculty-banner-title">Faculty Venue Booking Admin</div>
+            <div className="faculty-banner-sub">
+              You have priority access to all campus venue slots. Reservations submitted here are flagged with Faculty priority.
             </div>
           </div>
-          <div style={{
-            marginLeft: 'auto', fontSize: '0.68rem', fontWeight: 700,
-            color: '#0f766e', background: 'rgba(20,184,166,0.12)',
-            padding: '4px 10px', borderRadius: 6, letterSpacing: '0.05em',
-            border: '1px solid rgba(20,184,166,0.2)',
-          }}>
-            FACULTY ACCESS
-          </div>
+          <div className="faculty-badge">FACULTY ACCESS</div>
         </div>
       )}
 
-      {/* ── Success Toast ── */}
+      {/* ── Toast Notification ── */}
       <AnimatePresence>
         {toast && (
           <motion.div
@@ -310,377 +261,240 @@ export default function BookingDashboard({ adminView = false }) {
         )}
       </AnimatePresence>
 
-      {/* ── Page Intro — light mode ── */}
-      <motion.div
-        initial={{ opacity: 0, y: -16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          marginBottom: 32,
-          paddingBottom: 20,
-          borderBottom: '1px solid rgba(15,76,129,0.07)',
-          flexWrap: 'wrap',
-          gap: 16,
-        }}
-      >
+      {/* ── Page Header ── */}
+      <header className="booking-header">
         <div>
-          <h1 style={{
-            fontSize: '1.75rem',
-            fontWeight: 800,
-            color: '#0f172a',
-            letterSpacing: '-0.025em',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            margin: 0,
-          }}>
-            <CalendarDays
-              style={{
-                width: 28,
-                height: 28,
-                color: '#14b8a6',
-              }}
-            />
+          <h1 className="booking-title">
+            <CalendarDays className="booking-title-icon" />
             Venue Booking
           </h1>
-          <p style={{ color: '#64748b', fontSize: '0.875rem', marginTop: 4, marginBottom: 0, fontWeight: 500 }}>
+          <p className="booking-subtitle">
             Reserve seminar halls, labs, and project spaces — zero scheduling conflicts.
           </p>
         </div>
 
-        {/* User badge — light glass */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.25 }}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            background: 'rgba(255,255,255,0.75)',
-            border: '1px solid rgba(15,76,129,0.10)',
-            borderRadius: 12,
-            padding: '10px 16px',
-            backdropFilter: 'blur(16px)',
-            boxShadow: '0 2px 12px rgba(15,76,129,0.06)',
-          }}
-        >
-          <div style={{
-            width: 32,
-            height: 32,
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #1d4ed8, #14b8a6)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '0.75rem',
-            fontWeight: 700,
-            color: '#fff',
-            boxShadow: '0 2px 8px rgba(29,78,216,0.22)',
-          }}>
+        {/* User Badge */}
+        <div className="user-profile-badge">
+          <div className="user-avatar">
             {user.name.charAt(0)}
           </div>
           <div>
-            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#0f172a' }}>{user.name}</div>
-            <div style={{
-              fontSize: '0.65rem',
-              fontWeight: 700,
-              color: '#14b8a6',
-              textTransform: 'uppercase',
-              letterSpacing: '0.06em',
-            }}>{user.role}</div>
+            <div className="user-name">{user.name}</div>
+            <div className="user-role">{user.role}</div>
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </header>
 
-      {/* ── Tab Navigation — light glass ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
-        style={{ display: 'flex', gap: 4, marginBottom: 28, position: 'relative' }}
-      >
-        {[
-          { key: 'grid', label: 'Availability Grid', icon: LayoutGrid },
-        ].map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              onClick={() => handleTabChange(tab.key)}
-              style={{
-                padding: '10px 20px',
-                borderRadius: 10,
-                border: 'none',
-                background: 'transparent',
-                color: isActive ? '#1d4ed8' : '#64748b',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                position: 'relative',
-                fontFamily: 'Inter, sans-serif',
-                transition: 'color 0.2s ease',
-              }}
-            >
-              {isActive && (
-                <motion.div
-                  layoutId="activeTabGlow"
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'rgba(29,78,216,0.06)',
-                    border: '1px solid rgba(29,78,216,0.15)',
-                    borderRadius: 10,
-                  }}
-                  transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-                />
-              )}
-              <Icon style={{ width: 15, height: 15, position: 'relative', zIndex: 1 }} />
-              <span style={{ position: 'relative', zIndex: 1 }}>{tab.label}</span>
-            </button>
-          );
-        })}
-      </motion.div>
+      {/* ── Main Booking Layout ── */}
+      <div className="booking-grid">
+        {/* ── LEFT PANEL: CAMPUS FACILITIES ── */}
+        <aside className="facilities-card">
+          <div className="card-header">
+            <h2 className="card-title">
+              <Building2 style={{ width: 15, height: 15, color: '#1d4ed8' }} />
+              Campus Facilities
+            </h2>
+          </div>
 
-      {/* ── TAB CONTENT ── */}
-      <AnimatePresence mode="wait">
-        {activeTab === 'grid' && (
-          <motion.div
-            key="grid-view"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.25 }}
-            className="booking-grid"
-            style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 28, alignItems: 'start' }}
-          >
-            {/* ─ Left Panel: Venue Selector ─ */}
-            <motion.div
-              initial={{ opacity: 0, x: -28 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ type: 'spring', damping: 20, delay: 0.1 }}
-              className="glass-card"
-              style={{ padding: 24, position: 'relative', overflow: 'hidden' }}
-            >
-              <div className="accent-bar" />
+          <div className="venue-list">
+            {loadingVenues ? (
+              <>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="skeleton" style={{ height: 56, width: '100%' }} />
+                ))}
+              </>
+            ) : (
+              venues.map((venue) => {
+                const isActive = selectedVenue?.id === venue.id;
+                const isMaintenance = venue.status === 'Maintenance';
+                return (
+                  <button
+                    key={venue.id}
+                    onClick={() => !isMaintenance && setSelectedVenue(venue)}
+                    className={`venue-card-btn ${isActive ? 'active' : ''} ${isMaintenance ? 'disabled' : ''}`}
+                    disabled={isMaintenance}
+                  >
+                    <div className="venue-btn-top">
+                      <span className="venue-name">{venue.name}</span>
+                      <span className={`venue-type-badge ${getTypeBadgeClass(venue.type)}`}>
+                        {venue.type || 'Seminar Hall'}
+                      </span>
+                    </div>
 
-              <h3 className="section-title" style={{ marginTop: 8 }}>
-                <Building2 style={{ width: 13, height: 13, display: 'inline', marginRight: 6, verticalAlign: '-2px' }} />
-                Campus Facilities
-              </h3>
+                    <div className="venue-btn-bottom">
+                      <span className="venue-status">
+                        <span className={`status-dot ${isMaintenance ? 'maintenance' : 'open'}`} />
+                        {venue.status || 'Open'}
+                      </span>
+                      <span className="venue-divider">•</span>
+                      <span className="venue-meta">
+                        <MapPin style={{ width: 11, height: 11 }} />
+                        {venue.location}
+                      </span>
+                      <span className="venue-capacity">
+                        <Users style={{ width: 11, height: 11 }} />
+                        {venue.capacity}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </aside>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {loadingVenues ? (
-                  <>
-                    <p className="loading-text">Loading campus facilities...</p>
-                    {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="skeleton" style={{ height: 56, width: '100%' }} />
-                    ))}
-                  </>
-                ) : (
-                  venues.map((venue) => {
-                    const isActive = selectedVenue?.id === venue.id;
-                    const isMaintenance = venue.status === 'Maintenance';
-                    return (
-                      <button
-                        key={venue.id}
-                        onClick={() => !isMaintenance && setSelectedVenue(venue)}
-                        className={`venue-btn ${isActive ? 'active' : ''}`}
-                        style={isMaintenance ? { opacity: 0.45, cursor: 'not-allowed' } : {}}
-                        disabled={isMaintenance}
-                      >
-                        {isActive && (
-                          <motion.div
-                            layoutId="activeVenueGlow"
-                            className="venue-glow"
-                            transition={{ type: 'spring', stiffness: 140, damping: 20 }}
-                          />
-                        )}
-                        <span style={{ position: 'relative', zIndex: 1 }}>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                            <span style={{ fontWeight: 600 }}>{venue.name}</span>
-                            <span className={`venue-type-badge ${getTypeBadgeClass(venue.type)}`}>
-                              {venue.type || 'Seminar Hall'}
-                            </span>
-                          </span>
-                          <span style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 8,
-                            fontSize: '0.7rem',
-                            color: 'rgba(113,113,122,0.7)',
-                          }}>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                              <span className={`venue-status-dot ${isMaintenance ? 'maintenance' : 'open'}`} />
-                              {venue.status || 'Open'}
-                            </span>
-                            <MapPin style={{ width: 10, height: 10 }} />
-                            {venue.location}
-                            <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 3 }}>
-                              <Users style={{ width: 10, height: 10 }} />
-                              {venue.capacity}
-                            </span>
-                          </span>
-                        </span>
-                      </button>
-                    );
-                  })
-                )}
-              </div>
-
-              {/* Date Picker */}
-              <div style={{ marginTop: 24 }}>
-                <label className="form-label">Target Date</label>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="form-input"
-                />
-              </div>
-
-              {/* Request Slot Button */}
-              <motion.button
-                whileHover={{ scale: 1.015, boxShadow: '0 0 24px rgba(139,92,246,0.25)' }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => {
-                  setForm({ ...form, event_name: '', time_slot: TIME_SLOTS[0].label });
-                  setIsModalOpen(true);
-                  setError(null);
-                }}
-                className="btn-primary"
-                style={{ marginTop: 24 }}
-              >
-                <Sparkles style={{ width: 16, height: 16 }} />
-                Request New Slot
-                <ArrowRight style={{ width: 15, height: 15 }} />
-              </motion.button>
-            </motion.div>
-
-            {/* ─ Right Panel: Time Slot Availability Grid ─ */}
-            <div>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: 16,
-                paddingLeft: 4,
-              }}>
-                <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0f172a', margin: 0, letterSpacing: '-0.02em' }}>
-                  {selectedVenue?.name || 'Select a Venue'}
-                  <span style={{ color: '#94a3b8', fontWeight: 400, marginLeft: 8, fontSize: '0.85rem' }}>
-                    / {selectedDate}
-                  </span>
-                </h2>
-                <span
-                  className="live-badge"
-                  style={{
-                    fontSize: '0.7rem',
-                    fontFamily: 'monospace',
-                    color: '#0f766e',
-                    background: 'rgba(20,184,166,0.08)',
-                    padding: '5px 12px',
-                    borderRadius: 9999,
-                    border: '1px solid rgba(20,184,166,0.18)',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  Live Grid
-                </span>
-              </div>
-
-              {loadingSlots ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="skeleton" style={{ height: 64, width: '100%' }} />
-                  ))}
+        {/* ── RIGHT PANEL: SELECTED VENUE & TIME SLOTS ── */}
+        <main className="booking-main-panel">
+          {/* Selected Venue Details Header Card */}
+          <div className="venue-detail-card">
+            <div className="venue-detail-main">
+              <div className="venue-detail-info">
+                <div className="venue-title-row">
+                  <h2 className="venue-detail-name">
+                    {selectedVenue?.name || 'Select a Venue'}
+                  </h2>
+                  {selectedVenue?.type && (
+                    <span className={`venue-type-badge ${getTypeBadgeClass(selectedVenue.type)}`}>
+                      {selectedVenue.type}
+                    </span>
+                  )}
+                  {selectedVenue?.status && (
+                    <span className="venue-status-chip">
+                      <span className={`status-dot ${selectedVenue.status === 'Maintenance' ? 'maintenance' : 'open'}`} />
+                      {selectedVenue.status}
+                    </span>
+                  )}
                 </div>
-              ) : (
-                <motion.div
-                  key={`${selectedVenue?.id}-${selectedDate}`}
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="show"
-                  style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
+
+                <div className="venue-detail-meta">
+                  <span className="meta-item">
+                    <MapPin style={{ width: 14, height: 14, color: '#1d4ed8' }} />
+                    {selectedVenue?.location || 'Campus Center'}
+                  </span>
+                  <span className="meta-item">
+                    <Users style={{ width: 14, height: 14, color: '#14b8a6' }} />
+                    Capacity: {selectedVenue?.capacity || 0} seats
+                  </span>
+                </div>
+              </div>
+
+              {/* Action items: Date selector + Request slot button */}
+              <div className="venue-detail-controls">
+                <div className="date-picker-group">
+                  <label htmlFor="target-date-input" className="date-label">
+                    <Calendar style={{ width: 14, height: 14, color: '#1d4ed8' }} />
+                    Date
+                  </label>
+                  <input
+                    id="target-date-input"
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="date-input"
+                  />
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setForm({ ...form, event_name: '', time_slot: TIME_SLOTS[0].label });
+                    setIsModalOpen(true);
+                    setError(null);
+                  }}
+                  className="btn-request-slot"
                 >
-                  {TIME_SLOTS.map((slot) => {
-                    const slotStatus = availabilityMap[slot.label] || null;
-                    const isAvailable = !slotStatus;
-                    const isApproved = slotStatus === 'APPROVED' || slotStatus === 'Open';
-                    const isPending = slotStatus === 'PENDING';
-
-                    return (
-                      <motion.div
-                        key={slot.label}
-                        variants={itemVariants}
-                        whileHover={isAvailable ? { x: 5, transition: { duration: 0.15 } } : {}}
-                        className={`slot-row ${isAvailable ? 'clickable' : ''}`}
-                        onClick={isAvailable ? () => handleClickToSecure(slot.label) : undefined}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                          <Clock style={{ width: 17, height: 17, color: 'rgba(113,113,122,0.5)' }} />
-                          <div>
-                            <p style={{
-                              fontFamily: 'monospace',
-                              fontSize: '0.85rem',
-                              fontWeight: 600,
-                              color: '#0f172a',
-                              margin: 0,
-                            }}>
-                              {slot.display}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          {isAvailable && (
-                            <>
-                              <span className="status-pill status-open">
-                                <CheckCircle style={{ width: 13, height: 13 }} />
-                                Open
-                              </span>
-                              <button
-                                className="btn-secure"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleClickToSecure(slot.label);
-                                }}
-                              >
-                                <Zap style={{ width: 11, height: 11 }} />
-                                Click to secure
-                              </button>
-                            </>
-                          )}
-                          {isApproved && (
-                            <span className="status-pill status-reserved">
-                              <ShieldAlert style={{ width: 13, height: 13 }} />
-                              Reserved
-                            </span>
-                          )}
-                          {isPending && (
-                            <span className="status-pill status-pending">
-                              <AlertCircle style={{ width: 13, height: 13 }} />
-                              Pending
-                            </span>
-                          )}
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </motion.div>
-              )}
+                  <Sparkles style={{ width: 14, height: 14 }} />
+                  Request Slot
+                </motion.button>
+              </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+
+          {/* Time Slots Availability Grid */}
+          <div className="slots-section">
+            <div className="slots-header">
+              <div className="slots-header-title">
+                <Clock style={{ width: 16, height: 16, color: '#1d4ed8' }} />
+                <h3>Available Time Slots</h3>
+              </div>
+              <span className="live-badge">
+                Live Grid
+              </span>
+            </div>
+
+            {loadingSlots ? (
+              <div className="slots-loading-grid">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div key={i} className="skeleton" style={{ height: 80, borderRadius: 12 }} />
+                ))}
+              </div>
+            ) : (
+              <motion.div
+                key={`${selectedVenue?.id}-${selectedDate}`}
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="time-slots-grid"
+              >
+                {TIME_SLOTS.map((slot) => {
+                  const slotStatus = availabilityMap[slot.label] || null;
+                  const isAvailable = !slotStatus;
+                  const isApproved = slotStatus === 'APPROVED' || slotStatus === 'Open';
+                  const isPending = slotStatus === 'PENDING';
+
+                  return (
+                    <motion.div
+                      key={slot.label}
+                      variants={itemVariants}
+                      className={`slot-card ${isAvailable ? 'available' : ''} ${isApproved ? 'reserved' : ''} ${isPending ? 'pending' : ''}`}
+                      onClick={isAvailable ? () => handleClickToSecure(slot.label) : undefined}
+                    >
+                      <div className="slot-card-header">
+                        <span className="slot-time">{slot.display}</span>
+                        {isAvailable && (
+                          <span className="slot-status-pill status-open">
+                            Available
+                          </span>
+                        )}
+                        {isApproved && (
+                          <span className="slot-status-pill status-reserved">
+                            Reserved
+                          </span>
+                        )}
+                        {isPending && (
+                          <span className="slot-status-pill status-pending">
+                            Pending
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="slot-card-action">
+                        {isAvailable ? (
+                          <button
+                            className="btn-book-slot"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleClickToSecure(slot.label);
+                            }}
+                          >
+                            <Zap style={{ width: 12, height: 12 }} />
+                            Book Slot
+                          </button>
+                        ) : (
+                          <span className="slot-taken-label">
+                            {isApproved ? 'Occupied' : 'Under Review'}
+                          </span>
+                        )}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+            )}
+          </div>
+        </main>
+      </div>
 
       {/* ── BOOKING REQUEST MODAL ── */}
       <AnimatePresence>
@@ -701,40 +515,29 @@ export default function BookingDashboard({ adminView = false }) {
               exit="exit"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#0f172a', margin: '8px 0 4px' }}>
-                Secure This Slot
-              </h3>
-              <p style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: 24, marginTop: 0 }}>
-                Your reservation will be confirmed instantly upon submission.
-              </p>
+              <div className="modal-header">
+                <h3>Secure Venue Reservation</h3>
+                <p>Submit your event details to confirm this time slot.</p>
+              </div>
 
               <form onSubmit={handleSubmitBooking}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-
-                  {/* Venue (read-only) */}
+                <div className="form-stack">
                   <div>
                     <label className="form-label">Venue</label>
-                    <div className="form-input" style={{ background: 'rgba(15,15,25,0.5)', color: 'rgba(161,161,170,0.8)', cursor: 'default' }}>
-                      {selectedVenue?.name || '—'}
-                    </div>
+                    <div className="form-read-only">{selectedVenue?.name || '—'}</div>
                   </div>
 
-                  {/* Date (read-only) */}
                   <div>
-                    <label className="form-label">Date</label>
-                    <div className="form-input" style={{ background: 'rgba(15,15,25,0.5)', color: 'rgba(161,161,170,0.8)', cursor: 'default' }}>
-                      {selectedDate}
-                    </div>
+                    <label className="form-label">Target Date</label>
+                    <div className="form-read-only">{selectedDate}</div>
                   </div>
 
-                  {/* Time Slot Picker */}
                   <div>
                     <label className="form-label">Time Slot</label>
                     <select
                       value={form.time_slot}
                       onChange={(e) => setForm({ ...form, time_slot: e.target.value })}
                       className="form-input"
-                      style={{ cursor: 'pointer' }}
                     >
                       {TIME_SLOTS.map((slot) => {
                         const taken = !!availabilityMap[slot.label];
@@ -747,12 +550,11 @@ export default function BookingDashboard({ adminView = false }) {
                     </select>
                   </div>
 
-                  {/* Event Name */}
                   <div>
-                    <label className="form-label">Event Name</label>
+                    <label className="form-label">Event / Activity Name</label>
                     <input
                       type="text"
-                      placeholder="e.g., Mini Project Evaluation"
+                      placeholder="e.g., Mini Project Evaluation & Review"
                       value={form.event_name}
                       onChange={(e) => setForm({ ...form, event_name: e.target.value })}
                       className="form-input"
@@ -761,10 +563,9 @@ export default function BookingDashboard({ adminView = false }) {
                     />
                   </div>
 
-                  {/* User Name + Role — locked to authenticated session */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                  <div className="form-row-2col">
                     <div>
-                      <label className="form-label">Your Name</label>
+                      <label className="form-label">Requested By</label>
                       <input
                         type="text"
                         value={form.user_name}
@@ -775,100 +576,33 @@ export default function BookingDashboard({ adminView = false }) {
                     </div>
                     <div>
                       <label className="form-label">Role</label>
-                      {/* Locked to authenticated role — not editable */}
-                      <div
-                        className="form-input"
-                        title="Your role is determined by your authenticated session"
-                        style={{
-                          background: 'rgba(15,15,25,0.5)',
-                          color: isFacultyAdmin ? '#0f766e' : 'rgba(161,161,170,0.8)',
-                          cursor: 'default',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 6,
-                          fontWeight: 600,
-                          userSelect: 'none',
-                        }}
-                      >
+                      <div className="form-read-only flex-align">
                         {user.role.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-                        {isFacultyAdmin && (
-                          <span style={{
-                            fontSize: '0.6rem', fontWeight: 700, color: '#0f766e',
-                            background: 'rgba(20,184,166,0.12)', padding: '2px 6px',
-                            borderRadius: 4, letterSpacing: '0.05em',
-                          }}>PRIORITY</span>
-                        )}
+                        {isFacultyAdmin && <span className="priority-badge">PRIORITY</span>}
                       </div>
                     </div>
                   </div>
 
-                  {/* Error message */}
-                  {error && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      style={{
-                        padding: '10px 14px',
-                        borderRadius: 10,
-                        background: 'rgba(244,63,94,0.1)',
-                        border: '1px solid rgba(244,63,94,0.2)',
-                        color: '#fb7185',
-                        fontSize: '0.78rem',
-                        fontWeight: 500,
-                      }}
-                    >
-                      {error}
-                    </motion.div>
-                  )}
+                  {error && <div className="form-error-banner">{error}</div>}
                 </div>
 
-                {/* Actions */}
-                <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 24 }}>
+                <div className="modal-actions">
                   <button
                     type="button"
                     onClick={() => { setIsModalOpen(false); setError(null); }}
-                    style={{
-                      padding: '10px 18px',
-                      borderRadius: 10,
-                      border: 'none',
-                      background: 'transparent',
-                      color: 'rgba(161,161,170,0.7)',
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      fontFamily: 'Inter, sans-serif',
-                      transition: 'color 0.2s',
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
-                    onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(161,161,170,0.7)'}
+                    className="btn-modal-cancel"
                   >
                     Cancel
                   </button>
                   <motion.button
                     type="submit"
                     disabled={submitting}
-                    whileHover={{ scale: 1.02, boxShadow: '0 8px 24px rgba(15,76,129,0.28)' }}
-                    whileTap={{ scale: 0.97 }}
-                    style={{
-                      padding: '10px 24px',
-                      borderRadius: 10,
-                      border: 'none',
-                      background: 'linear-gradient(135deg, #1d4ed8, #14b8a6)',
-                      color: '#fff',
-                      fontSize: '0.82rem',
-                      fontWeight: 700,
-                      cursor: submitting ? 'not-allowed' : 'pointer',
-                      opacity: submitting ? 0.6 : 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 6,
-                      fontFamily: 'Inter, sans-serif',
-                      boxShadow: '0 4px 16px rgba(15,76,129,0.22)',
-                      willChange: 'transform',
-                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="btn-modal-submit"
                   >
-                    {submitting && <Loader2 style={{ width: 14, height: 14, animation: 'spin 1s linear infinite' }} />}
-                    Submit Request
+                    {submitting && <Loader2 className="animate-spin" style={{ width: 14, height: 14 }} />}
+                    Confirm Reservation
                   </motion.button>
                 </div>
               </form>
